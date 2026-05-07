@@ -1,10 +1,21 @@
+import { addComponent, addComponents, addEntity, createWorld, observe, onSet, query, World } from 'bitecs';
 import { Scene } from 'phaser';
+import { movementSystem } from '../../systems/MovementSystem';
+import { Position, Velocity } from '../../components/MovementComponents';
+
+
+interface WorldData {
+    time: {
+        delta: number;
+        elapsed: number;
+    }
+}
+export type GameWorld = World & WorldData;
 
 export class Game extends Scene
 {
     camera: Phaser.Cameras.Scene2D.Camera;
-    background: Phaser.GameObjects.Image;
-    msg_text : Phaser.GameObjects.Text;
+    world: any;
 
     constructor ()
     {
@@ -14,22 +25,49 @@ export class Game extends Scene
     create ()
     {
         this.camera = this.cameras.main;
-        this.camera.setBackgroundColor(0x00ff00);
-
-        this.background = this.add.image(512, 384, 'background');
-        this.background.setAlpha(0.5);
-
-        this.msg_text = this.add.text(512, 384, 'Make something fun!\nand share it with us:\nsupport@phaser.io', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
+        
+        this.anims.create({
+            key: 'idle',
+            frames: this.anims.generateFrameNames('test-hero', {
+                start: 0,
+                end: 5,
+            }),
+            frameRate: 10,
+            repeat: -1 // Loop infinitely
         });
-        this.msg_text.setOrigin(0.5);
 
-        this.input.once('pointerdown', () => {
+        this.add.sprite(100, 100, 'test-hero');
+        // player.play('idle');
+        
+        // Create the world
+        this.world = createWorld({
+            time: {
+                delta: 0,
+                elapsed: 0            
+            }
+        }) as GameWorld;
 
-            this.scene.start('GameOver');
+        // Add the player to the world
+        let player = addEntity(this.world);
+        addComponent(this.world, player, Position)
+        addComponent(this.world, player, Velocity)
+        Position.x[player] = 100;
+        Position.y[player] = 200;
+        Velocity.x[player] = 5;
+    }
 
-        });
+    systems = [
+        movementSystem,
+    ]
+    runSystems = (world: GameWorld) => {
+        for (const system of this.systems) {
+            system(world)
+        }
+    }
+
+    update(time: number, delta: number): void {
+        this.world.time.delta = delta;
+        this.world.time.elapsed = time;
+        this.runSystems(this.world);
     }
 }

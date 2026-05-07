@@ -23,8 +23,9 @@ const config: Phaser.Types.Core.GameConfig = {
     physics: {
         default: 'arcade',
         arcade: {
+            fps: 60,
             gravity: { y: 0, x: 0 },
-            debug: true
+            debug: true //Set to false for builds
         }
     },
     parent: 'game-container',
@@ -39,9 +40,7 @@ const config: Phaser.Types.Core.GameConfig = {
 };
 
 const StartGame = (parent: string) => {
-
     return new Game({ ...config, parent });
-
 }
 
 export default StartGame;
