@@ -17,6 +17,8 @@ export class Game extends Scene
     camera: Phaser.Cameras.Scene2D.Camera;
     world: any;
 
+    spriteMap = new Map<number, Phaser.GameObjects.Sprite>();
+
     constructor ()
     {
         super('Game');
