@@ -1,4 +1,4 @@
-import { addComponent, addComponents, addEntity, createWorld, World } from 'bitecs';
+import { addComponents, addEntity, createWorld, World } from 'bitecs';
 import { Scene } from 'phaser';
 import { movementSystem, moveToSystem, playerInputSystem } from '../../systems/MovementSystem';
 import { createSpriteSyncSystem } from '../../systems/SpriteSyncSystem';
