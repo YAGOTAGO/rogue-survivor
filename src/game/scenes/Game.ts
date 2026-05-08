@@ -1,11 +1,10 @@
-import { addComponent, addEntity, createWorld, World } from 'bitecs';
+import { addComponent, addComponents, addEntity, createWorld, World } from 'bitecs';
 import { Scene } from 'phaser';
 import { movementSystem, moveToSystem, playerInputSystem } from '../../systems/MovementSystem';
 import { createSpriteSyncSystem } from '../../systems/SpriteSyncSystem';
 import { Position, Speed, Velocity } from '../../components/MovementComponents';
 import { updateWorldInput } from '../../systems/InputHandler';
-import { Player } from '../../components/TagComponents';
-
+import { Enemy, Player } from '../../components/TagComponents';
 
 interface WorldData {
     time: {
@@ -13,8 +12,8 @@ interface WorldData {
         elapsed: number;
     },
     input: {
-        xAxis: number; // -1 (Left) to 1 (Right)
-        yAxis: number; // -1 (Up) to 1 (Down)
+        xAxis: number;
+        yAxis: number;
     }
 }
 export type GameWorld = World & WorldData;
@@ -40,7 +39,7 @@ export class Game extends Scene
         this.camera = this.cameras.main;        
         this.cursors = this.input.keyboard!.createCursorKeys();
         this.wasdKeys = this.input.keyboard!.addKeys('W,A,S,D');
-
+        
         // Create the world
         this.world = createWorld({
             time: { delta: 0, elapsed: 0 },
@@ -48,6 +47,7 @@ export class Game extends Scene
         }) as GameWorld;
 
         this.player = this.createUnit('test-hero', 100, 200, Player, 200);
+        this.createUnit('test-hero', 600, 300, Enemy, 200);
 
         this.fpsText = this.add.text(10, 10, '', {
             fontFamily: 'Arial, sans-serif',
@@ -68,13 +68,11 @@ export class Game extends Scene
     private createUnit(spriteKey: string, x: number, y: number, tag: any, speed = 200) {
         const eid = addEntity(this.world);
 
-        addComponent(this.world, eid, Position);
-        addComponent(this.world, eid, Velocity);
-        addComponent(this.world, eid, Speed);
-        addComponent(this.world, eid, tag);
-
+        addComponents(this.world, eid, [Position, Velocity, Speed, tag]);
         Position.x[eid] = x;
         Position.y[eid] = y;
+        Velocity.x[eid] = 0;
+        Velocity.y[eid] = 0;
         Speed.value[eid] = speed;
 
         const sprite = this.add.sprite(x, y, spriteKey);
@@ -91,7 +89,6 @@ export class Game extends Scene
 
     update(time: number, delta: number): void {        
         updateWorldInput(this, this.world, this.player)
-        
         this.world.time.delta = delta;
         this.world.time.elapsed = time;
 
