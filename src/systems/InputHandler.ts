@@ -27,12 +27,14 @@ export const updateWorldInput = (scene: Phaser.Scene, world: GameWorld, playerId
         }
     }
 
+    //Normalize diagonal movement
     const length = Math.sqrt(rawX * rawX + rawY * rawY);
     if (length > 1) {
         rawX /= length;
         rawY /= length;
     }
-
+    
+    //Any movement is given priority over moveTo
     if (rawX !== 0 || rawY !== 0) {
         if (hasComponent(world, playerId, MoveTo)) {
             removeComponent(world, playerId, MoveTo);

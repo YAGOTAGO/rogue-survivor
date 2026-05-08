@@ -24,7 +24,7 @@ export const moveToSystem = (world: GameWorld) => {
         const dy = MoveTo.y[eid] - Position.y[eid];
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < 5) {
+        if (distance < 5) { //reach destination
             Velocity.x[eid] = 0;
             Velocity.y[eid] = 0;
             removeComponent(world, eid, MoveTo);
