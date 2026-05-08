@@ -74,7 +74,7 @@ export class Game extends Scene
         Velocity.x[eid] = 0;
         Velocity.y[eid] = 0;
         Speed.value[eid] = speed;
-
+        
         const sprite = this.add.sprite(x, y, spriteKey).setScale(0.5);
         this.spriteMap.set(eid, sprite);
 

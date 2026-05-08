@@ -9,22 +9,24 @@ export class Preloader extends Scene
 
     init ()
     {
-        //  We loaded this image in our Boot Scene, so we can display it here
-        this.add.image(512, 384, 'background');
-
-        //  A simple progress bar. This is the outline of the bar.
-        this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0xffffff);
-        
-        //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-        const bar = this.add.rectangle(512-230, 384, 4, 28, 0xffffff);
-
-        //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
+        const width = this.scale.width;
+        const height = this.scale.height;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const barMaxWidth = 460;
+        this.add.rectangle(centerX, centerY, 468, 32).setStrokeStyle(1, 0xffffff); //Loading bar background
+        const bar = this.add.rectangle(centerX - 230, centerY, 4, 28, 0xffffff); //Loading bar fill
         this.load.on('progress', (progress: number) => {
-
-            //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
-            bar.width = 4 + (460 * progress);
-
+            bar.width = 4 + (barMaxWidth * progress);
         });
+        this.add.text(centerX, centerY-40, 'Loading...', {
+            fontFamily: 'Arial, sans-serif',
+            fontSize: '30px',
+            color: '#ffffff',
+            padding: { x: 6, y: 4 },
+            fontStyle: 'bold'
+        }).setOrigin(0.5);
+        this.cameras.main.setBackgroundColor('#1f2024');
     }
 
     preload ()
