@@ -1,7 +1,7 @@
 import { addComponent, addEntity, createWorld, World } from 'bitecs';
 import { Scene } from 'phaser';
-import { movementSystem } from '../../systems/MovementSystem';
-import { Position, Velocity } from '../../components/MovementComponents';
+import { movementSystem, moveToSystem, playerInputSystem } from '../../systems/MovementSystem';
+import { Position, Speed, Velocity } from '../../components/MovementComponents';
 import { updateWorldInput } from '../../systems/InputHandler';
 import { Player } from '../../components/TagComponents';
 
@@ -52,12 +52,15 @@ export class Game extends Scene
         addComponent(this.world, this.player, Position)
         addComponent(this.world, this.player, Velocity)
         addComponent(this.world, this.player, Player)
+        addComponent(this.world, this.player, Speed)
+        Speed.value[this.player] = 200;
         Position.x[this.player] = 100;
         Position.y[this.player] = 200;
-        Velocity.x[this.player] = 5;
     }
 
     systems = [
+        playerInputSystem,
+        moveToSystem,
         movementSystem,
     ]
     runSystems = (world: GameWorld) => {
@@ -68,6 +71,7 @@ export class Game extends Scene
 
     update(time: number, delta: number): void {        
         updateWorldInput(this, this.world, this.player)
+        
         this.world.time.delta = delta;
         this.world.time.elapsed = time;
 
