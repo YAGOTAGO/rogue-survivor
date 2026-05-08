@@ -11,22 +11,14 @@ const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
     width: 1280,
     height: 720,
+    // pixelArt: true,
     scale: {
         mode: Scale.FIT,
         autoCenter: Scale.CENTER_BOTH,
         autoRound: true 
     },
     fps: {
-        target: 60,
-        forceSetTimeOut: true
-    },
-    physics: {
-        default: 'arcade',
-        arcade: {
-            fps: 60,
-            gravity: { y: 0, x: 0 },
-            debug: true //Set to false for builds
-        }
+        target: 60
     },
     parent: 'game-container',
     backgroundColor: '#028af8',
