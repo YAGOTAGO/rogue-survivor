@@ -1,7 +1,7 @@
 import { addComponent, hasComponent, query, removeComponent } from 'bitecs';
 import { Enemy, Player } from '../components/TagComponents';
 import { Position, Velocity, Speed, MoveTo } from '../components/MovementComponents';
-import { AIState, AIStateType, EnemyBehavior } from '../components/AIComponents';
+import { AIState, AIStateType, AIBehavior } from '../components/AIComponents';
 import { GameWorld } from '../game/scenes/Game';
 
 export const enemyAISystem = (world: GameWorld) => {
@@ -22,13 +22,13 @@ export const enemyAISystem = (world: GameWorld) => {
 
     //TODO add a switch for behavior based on eney states
 
-    for (const eid of query(world, [Enemy, Position, Speed, Velocity, AIState, EnemyBehavior])) {
+    for (const eid of query(world, [Enemy, Position, Speed, Velocity, AIState, AIBehavior])) {
         const dx = playerX - Position.x[eid];
         const dy = playerY - Position.y[eid];
         const distance = Math.sqrt(dx * dx + dy * dy);
         const state = AIState.value[eid];
-        const detectRange = EnemyBehavior.detectionRadius[eid];
-        const attackRange = EnemyBehavior.attackRange[eid];
+        const detectRange = AIBehavior.detectionRadius[eid];
+        const actionRange = AIBehavior.actionRange[eid];
 
         if (state === AIStateType.Idle) {
             if (distance <= detectRange) {
@@ -37,8 +37,8 @@ export const enemyAISystem = (world: GameWorld) => {
         }
 
         if (AIState.value[eid] === AIStateType.Chase) {
-            if (distance <= attackRange) {
-                AIState.value[eid] = AIStateType.Attack;
+            if (distance <= actionRange) {
+                AIState.value[eid] = AIStateType.Action;
                 if (hasComponent(world, eid, MoveTo)) {
                     removeComponent(world, eid, MoveTo);
                 }
@@ -53,14 +53,15 @@ export const enemyAISystem = (world: GameWorld) => {
             }
         }
 
-        if (AIState.value[eid] === AIStateType.Attack) {
-            if (distance > attackRange) {
+        if (AIState.value[eid] === AIStateType.Action) {
+            if (distance > actionRange) {
                 AIState.value[eid] = AIStateType.Chase;
             } else {
-                EnemyBehavior.lastAction[eid] += world.time.delta;
-                if (EnemyBehavior.lastAction[eid] >= EnemyBehavior.cooldown[eid]) {
-                    EnemyBehavior.lastAction[eid] = 0;
+                AIBehavior.lastAction[eid] += world.time.delta;
+                if (AIBehavior.lastAction[eid] >= AIBehavior.cooldown[eid]) {
+                    AIBehavior.lastAction[eid] = 0;
                     // TODO: fire a projectile, play an attack animation, or trigger damage
+                    console.log(`Enemy ${eid} performs action on player!`);
                 }
             }
         }

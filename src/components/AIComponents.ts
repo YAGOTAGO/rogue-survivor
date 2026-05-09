@@ -5,12 +5,35 @@ export const AIState = {
 export const AIStateType = {
     Idle: 0,
     Chase: 1,
-    Attack: 2,
+    Action: 2,
 }
 
-export const EnemyBehavior = {
+export const AIBehavior = {
     detectionRadius: [] as number[],
-    attackRange: [] as number[],
+    actionRange: [] as number[],
     cooldown: [] as number[],
     lastAction: [] as number[],
+    targetTag: [] as number[],
+    targetingStrategy: [] as number[],
+    actionType: [] as number[],
+}
+
+export const CurrentTarget = {
+    eid: [] as number[],
+}
+
+export const AITargetTag = {
+    Player: 0,
+    Enemy: 1,
+    Ally: 2,
+}
+
+export const AITargetingStrategyType = {
+    Closest: 0,
+    Farthest: 1,
+}
+
+export const AIActionType = {
+    Attack: 0,
+    Heal: 1,
 }
