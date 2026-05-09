@@ -61,6 +61,10 @@ export class Game extends Scene
         }) as GameWorld;
 
         this.player = SpawnPlayer(this.world, { x: 100, y: 300 });
+        const playerSprite = this.world.spriteMap.get(this.player);
+        if (playerSprite) {
+            this.camera.startFollow(playerSprite, true, 0.08, 0.08);
+        }
 
         const enemy = this.createUnit('test-hero', 600, 300, Enemy, 200);
         addComponents(this.world, enemy, [AIState, AIBehavior]);
