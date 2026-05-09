@@ -12,7 +12,7 @@ export const movementSystem = (world: GameWorld) => {
 }
 
 //TODO this should also work for enemies, this should be renamed velocity system
-export const playerInputSystem = (world: GameWorld) => {
+export const playerVelocitySystem = (world: GameWorld) => {
     for (const eid of query(world, [Player, Speed, Velocity])){
         Velocity.x[eid] = world.input.xAxis * Speed.value[eid];
         Velocity.y[eid] = world.input.yAxis * Speed.value[eid];

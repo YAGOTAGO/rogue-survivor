@@ -1,14 +1,15 @@
 import { addComponents, addEntity, createWorld, EntityId, World } from 'bitecs';
 import { Scene } from 'phaser';
-import { movementSystem, moveToSystem, playerInputSystem } from '../../systems/MovementSystem';
+import { movementSystem, moveToSystem, playerVelocitySystem } from '../../systems/MovementSystem';
 import { enemyAISystem } from '../../systems/EnemyAISystem';
-import { SpriteSyncSystem } from '../../systems/SpriteSyncSystem';
+import { spriteSyncSystem } from '../../systems/SpriteSyncSystem';
+import { inputSystem } from '../../systems/InputHandler';
 import { Position, Speed, Velocity } from '../../components/MovementComponents';
-import { updateWorldInput } from '../../systems/InputHandler';
 import { AIState, AIStateType, EnemyBehavior } from '../../components/AIComponents';
 import { Enemy, Player } from '../../components/TagComponents';
 
 interface WorldData {
+    scene: Phaser.Scene;
     time: {
         delta: number;
         elapsed: number;
@@ -31,7 +32,6 @@ export class Game extends Scene
     world!: GameWorld;
     fpsText!: Phaser.GameObjects.Text;
     player!: EntityId;
-    systems: Array<(world: GameWorld) => void> = [];
     
     constructor ()
     {
@@ -42,8 +42,8 @@ export class Game extends Scene
     {
         this.camera = this.cameras.main;        
         
-        // Create the world
         this.world = createWorld({
+            scene: this,
             time: { delta: 0, elapsed: 0 },
             input: { 
                 xAxis: 0, 
@@ -74,13 +74,6 @@ export class Game extends Scene
             padding: { x: 6, y: 4 }
         }).setScrollFactor(0);
 
-        this.systems = [
-            playerInputSystem,
-            enemyAISystem,
-            moveToSystem,
-            movementSystem,
-            SpriteSyncSystem,
-        ];
     }
 
     private createUnit(spriteKey: string, x: number, y: number, tag: any, speed = 200) {
@@ -98,6 +91,15 @@ export class Game extends Scene
 
         return eid;
     }
+    
+    systems = [
+        inputSystem,
+        playerVelocitySystem,
+        enemyAISystem,
+        moveToSystem,
+        movementSystem,
+        spriteSyncSystem,
+    ];
 
     runSystems = (world: GameWorld) => {
         for (const system of this.systems) {
@@ -105,8 +107,7 @@ export class Game extends Scene
         }
     }
 
-    update(time: number, delta: number): void {        
-        updateWorldInput(this.world, this.player)
+    update(time: number, delta: number): void {
         this.world.time.delta = delta;
         this.world.time.elapsed = time;
 

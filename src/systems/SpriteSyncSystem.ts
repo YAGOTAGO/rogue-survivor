@@ -2,7 +2,7 @@ import { query } from "bitecs"
 import { Position } from "../components/MovementComponents"
 import { GameWorld } from "../game/scenes/Game"
 
-export const SpriteSyncSystem = (world: GameWorld) => {
+export const spriteSyncSystem = (world: GameWorld) => {
     for (const eid of query(world, [Position])) {
         const sprite = world.spriteMap.get(eid)
         if (!sprite) continue

@@ -13,6 +13,7 @@ export const enemyAISystem = (world: GameWorld) => {
     }
 
     if (playerId < 0) {
+        console.error("No player entity found for enemy AI system");
         return;
     }
 

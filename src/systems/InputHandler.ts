@@ -1,10 +1,22 @@
-import { addComponent, hasComponent, removeComponent } from "bitecs";
+import { addComponent, hasComponent, query, removeComponent } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
 import { MoveTo } from "../components/MovementComponents";
+import { Player } from "../components/TagComponents";
 
 const deadzone = 0.1;
 
-export const updateWorldInput = (world: GameWorld, playerId: number) =>{
+export const inputSystem = (world: GameWorld) => {
+    let playerId = -1;
+    for (const eid of query(world, [Player])) {
+        playerId = eid;
+        break;
+    }
+
+    if (playerId < 0) {
+        console.error("No player entity found for input system");
+        return;
+    }
+
     const { cursors, wasdKeys, gamepad, pointer } = world.input;
     let rawX = 0;
     let rawY = 0;
