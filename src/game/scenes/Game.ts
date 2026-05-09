@@ -1,9 +1,11 @@
 import { addComponents, addEntity, createWorld, World } from 'bitecs';
 import { Scene } from 'phaser';
 import { movementSystem, moveToSystem, playerInputSystem } from '../../systems/MovementSystem';
+import { enemyAISystem } from '../../systems/EnemyAISystem';
 import { createSpriteSyncSystem } from '../../systems/SpriteSyncSystem';
 import { Position, Speed, Velocity } from '../../components/MovementComponents';
 import { updateWorldInput } from '../../systems/InputHandler';
+import { AIState, AIStateType, EnemyAI } from '../../components/AIComponents';
 import { Enemy, Player } from '../../components/TagComponents';
 
 interface WorldData {
@@ -47,7 +49,14 @@ export class Game extends Scene
         }) as GameWorld;
 
         this.player = this.createUnit('test-hero', 100, 200, Player, 200);
-        this.createUnit('test-hero', 600, 300, Enemy, 200);
+
+        const enemy = this.createUnit('test-hero', 600, 300, Enemy, 200);
+        addComponents(this.world, enemy, [AIState, EnemyAI]);
+        AIState.value[enemy] = AIStateType.Idle;
+        EnemyAI.detectionRadius[enemy] = 260;
+        EnemyAI.attackRange[enemy] = 10;
+        EnemyAI.cooldown[enemy] = 1200;
+        EnemyAI.lastAction[enemy] = 0;
 
         this.fpsText = this.add.text(10, 10, '', {
             fontFamily: 'Arial, sans-serif',
@@ -59,6 +68,7 @@ export class Game extends Scene
 
         this.systems = [
             playerInputSystem,
+            enemyAISystem,
             moveToSystem,
             movementSystem,
             createSpriteSyncSystem(this.spriteMap),
