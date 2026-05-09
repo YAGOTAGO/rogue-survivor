@@ -17,19 +17,19 @@ export class HealthBar extends Phaser.GameObjects.Container {
         const barBg = scene.add.rectangle(0, 0, barWidth, height, 0x000000)
             .setStrokeStyle(stroke, 0xffffff)
             .setOrigin(0, 0.5);
-        
-        this.barFill = scene.add.rectangle(stroke / 2, 0, barWidth - stroke, height - stroke, 0xff0000)
+
+        this.barFill = scene.add.rectangle(stroke / 2, 0, barWidth - stroke, height - stroke, 0xff1919)
             .setOrigin(0, 0.5);
 
-        this.healthText = scene.add.text(barWidth / 2, 0, '100 / 100', {
+        this.healthText = scene.add.text(barWidth / 2, 0, 'text', {
             fontSize: '14px',
             fontStyle: 'bold',
-            color: '#ffffff'
+            color: '#ffffff',
         })
         .setOrigin(0.5) 
         .setStroke('#000000', 4);
 
-        this.add([barBg, this.barFill, this.healthText]);
+        this.add([barBg, this.barFill, this.healthText]); //add to the container
         scene.add.existing(this);
         this.setScrollFactor(0);
     }

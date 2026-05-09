@@ -38,7 +38,8 @@ export class Preloader extends Scene
             frameWidth: 192,
             frameHeight: 192
         })
-
+        this.load.image('background', 'screenshot.png');
+        
     }
 
     create ()

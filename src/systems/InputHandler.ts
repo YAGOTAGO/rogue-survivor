@@ -58,8 +58,9 @@ export const inputSystem = (world: GameWorld) => {
         if (!hasComponent(world, playerId, MoveTo)) {
             addComponent(world, playerId, MoveTo);
         }
-        MoveTo.x[playerId] = pointer.worldX;
-        MoveTo.y[playerId] = pointer.worldY;
+        const worldPoint = world.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
+        MoveTo.x[playerId] = worldPoint.x;
+        MoveTo.y[playerId] = worldPoint.y;
         rawX = 0;
         rawY = 0;
     }

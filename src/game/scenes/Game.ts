@@ -45,7 +45,7 @@ export class Game extends Scene
     create ()
     {
         this.camera = this.cameras.main;        
-
+        this.add.image(512, 384, 'background');
         this.world = createWorld({
             scene: this,
             time: { delta: 0, elapsed: 0 },
