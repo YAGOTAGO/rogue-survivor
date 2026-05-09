@@ -7,6 +7,7 @@ import { inputSystem } from '../../systems/InputHandler';
 import { Position, Speed, Velocity } from '../../components/MovementComponents';
 import { AIState, AIStateType, EnemyBehavior } from '../../components/AIComponents';
 import { Enemy, Player } from '../../components/TagComponents';
+import { SpawnPlayer } from '../../systems/SpawnerSystem';
 
 interface WorldData {
     scene: Phaser.Scene;
@@ -56,7 +57,7 @@ export class Game extends Scene
             spriteMap: new Map<EntityId, Phaser.GameObjects.Sprite>(),
         }) as GameWorld;
 
-        this.player = this.createUnit('test-hero', 100, 200, Player, 200);
+        this.player = SpawnPlayer(this.world, { x: 100, y: 300 });
 
         const enemy = this.createUnit('test-hero', 600, 300, Enemy, 200);
         addComponents(this.world, enemy, [AIState, EnemyBehavior]);

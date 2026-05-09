@@ -34,7 +34,7 @@ const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
     return eid;
 }
 
-const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): EntityId => {
+export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): EntityId => {
     const data: BaseUnitData = {
         position: pos,
         speed: 200,
