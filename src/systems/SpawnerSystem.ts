@@ -1,23 +1,27 @@
-import { addComponents, addEntity, addPrefab, EntityId, observe, onSet } from "bitecs";
+import { addComponents, addEntity, EntityId } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
 import { Position, Speed, Velocity } from "../components/MovementComponents";
+import { Player } from "../components/TagComponents";
+import { Health } from "../components/StatComponents";
 
 interface BaseUnitData{
     position: { x: number, y: number },
-    velocity: { x: number, y: number },
     speed: number,
+    maxHealth: number,
     spriteKey: string,
     tags?: [{}],
 }
 
 const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
     const eid = addEntity(world);
-    addComponents(world, eid, [Position, Speed, Velocity]);
+    addComponents(world, eid, [Position, Speed, Velocity, Health]);
     Position.x[eid] = data.position.x;
     Position.y[eid] = data.position.y;
-    Velocity.x[eid] = data.velocity.x;
-    Velocity.y[eid] = data.velocity.y;
+    Velocity.x[eid] = 0;
+    Velocity.y[eid] = 0;
     Speed.value[eid] = data.speed;
+    Health.current[eid] = data.maxHealth;
+    Health.max[eid] = data.maxHealth;
 
     if(data.tags){
         addComponents(world, eid, data.tags);
@@ -30,8 +34,14 @@ const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
     return eid;
 }
 
-const PlayerUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
+const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): EntityId => {
+    const data: BaseUnitData = {
+        position: pos,
+        speed: 200,
+        maxHealth: 100,
+        spriteKey: 'test-hero',
+        tags: [Player],
+    }
     const eid = BaseUnit(world, data);
-    //Any extra components would go here
     return eid;
 }
