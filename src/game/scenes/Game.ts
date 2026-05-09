@@ -6,7 +6,7 @@ import { spriteSyncSystem } from '../../systems/SpriteSyncSystem';
 import { inputSystem } from '../../systems/InputHandler';
 import { Position, Speed, Velocity } from '../../components/MovementComponents';
 import { AIState, AIStateType, EnemyBehavior } from '../../components/AIComponents';
-import { Enemy, Player } from '../../components/TagComponents';
+import { Enemy } from '../../components/TagComponents';
 import { SpawnPlayer } from '../../systems/SpawnerSystem';
 
 interface WorldData {
