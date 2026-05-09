@@ -19,6 +19,8 @@ export const enemyAISystem = (world: GameWorld) => {
     const playerX = Position.x[playerId];
     const playerY = Position.y[playerId];
 
+    //TODO add a switch for behavior based on eney states
+
     for (const eid of query(world, [Enemy, Position, Speed, Velocity, AIState, EnemyAI])) {
         const dx = playerX - Position.x[eid];
         const dy = playerY - Position.y[eid];
