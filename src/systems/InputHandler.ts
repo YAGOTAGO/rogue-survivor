@@ -4,8 +4,8 @@ import { MoveTo } from "../components/MovementComponents";
 
 const deadzone = 0.1;
 
-export const updateWorldInput = (scene: Phaser.Scene, world: GameWorld, playerId: number) =>{
-    const { cursors, wasdKeys } = scene as any;
+export const updateWorldInput = (world: GameWorld, playerId: number) =>{
+    const { cursors, wasdKeys, gamepad, pointer } = world.input;
     let rawX = 0;
     let rawY = 0;
 
@@ -16,7 +16,7 @@ export const updateWorldInput = (scene: Phaser.Scene, world: GameWorld, playerId
     if (cursors.down.isDown || wasdKeys.S.isDown) rawY += 1;
 
     // 2. Gamepad (Overrides keyboard if active)
-    const pad = scene.input.gamepad?.pad1;
+    const pad = gamepad?.pad1;
     if (pad) {
         const stickX = pad.axes[0].getValue();
         const stickY = pad.axes[1].getValue();
@@ -42,7 +42,6 @@ export const updateWorldInput = (scene: Phaser.Scene, world: GameWorld, playerId
     }
 
     // 3. Touch / Pointer (Overrides others if active)
-    const pointer = scene.input.activePointer;
     if (pointer.isDown) {
         if (!hasComponent(world, playerId, MoveTo)) {
             addComponent(world, playerId, MoveTo);

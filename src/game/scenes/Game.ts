@@ -1,8 +1,8 @@
-import { addComponents, addEntity, createWorld, World } from 'bitecs';
+import { addComponents, addEntity, createWorld, EntityId, World } from 'bitecs';
 import { Scene } from 'phaser';
 import { movementSystem, moveToSystem, playerInputSystem } from '../../systems/MovementSystem';
 import { enemyAISystem } from '../../systems/EnemyAISystem';
-import { createSpriteSyncSystem } from '../../systems/SpriteSyncSystem';
+import { SpriteSyncSystem } from '../../systems/SpriteSyncSystem';
 import { Position, Speed, Velocity } from '../../components/MovementComponents';
 import { updateWorldInput } from '../../systems/InputHandler';
 import { AIState, AIStateType, EnemyBehavior } from '../../components/AIComponents';
@@ -16,7 +16,12 @@ interface WorldData {
     input: {
         xAxis: number;
         yAxis: number;
-    }
+        cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+        wasdKeys: any;
+        pointer: Phaser.Input.Pointer;
+        gamepad: Phaser.Input.Gamepad.GamepadPlugin;
+    },
+    spriteMap: Map<EntityId, Phaser.GameObjects.Sprite>;
 }
 export type GameWorld = World & WorldData;
 
@@ -24,13 +29,10 @@ export class Game extends Scene
 {
     camera: Phaser.Cameras.Scene2D.Camera;
     world!: GameWorld;
-    cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
-    wasdKeys!: any;
-    spriteMap = new Map<number, Phaser.GameObjects.Sprite>();
     fpsText!: Phaser.GameObjects.Text;
-    player!: number;
+    player!: EntityId;
     systems: Array<(world: GameWorld) => void> = [];
-
+    
     constructor ()
     {
         super('Game');
@@ -39,13 +41,19 @@ export class Game extends Scene
     create ()
     {
         this.camera = this.cameras.main;        
-        this.cursors = this.input.keyboard!.createCursorKeys();
-        this.wasdKeys = this.input.keyboard!.addKeys('W,A,S,D');
         
         // Create the world
         this.world = createWorld({
             time: { delta: 0, elapsed: 0 },
-            input: { xAxis: 0, yAxis: 0 }
+            input: { 
+                xAxis: 0, 
+                yAxis: 0,
+                cursors: this.input.keyboard!.createCursorKeys(),
+                wasdKeys: this.input.keyboard!.addKeys('W,A,S,D'),
+                pointer: this.input.activePointer,
+                gamepad: this.input.gamepad,
+             },
+            spriteMap: new Map<EntityId, Phaser.GameObjects.Sprite>(),
         }) as GameWorld;
 
         this.player = this.createUnit('test-hero', 100, 200, Player, 200);
@@ -71,7 +79,7 @@ export class Game extends Scene
             enemyAISystem,
             moveToSystem,
             movementSystem,
-            createSpriteSyncSystem(this.spriteMap),
+            SpriteSyncSystem,
         ];
     }
 
@@ -86,7 +94,7 @@ export class Game extends Scene
         Speed.value[eid] = speed;
         
         const sprite = this.add.sprite(x, y, spriteKey).setScale(0.5);
-        this.spriteMap.set(eid, sprite);
+        this.world.spriteMap.set(eid, sprite);
 
         return eid;
     }
@@ -98,7 +106,7 @@ export class Game extends Scene
     }
 
     update(time: number, delta: number): void {        
-        updateWorldInput(this, this.world, this.player)
+        updateWorldInput(this.world, this.player)
         this.world.time.delta = delta;
         this.world.time.elapsed = time;
 
