@@ -1,7 +1,7 @@
 import { addComponent, hasComponent, query, removeComponent } from 'bitecs';
 import { Enemy, Player } from '../components/TagComponents';
 import { Position, Velocity, Speed, MoveTo } from '../components/MovementComponents';
-import { AIState, AIStateType, EnemyAI } from '../components/AIComponents';
+import { AIState, AIStateType, EnemyBehavior } from '../components/AIComponents';
 import { GameWorld } from '../game/scenes/Game';
 
 export const enemyAISystem = (world: GameWorld) => {
@@ -21,13 +21,13 @@ export const enemyAISystem = (world: GameWorld) => {
 
     //TODO add a switch for behavior based on eney states
 
-    for (const eid of query(world, [Enemy, Position, Speed, Velocity, AIState, EnemyAI])) {
+    for (const eid of query(world, [Enemy, Position, Speed, Velocity, AIState, EnemyBehavior])) {
         const dx = playerX - Position.x[eid];
         const dy = playerY - Position.y[eid];
         const distance = Math.sqrt(dx * dx + dy * dy);
         const state = AIState.value[eid];
-        const detectRange = EnemyAI.detectionRadius[eid];
-        const attackRange = EnemyAI.attackRange[eid];
+        const detectRange = EnemyBehavior.detectionRadius[eid];
+        const attackRange = EnemyBehavior.attackRange[eid];
 
         if (state === AIStateType.Idle) {
             if (distance <= detectRange) {
@@ -56,9 +56,9 @@ export const enemyAISystem = (world: GameWorld) => {
             if (distance > attackRange) {
                 AIState.value[eid] = AIStateType.Chase;
             } else {
-                EnemyAI.lastAction[eid] += world.time.delta;
-                if (EnemyAI.lastAction[eid] >= EnemyAI.cooldown[eid]) {
-                    EnemyAI.lastAction[eid] = 0;
+                EnemyBehavior.lastAction[eid] += world.time.delta;
+                if (EnemyBehavior.lastAction[eid] >= EnemyBehavior.cooldown[eid]) {
+                    EnemyBehavior.lastAction[eid] = 0;
                     // TODO: fire a projectile, play an attack animation, or trigger damage
                 }
             }

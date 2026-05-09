@@ -8,7 +8,7 @@ export const AIStateType = {
     Attack: 2,
 }
 
-export const EnemyAI = {
+export const EnemyBehavior = {
     detectionRadius: [] as number[],
     attackRange: [] as number[],
     cooldown: [] as number[],

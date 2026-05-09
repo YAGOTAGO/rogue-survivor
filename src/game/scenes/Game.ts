@@ -5,7 +5,7 @@ import { enemyAISystem } from '../../systems/EnemyAISystem';
 import { createSpriteSyncSystem } from '../../systems/SpriteSyncSystem';
 import { Position, Speed, Velocity } from '../../components/MovementComponents';
 import { updateWorldInput } from '../../systems/InputHandler';
-import { AIState, AIStateType, EnemyAI } from '../../components/AIComponents';
+import { AIState, AIStateType, EnemyBehavior } from '../../components/AIComponents';
 import { Enemy, Player } from '../../components/TagComponents';
 
 interface WorldData {
@@ -51,12 +51,12 @@ export class Game extends Scene
         this.player = this.createUnit('test-hero', 100, 200, Player, 200);
 
         const enemy = this.createUnit('test-hero', 600, 300, Enemy, 200);
-        addComponents(this.world, enemy, [AIState, EnemyAI]);
+        addComponents(this.world, enemy, [AIState, EnemyBehavior]);
         AIState.value[enemy] = AIStateType.Idle;
-        EnemyAI.detectionRadius[enemy] = 260;
-        EnemyAI.attackRange[enemy] = 10;
-        EnemyAI.cooldown[enemy] = 1200;
-        EnemyAI.lastAction[enemy] = 0;
+        EnemyBehavior.detectionRadius[enemy] = 260;
+        EnemyBehavior.attackRange[enemy] = 10;
+        EnemyBehavior.cooldown[enemy] = 1200;
+        EnemyBehavior.lastAction[enemy] = 0;
 
         this.fpsText = this.add.text(10, 10, '', {
             fontFamily: 'Arial, sans-serif',
