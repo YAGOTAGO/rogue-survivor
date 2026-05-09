@@ -4,7 +4,7 @@ import { Position, Velocity, Speed, MoveTo } from '../components/MovementCompone
 import { AIState, AIStateType, AIBehavior } from '../components/AIComponents';
 import { GameWorld } from '../game/scenes/Game';
 
-export const enemyAISystem = (world: GameWorld) => {
+export const aiSystem = (world: GameWorld) => {
     let playerId = -1;
 
     for (const eid of query(world, [Player, Position])) {
@@ -16,7 +16,7 @@ export const enemyAISystem = (world: GameWorld) => {
         console.error("No player entity found for enemy AI system");
         return;
     }
-
+    
     const playerX = Position.x[playerId];
     const playerY = Position.y[playerId];
 

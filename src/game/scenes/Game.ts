@@ -1,13 +1,15 @@
 import { addComponents, addEntity, createWorld, EntityId, World } from 'bitecs';
 import { Scene } from 'phaser';
 import { movementSystem, moveToSystem, playerVelocitySystem } from '../../systems/MovementSystem';
-import { enemyAISystem } from '../../systems/EnemyAISystem';
+import { aiSystem } from '../../systems/AiSystem';
 import { spriteSyncSystem } from '../../systems/SpriteSyncSystem';
 import { inputSystem } from '../../systems/InputHandler';
+import { uiSystem } from '../../systems/UISystem';
 import { Position, Speed, Velocity } from '../../components/MovementComponents';
 import { AIState, AIStateType, AIBehavior } from '../../components/AIComponents';
 import { Enemy } from '../../components/TagComponents';
 import { SpawnPlayer } from '../../systems/SpawnerSystem';
+import { HealthBar } from '../../ui/HealthBarUI';
 
 interface WorldData {
     scene: Phaser.Scene;
@@ -33,6 +35,7 @@ export class Game extends Scene
     world!: GameWorld;
     fpsText!: Phaser.GameObjects.Text;
     player!: EntityId;
+    healthBarUi!: HealthBar;
     
     constructor ()
     {
@@ -42,7 +45,7 @@ export class Game extends Scene
     create ()
     {
         this.camera = this.cameras.main;        
-        
+
         this.world = createWorld({
             scene: this,
             time: { delta: 0, elapsed: 0 },
@@ -75,6 +78,7 @@ export class Game extends Scene
             padding: { x: 6, y: 4 }
         }).setScrollFactor(0);
 
+        this.healthBarUi = new HealthBar(this);        
     }
 
     private createUnit(spriteKey: string, x: number, y: number, tag: any, speed = 200) {
@@ -96,10 +100,11 @@ export class Game extends Scene
     systems = [
         inputSystem,
         playerVelocitySystem,
-        enemyAISystem,
+        aiSystem,
         moveToSystem,
         movementSystem,
         spriteSyncSystem,
+        uiSystem,
     ];
 
     runSystems = (world: GameWorld) => {
