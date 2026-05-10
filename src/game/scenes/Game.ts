@@ -63,8 +63,6 @@ export class Game extends Scene
         if (playerSprite) {
             this.camera.startFollow(playerSprite, true, 0.08, 0.08);
         }
-        this.createUnit('test-hero', 600, 300, Enemy, 200);
-
         this.fpsText = this.add.text(10, 10, '', {
             fontFamily: 'Arial, sans-serif',
             fontSize: '16px',
@@ -74,22 +72,6 @@ export class Game extends Scene
         }).setScrollFactor(0);
 
         this.healthBarUi = new HealthBar(this);        
-    }
-
-    private createUnit(spriteKey: string, x: number, y: number, tag: any, speed = 200) {
-        const eid = addEntity(this.world);
-
-        addComponents(this.world, eid, [Position, Velocity, Speed, tag]);
-        Position.x[eid] = x;
-        Position.y[eid] = y;
-        Velocity.x[eid] = 0;
-        Velocity.y[eid] = 0;
-        Speed.value[eid] = speed;
-        
-        const sprite = this.add.sprite(x, y, spriteKey).setScale(1);
-        this.world.spriteMap.set(eid, sprite);
-
-        return eid;
     }
     
     systems = [
