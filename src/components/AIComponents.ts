@@ -1,39 +1,9 @@
-export const AIState = {
-    value: [] as number[]
-}
+import { createRelation, makeExclusive, withAutoRemoveSubject } from "bitecs"
 
-export const AIStateType = {
-    Idle: 0,
-    Chase: 1,
-    Action: 2,
-}
+// For AI: One unit tracks one target.
+export const Targeting = createRelation(makeExclusive);
 
-export const AIBehavior = {
-    detectionRadius: [] as number[],
-    actionRange: [] as number[],
-    cooldown: [] as number[],
-    lastAction: [] as number[],
-    targetTag: [] as number[],
-    targetingStrategy: [] as number[],
-    actionType: [] as number[],
-}
-
-export const CurrentTarget = {
-    eid: [] as number[],
-}
-
-export const AITargetTag = {
-    Player: 0,
-    Enemy: 1,
-    Ally: 2,
-}
-
-export const AITargetingStrategyType = {
-    Closest: 0,
-    Farthest: 1,
-}
-
-export const AIActionType = {
-    Attack: 0,
-    Heal: 1,
-}
+// For Abilities: Links the ability entity to the unit.
+// withAutoRemoveSubject ensures that if the Unit is deleted, 
+// the Ability entity is cleaned up automatically.
+export const AbilityOf = createRelation(withAutoRemoveSubject);

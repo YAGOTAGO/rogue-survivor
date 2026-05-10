@@ -1,12 +1,10 @@
 import { addComponents, addEntity, createWorld, EntityId, World } from 'bitecs';
 import { Scene } from 'phaser';
 import { movementSystem, moveToSystem, playerVelocitySystem } from '../../systems/MovementSystem';
-import { aiSystem } from '../../systems/AiSystem';
 import { spriteSyncSystem } from '../../systems/SpriteSyncSystem';
 import { inputSystem } from '../../systems/InputHandler';
 import { uiSystem } from '../../systems/UISystem';
 import { Position, Speed, Velocity } from '../../components/MovementComponents';
-import { AIState, AIStateType, AIBehavior } from '../../components/AIComponents';
 import { Enemy } from '../../components/TagComponents';
 import { SpawnPlayer } from '../../systems/SpawnerSystem';
 import { HealthBar } from '../../ui/HealthBarUI';
@@ -65,14 +63,7 @@ export class Game extends Scene
         if (playerSprite) {
             this.camera.startFollow(playerSprite, true, 0.08, 0.08);
         }
-
-        const enemy = this.createUnit('test-hero', 600, 300, Enemy, 200);
-        addComponents(this.world, enemy, [AIState, AIBehavior]);
-        AIState.value[enemy] = AIStateType.Idle;
-        AIBehavior.detectionRadius[enemy] = 260;
-        AIBehavior.actionRange[enemy] = 10;
-        AIBehavior.cooldown[enemy] = 1200;
-        AIBehavior.lastAction[enemy] = 0;
+        this.createUnit('test-hero', 600, 300, Enemy, 200);
 
         this.fpsText = this.add.text(10, 10, '', {
             fontFamily: 'Arial, sans-serif',
@@ -104,7 +95,6 @@ export class Game extends Scene
     systems = [
         inputSystem,
         playerVelocitySystem,
-        aiSystem,
         moveToSystem,
         movementSystem,
         spriteSyncSystem,
