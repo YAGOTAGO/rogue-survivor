@@ -3,11 +3,15 @@ import { MoveTo, Position, Speed, Velocity } from "../components/MovementCompone
 import { GameWorld } from "../game/scenes/Game";
 import { Player } from "../components/TagComponents";
 
-export const movementSystem = (world: GameWorld) => {
-    const dt = world.time.delta / 1000;
+export const physicsSyncSystem = (world: GameWorld) => {
     for (const eid of query(world, [Position, Velocity])) {
-        Position.x[eid] += Velocity.x[eid] * dt
-        Position.y[eid] += Velocity.y[eid] * dt
+        const sprite = world.spriteMap.get(eid)
+        if (!sprite || !sprite.body) continue;
+        sprite.body.setVelocity(Velocity.x[eid], Velocity.y[eid]);
+
+        Position.x[eid] = sprite.x;
+        Position.y[eid] = sprite.y;
+
     }
 }
 
