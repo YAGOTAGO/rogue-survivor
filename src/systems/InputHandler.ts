@@ -6,12 +6,10 @@ import { Player } from "../components/TagComponents";
 const deadzone = 0.1;
 
 export const inputSystem = (world: GameWorld) => {
-    let playerId = -1;
-    for (const eid of query(world, [Player])) {
-        playerId = eid;
-        break;
-    }
 
+    const players = query(world, [Player]);
+    const playerId = players.length > 0 ? players[0] : -1;
+    
     if (playerId < 0) {
         console.error("No player entity found for input system");
         return;
@@ -40,8 +38,9 @@ export const inputSystem = (world: GameWorld) => {
     }
 
     //Normalize diagonal movement
-    const length = Math.sqrt(rawX * rawX + rawY * rawY);
-    if (length > 1) {
+    const lengthSquared = rawX * rawX + rawY * rawY;
+    if (lengthSquared > 1) {
+        const length = Math.sqrt(lengthSquared);
         rawX /= length;
         rawY /= length;
     }
@@ -58,11 +57,14 @@ export const inputSystem = (world: GameWorld) => {
         if (!hasComponent(world, playerId, MoveTo)) {
             addComponent(world, playerId, MoveTo);
         }
+
+        //This is here so dragging works
         const worldPoint = world.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
         MoveTo.x[playerId] = worldPoint.x;
         MoveTo.y[playerId] = worldPoint.y;
         rawX = 0;
         rawY = 0;
+
     }
 
     world.input.xAxis = rawX;
