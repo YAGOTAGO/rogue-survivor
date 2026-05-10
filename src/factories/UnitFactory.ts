@@ -4,10 +4,15 @@ import { Position, Speed, Velocity } from "../components/MovementComponents";
 import { Player } from "../components/TagComponents";
 import { Health } from "../components/StatComponents";
 
-
 enum CollisionGroup{
     Player,
     Enemy,
+}
+
+interface ColliderConfig {
+    radiusPercent: number;
+    offsetXPercent: number; // 0.5 is center
+    offsetYPercent: number;
 }
 
 interface BaseUnitData{
@@ -17,6 +22,7 @@ interface BaseUnitData{
     spriteKey: string,
     tags: any[],
     colllisionGroup: CollisionGroup,
+    colliderConfig?: ColliderConfig,
 }
 
 const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
@@ -39,8 +45,16 @@ const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
         data.position.y, 
         data.spriteKey
     ) as Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    const { 
+        radiusPercent = 0.25, 
+        offsetXPercent = 0.5, 
+        offsetYPercent = 0.5 
+    } = data.colliderConfig || {};
+    const radius = (sprite.width / 2) * radiusPercent;
+    const ox = (sprite.width * offsetXPercent) - radius;
+    const oy = (sprite.height * offsetYPercent) - radius;
+    sprite.setCircle(radius, ox, oy);
     sprite.setCollideWorldBounds(true);
-    sprite.setCircle(sprite.width * 0.4, sprite.width * 0.1, sprite.height * 0.1);
     sprite.body.setDrag(0, 0);
     sprite.setData('eid', eid);
     
