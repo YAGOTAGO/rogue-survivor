@@ -6,7 +6,7 @@ import { inputSystem } from '../../systems/InputHandler';
 import { uiSystem } from '../../systems/UISystem';
 import { Position, Speed, Velocity } from '../../components/MovementComponents';
 import { Enemy } from '../../components/TagComponents';
-import { SpawnPlayer } from '../../systems/SpawnerSystem';
+import { SpawnPlayer } from '../../factories/UnitFactory';
 import { HealthBar } from '../../ui/HealthBarUI';
 
 interface WorldData {
