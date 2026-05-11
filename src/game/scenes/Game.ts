@@ -5,6 +5,9 @@ import { inputSystem } from '../../systems/InputHandler';
 import { uiSystem } from '../../systems/UISystem';
 import { SpawnEnemy, SpawnPlayer } from '../../factories/UnitFactory';
 import { HealthBar } from '../../ui/HealthBarUI';
+import { OnTouchDamage } from '../../components/AbilityComponents';
+import { damageSystem } from '../../systems/DamageSystem';
+import { cooldownSystem } from '../../systems/AbilitySystem';
 
 interface WorldData {
     scene: Phaser.Scene;
@@ -20,9 +23,12 @@ interface WorldData {
         pointer: Phaser.Input.Pointer;
         gamepad: Phaser.Input.Gamepad.GamepadPlugin;
     },
-    spriteMap: Map<EntityId, Phaser.Types.Physics.Arcade.SpriteWithDynamicBody>;
-    playerGroup: Phaser.Physics.Arcade.Group;
-    enemyGroup: Phaser.Physics.Arcade.Group;
+    events: {
+        damageEvents: Array<{ target: EntityId, source: EntityId, amount: number }>;
+    },
+    spriteMap: Map<EntityId, Phaser.Types.Physics.Arcade.SpriteWithDynamicBody>,
+    playerGroup: Phaser.Physics.Arcade.Group,
+    enemyGroup: Phaser.Physics.Arcade.Group,
 }
 export type GameWorld = World & WorldData;
 
@@ -58,6 +64,9 @@ export class Game extends Scene
                 pointer: this.input.activePointer,
                 gamepad: this.input.gamepad,
              },
+            events: {
+                damageEvents: [],
+            },
             spriteMap: new Map<EntityId, Phaser.Types.Physics.Arcade.SpriteWithDynamicBody>(),
             playerGroup: this.playerGroup,
             enemyGroup: this.enemyGroup,
@@ -74,15 +83,19 @@ export class Game extends Scene
                 const playerEid = p.getData('eid');
                 const enemyEid = e.getData('eid');
                 
-                // Call your combat/damage logic here
-                console.log(`Player ${playerEid} collided with Enemy ${enemyEid}`);
+                const damage = OnTouchDamage.value[enemyEid] || 0;
+                this.world.events.damageEvents.push({
+                    target: playerEid,
+                    source: enemyEid,
+                    amount: damage
+                });
             }
         );
 
         this.player = SpawnPlayer(this.world, { x: 100, y: 300 });
         const playerSprite = this.world.spriteMap.get(this.player);
         if (playerSprite) {
-            this.camera.startFollow(playerSprite, true, 1, 1);
+            this.camera.startFollow(playerSprite, false, 1, 1);
         }
 
         SpawnEnemy(this.world, { x: 400, y: 300 });
@@ -102,6 +115,8 @@ export class Game extends Scene
         inputSystem,
         playerVelocitySystem,
         moveToSystem,
+        cooldownSystem,
+        damageSystem,
         physicsSyncSystem,
         uiSystem,
     ];

@@ -8,3 +8,5 @@ export const Targeting = createRelation();
 export const AbilityOf = createRelation(withAutoRemoveSubject);
 
 export const Cooldown = { value: [] as number[] }
+export const OnTouchDamage = { value: [] as number[] }
+export const InvulnerabilityTimer = { current: [] as number[], max: [] as number[] }

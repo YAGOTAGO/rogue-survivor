@@ -1,8 +1,9 @@
-import { addComponents, addEntity, EntityId, removeEntity } from "bitecs";
+import { addComponent, addComponents, addEntity, EntityId, removeEntity } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
 import { Position, Speed, Velocity } from "../components/MovementComponents";
 import { Player } from "../components/TagComponents";
 import { Health } from "../components/StatComponents";
+import { InvulnerabilityTimer, OnTouchDamage } from "../components/AbilityComponents";
 
 enum CollisionGroup{
     Player,
@@ -23,11 +24,12 @@ interface BaseUnitData{
     tags: any[],
     colllisionGroup: CollisionGroup,
     colliderConfig?: ColliderConfig,
+    onTouchDamage?: number,
 }
 
 const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
     const eid = addEntity(world);
-    addComponents(world, eid, [Position, Speed, Velocity, Health]);
+    addComponents(world, eid, [Position, Speed, Velocity, Health, OnTouchDamage]);
     Position.x[eid] = data.position.x;
     Position.y[eid] = data.position.y;
     Velocity.x[eid] = 0;
@@ -35,6 +37,7 @@ const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
     Speed.value[eid] = data.speed;
     Health.current[eid] = data.maxHealth;
     Health.max[eid] = data.maxHealth;
+    OnTouchDamage.value[eid] = data.onTouchDamage || 0;
 
     if(data.tags){
         addComponents(world, eid, data.tags);
@@ -90,6 +93,7 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
         spriteKey: 'test-hero',
         tags: [],
         colllisionGroup: CollisionGroup.Enemy,
+        onTouchDamage: 10,
     }
     const eid = BaseUnit(world, data);
     return eid;
