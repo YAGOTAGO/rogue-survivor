@@ -9,10 +9,10 @@ interface BaseAbilityData {
     range: number;
 }
 
-const BaseAbility = (world: GameWorld, data: BaseAbilityData): EntityId => {
-    const eid = addEntity(world);
-    addComponents(world, eid, [Cooldown]);
-    Cooldown.value[eid] = data.cooldown;
+// const BaseAbility = (world: GameWorld, data: BaseAbilityData): EntityId => {
+//     const eid = addEntity(world);
+//     addComponents(world, eid, [Cooldown]);
+//     Cooldown.current[eid] = data.cooldown;
     
-    return eid;
-}
+//     return eid;
+// }

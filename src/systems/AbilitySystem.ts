@@ -6,7 +6,11 @@ import { TintModes } from "phaser";
 export const cooldownSystem = (world: GameWorld) => {
     const dt = world.time.delta / 1000;
     for (const eid of query(world, [Cooldown])){
-        Cooldown.value[eid] -= dt;
+        if(Cooldown.current[eid] > 0) {
+            Cooldown.current[eid] -= dt;
+        }else{
+            Cooldown.current[eid] = Cooldown.max[eid];
+        }
     }
 
     for (const eid of query(world, [InvulnerabilityTimer])){

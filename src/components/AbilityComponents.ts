@@ -7,6 +7,6 @@ export const Targeting = createRelation();
 // the Ability entity is cleaned up automatically.
 export const AbilityOf = createRelation(withAutoRemoveSubject);
 
-export const Cooldown = { value: [] as number[] }
+export const Cooldown = { current: [] as number[], max: [] as number[] }
 export const OnTouchDamage = { value: [] as number[] }
 export const InvulnerabilityTimer = { current: [] as number[], max: [] as number[] }
