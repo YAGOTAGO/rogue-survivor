@@ -26,6 +26,9 @@ interface WorldData {
     events: {
         damageEvents: Array<{ target: EntityId, source: EntityId, amount: number }>;
     },
+    ui: {
+        healthBarUi: HealthBar;
+    },
     spriteMap: Map<EntityId, Phaser.Types.Physics.Arcade.SpriteWithDynamicBody>,
     playerGroup: Phaser.Physics.Arcade.Group,
     enemyGroup: Phaser.Physics.Arcade.Group,
@@ -38,8 +41,7 @@ export class Game extends Scene
     world!: GameWorld;
     fpsText!: Phaser.GameObjects.Text;
     player!: EntityId;
-    healthBarUi!: HealthBar;
-    
+
     constructor ()
     {
         super('Game');
@@ -64,6 +66,9 @@ export class Game extends Scene
              },
             events: {
                 damageEvents: [],
+            },
+            ui: {
+                healthBarUi: new HealthBar(this),
             },
             spriteMap: new Map<EntityId, Phaser.Types.Physics.Arcade.SpriteWithDynamicBody>(),
             playerGroup: playerGroup,
@@ -105,8 +110,6 @@ export class Game extends Scene
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             padding: { x: 6, y: 4 }
         }).setScrollFactor(0);
-
-        this.healthBarUi = new HealthBar(this);        
     }
     
     systems = [
