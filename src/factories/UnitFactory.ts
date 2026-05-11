@@ -1,9 +1,9 @@
-import { addComponent, addComponents, addEntity, EntityId, removeEntity } from "bitecs";
+import { addComponents, addEntity, EntityId, removeEntity } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
 import { Position, Speed, Velocity } from "../components/MovementComponents";
-import { Player } from "../components/TagComponents";
+import { Enemy, Player } from "../components/TagComponents";
 import { Health } from "../components/StatComponents";
-import { InvulnerabilityTimer, OnTouchDamage } from "../components/AbilityComponents";
+import { OnTouchDamage } from "../components/AbilityComponents";
 
 enum CollisionGroup{
     Player,
@@ -91,7 +91,7 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
         speed: 200,
         maxHealth: 100,
         spriteKey: 'test-hero',
-        tags: [],
+        tags: [Enemy],
         colllisionGroup: CollisionGroup.Enemy,
         onTouchDamage: 10,
     }
