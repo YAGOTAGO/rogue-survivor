@@ -39,8 +39,6 @@ export class Game extends Scene
     fpsText!: Phaser.GameObjects.Text;
     player!: EntityId;
     healthBarUi!: HealthBar;
-    playerGroup!: Phaser.Physics.Arcade.Group;
-    enemyGroup!: Phaser.Physics.Arcade.Group;
     
     constructor ()
     {
@@ -50,8 +48,8 @@ export class Game extends Scene
     create ()
     {
         this.camera = this.cameras.main;
-        this.playerGroup = this.physics.add.group();
-        this.enemyGroup = this.physics.add.group();        
+        const playerGroup = this.physics.add.group();
+        const enemyGroup = this.physics.add.group();        
         this.add.image(512, 384, 'background');
         this.world = createWorld({
             scene: this,
@@ -68,14 +66,14 @@ export class Game extends Scene
                 damageEvents: [],
             },
             spriteMap: new Map<EntityId, Phaser.Types.Physics.Arcade.SpriteWithDynamicBody>(),
-            playerGroup: this.playerGroup,
-            enemyGroup: this.enemyGroup,
+            playerGroup: playerGroup,
+            enemyGroup: enemyGroup,
         }) as GameWorld;
 
-        this.physics.add.collider(this.enemyGroup, this.enemyGroup);
+        this.physics.add.collider(enemyGroup, enemyGroup);
         this.physics.add.overlap(
-            this.playerGroup, 
-            this.enemyGroup, 
+            playerGroup, 
+            enemyGroup, 
             (playerObj, enemyObj) => {
                 const p = playerObj as Phaser.GameObjects.Sprite;
                 const e = enemyObj as Phaser.GameObjects.Sprite;
