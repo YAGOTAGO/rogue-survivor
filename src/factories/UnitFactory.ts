@@ -83,6 +83,11 @@ export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): En
         spriteFrame: 3,
         tags: [Player],
         colllisionGroup: CollisionGroup.Player,
+        colliderConfig: {
+            radiusPercent: 0.35,
+            offsetXPercent: 0.55,
+            offsetYPercent: 0.55,
+        },
     }
     const eid = BaseUnit(world, data);
     return eid;
