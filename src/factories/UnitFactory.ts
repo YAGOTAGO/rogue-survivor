@@ -21,6 +21,7 @@ interface BaseUnitData{
     speed: number,
     maxHealth: number,
     spriteKey: string,
+    spriteFrame?: number,
     tags: any[],
     colllisionGroup: CollisionGroup,
     colliderConfig?: ColliderConfig,
@@ -46,7 +47,8 @@ const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
     const sprite = world.scene.physics.add.sprite(
         data.position.x, 
         data.position.y, 
-        data.spriteKey
+        data.spriteKey,
+        data.spriteFrame
     ) as Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     const { 
         radiusPercent = 0.25, 
@@ -77,7 +79,8 @@ export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): En
         position: pos,
         speed: 200,
         maxHealth: 100,
-        spriteKey: 'test-hero',
+        spriteKey: 'rogues',
+        spriteFrame: 3,
         tags: [Player],
         colllisionGroup: CollisionGroup.Player,
     }
@@ -90,7 +93,8 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
         position: pos,
         speed: 200,
         maxHealth: 100,
-        spriteKey: 'test-hero',
+        spriteKey: 'monsters',
+        spriteFrame: 48,
         tags: [Enemy],
         colllisionGroup: CollisionGroup.Enemy,
         onTouchDamage: 10,

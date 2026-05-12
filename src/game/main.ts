@@ -9,9 +9,9 @@ import { Preloader } from './scenes/Preloader';
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
-    width: 1280,
-    height: 720,
-    // pixelArt: true,
+    width: 640,
+    height: 360,
+    pixelArt: true,
     scale: {
         mode: Scale.FIT,
         autoCenter: Scale.CENTER_BOTH,
@@ -34,7 +34,7 @@ const config: Phaser.Types.Core.GameConfig = {
         gamepad: true
     },
     parent: 'game-container',
-    backgroundColor: '#028af8',
+    backgroundColor: '#0e161d',
     scene: [
         Boot,
         Preloader,

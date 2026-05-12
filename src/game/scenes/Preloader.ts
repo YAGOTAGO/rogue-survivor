@@ -34,12 +34,15 @@ export class Preloader extends Scene
     {
         //  Load the assets for the game - Replace with your own assets
         this.load.setPath('assets');
-        this.load.spritesheet('test-hero', 'sprites/units/archer/Archer_Idle.png', {
-            frameWidth: 192,
-            frameHeight: 192
-        })
-        this.load.image('background', 'screenshot.png');
-        
+        this.load.spritesheet('rogues', 'sprites/rogues.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+        this.load.spritesheet('monsters', 'sprites/monsters.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });    
+        this.load.bitmapFont('rogue', 'fonts/m5x7_font.png', 'fonts/m5x7_font.fnt');  
     }
 
     create ()

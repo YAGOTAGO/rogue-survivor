@@ -2,7 +2,7 @@ import { GameObjects, Math as PhaserMath } from 'phaser';
 
 export class HealthBar extends GameObjects.Container {
     private barFill: GameObjects.Rectangle;
-    private healthText: GameObjects.Text;
+    private healthText: GameObjects.BitmapText;
     private barGhost: GameObjects.Rectangle;
 
     constructor(scene: Phaser.Scene) {
@@ -26,13 +26,14 @@ export class HealthBar extends GameObjects.Container {
         this.barFill = scene.add.rectangle(stroke / 2, 0, barWidth - stroke, height - stroke, 0xff1919)
             .setOrigin(0, 0.5);
 
-        this.healthText = scene.add.text(barWidth / 2, 0, 'text', {
-            fontSize: '14px',
-            fontStyle: 'bold',
-            color: '#ffffff',
-        })
-        .setOrigin(0.5) 
-        .setStroke('#000000', 4);
+        this.healthText = scene.add.bitmapText(
+            barWidth / 2, 
+            -2, 
+            'rogue', 
+            'text', 
+            16
+        )
+        .setOrigin(0.5);
 
         this.add([barBg, this.barGhost, this.barFill, this.healthText]); //add to the container
         scene.add.existing(this);

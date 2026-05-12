@@ -52,7 +52,6 @@ export class Game extends Scene
         this.camera = this.cameras.main;
         const playerGroup = this.physics.add.group();
         const enemyGroup = this.physics.add.group();        
-        this.add.image(512, 384, 'background');
         this.world = createWorld({
             scene: this,
             time: { delta: 0, elapsed: 0 },
@@ -108,7 +107,8 @@ export class Game extends Scene
             fontSize: '16px',
             color: '#ffffff',
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            padding: { x: 6, y: 4 }
+            padding: { x: 6, y: 4 },
+            resolution: 1
         }).setScrollFactor(0);
     }
     
