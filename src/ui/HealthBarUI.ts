@@ -38,6 +38,7 @@ export class HealthBar extends GameObjects.Container {
         this.add([barBg, this.barGhost, this.barFill, this.healthText]); //add to the container
         scene.add.existing(this);
         this.setScrollFactor(0);
+        this.setDepth(100); // Always render in front
     }
 
     updateHealth(current: number, max: number) {

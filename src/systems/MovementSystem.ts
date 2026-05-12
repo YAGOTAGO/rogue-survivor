@@ -1,14 +1,17 @@
-import { query, removeComponent } from "bitecs"
+import { addComponent, hasComponent, query, removeComponent } from "bitecs"
 import { MoveTo, Position, Speed, Velocity } from "../components/MovementComponents"
 import { GameWorld } from "../game/scenes/Game";
-import { Player } from "../components/TagComponents";
+import { Enemy, Player } from "../components/TagComponents";
 
 export const physicsSyncSystem = (world: GameWorld) => {
     for (const eid of query(world, [Position, Velocity])) {
         const sprite = world.spriteMap.get(eid)
         if (!sprite || !sprite.body) continue;
-        sprite.body.setVelocity(Velocity.x[eid], Velocity.y[eid]);
 
+        if (sprite.body.velocity.x !== Velocity.x[eid] || sprite.body.velocity.y !== Velocity.y[eid]) {
+            sprite.body.setVelocity(Velocity.x[eid], Velocity.y[eid]);
+        }
+        
         Position.x[eid] = sprite.x;
         Position.y[eid] = sprite.y;
 
@@ -42,5 +45,23 @@ export const moveToSystem = (world: GameWorld) => {
             Velocity.x[eid] = (dx / distance) * Speed.value[eid];
             Velocity.y[eid] = (dy / distance) * Speed.value[eid];
         }
+    }
+}
+
+export const followPlayerSystem = (world: GameWorld) => {
+    const players = query(world, [Player]);
+    if (players.length === 0) return;
+    
+    const playerId = players[0];
+    const playerX = Position.x[playerId];
+    const playerY = Position.y[playerId];
+    
+    const enemies = query(world, [Enemy]);
+    for (const eid of enemies) {
+        if (!hasComponent(world, eid, MoveTo)) {
+            addComponent(world, eid, MoveTo);
+        }
+        MoveTo.x[eid] = playerX;
+        MoveTo.y[eid] = playerY;
     }
 }
