@@ -12,6 +12,11 @@ export const physicsSyncSystem = (world: GameWorld) => {
         Position.x[eid] = sprite.x;
         Position.y[eid] = sprite.y;
 
+        if (Velocity.x[eid] < 0) {
+            sprite.flipX = false;
+        } else if (Velocity.x[eid] > 0) {
+            sprite.flipX = true;
+        }
     }
 }
 
@@ -26,13 +31,14 @@ export const moveToSystem = (world: GameWorld) => {
     for (const eid of query(world, [Position, MoveTo, Speed, Velocity])){
         const dx = MoveTo.x[eid] - Position.x[eid];
         const dy = MoveTo.y[eid] - Position.y[eid];
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance < 5) { //reach destination
+        const distSquared = dx * dx + dy * dy;
+        
+        if (distSquared < 25) {
             Velocity.x[eid] = 0;
             Velocity.y[eid] = 0;
             removeComponent(world, eid, MoveTo);
         } else {
+            let distance = Math.sqrt(distSquared);
             Velocity.x[eid] = (dx / distance) * Speed.value[eid];
             Velocity.y[eid] = (dy / distance) * Speed.value[eid];
         }
