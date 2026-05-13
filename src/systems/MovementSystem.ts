@@ -1,14 +1,67 @@
 import { addComponent, hasComponent, query, removeComponent } from "bitecs"
-import { MoveTo, Position, Speed, Velocity } from "../components/MovementComponents"
+import { Collider, MoveTo, Position, Speed, Velocity } from "../components/MovementComponents"
 import { GameWorld } from "../game/scenes/Game";
 import { Enemy, Player } from "../components/TagComponents";
 import { ENEMY_SEPARATION_RADIUS } from "../common/Constants";
 
+function rectCollidesWithLayer(layer: Phaser.Tilemaps.TilemapLayer | Phaser.Tilemaps.TilemapGPULayer, centerX: number, centerY: number, width: number, height: number): boolean {
+    if (!layer) return false;
+    const map = layer.tilemap;
+    const tileW = map.tileWidth;
+    const tileH = map.tileHeight;
+
+    const left = Math.floor((centerX - width / 2) / tileW);
+    const right = Math.floor((centerX + width / 2 - 1) / tileW);
+    const top = Math.floor((centerY - height / 2) / tileH);
+    const bottom = Math.floor((centerY + height / 2 - 1) / tileH);
+
+    for (let tx = left; tx <= right; tx++) {
+        for (let ty = top; ty <= bottom; ty++) {
+            const tile = layer.getTileAt(tx, ty);
+            if (tile && tile.collides) return true;
+        }
+    }
+    return false;
+}
+
 export const movementSystem = (world: GameWorld) => {
     const dt = world.time.delta / 1000;
-    for (const eid of query(world, [Position, Velocity])) {
-        Position.x[eid] += Velocity.x[eid] * dt
-        Position.y[eid] += Velocity.y[eid] * dt
+    const layer = world.collisionLayer;
+
+    for (const eid of query(world, [Position, Velocity, Collider])) {
+        const vx = Velocity.x[eid] * dt;
+        const vy = Velocity.y[eid] * dt;
+
+        if(vx === 0 && vy === 0) continue;
+
+        const cWidth = Collider.width[eid];
+        const cHeight = Collider.height[eid];
+        const cOffsetX = Collider.offsetX[eid] ?? 0;
+        const cOffsetY = Collider.offsetY[eid] ?? 0;
+
+        const w = cWidth;
+        const h = cHeight;
+
+        // Move X axis and resolve against tiles independently to avoid sticking
+        const targetX = Position.x[eid] + vx;
+        // center used for collision checks includes collider offset
+        const cxTarget = targetX + cOffsetX;
+        const cy = Position.y[eid] + cOffsetY;
+        if (!rectCollidesWithLayer(layer, cxTarget, cy, w, h)) {
+            Position.x[eid] = targetX;
+        } else {
+            Velocity.x[eid] = 0;
+        }
+
+        // Move Y axis and resolve against tiles independently
+        const targetY = Position.y[eid] + vy;
+        const cx = Position.x[eid] + cOffsetX;
+        const cyTarget = targetY + cOffsetY;
+        if (!rectCollidesWithLayer(layer, cx, cyTarget, w, h)) {
+            Position.y[eid] = targetY;
+        } else {
+            Velocity.y[eid] = 0;
+        }
     }
 }
 
@@ -77,7 +130,8 @@ export const spriteSyncSystem = (world: GameWorld) => {
 }
 
 export const enemySeparationSystem = (world: GameWorld) => {
-    const enemies = query(world, [Enemy, Position]);
+    const enemies = query(world, [Enemy, Position, Collider]);
+    const layer = world.collisionLayer;
     const separationDistSq = ENEMY_SEPARATION_RADIUS * ENEMY_SEPARATION_RADIUS;
 
     for (let i = 0; i < enemies.length; i++) {
@@ -94,18 +148,39 @@ export const enemySeparationSystem = (world: GameWorld) => {
                 const dist = Math.sqrt(distSq);
                 const overlap = ENEMY_SEPARATION_RADIUS - dist;
 
-                // 2. Normalize and calculate push
                 const nx = dx / dist;
                 const ny = dy / dist;
                 
-                // We multiply by a strength factor so they don't jitter
+                // Multiply by a strength factor so they don't jitter
                 const moveX = nx * overlap * 0.5;
                 const moveY = ny * overlap * 0.5;
+                
+                // Validate collision for A
+                const wA = Collider.width[eidA];
+                const hA = Collider.height[eidA];
+                const offXA = Collider.offsetX[eidA] ?? 0;
+                const offYA = Collider.offsetY[eidA] ?? 0;
 
-                Position.x[eidA] += moveX;
-                Position.y[eidA] += moveY;
-                Position.x[eidB] -= moveX;
-                Position.y[eidB] -= moveY;
+                // if (!rectCollidesWithLayer(layer, Position.x[eidA] + moveX + offXA, Position.y[eidA] + offYA, wA, hA)) {
+                    Position.x[eidA] += moveX;
+                //}
+                // if (!rectCollidesWithLayer(layer, Position.x[eidA] + offXA, Position.y[eidA] + moveY + offYA, wA, hA)) {
+                    Position.y[eidA] += moveY;
+                // }
+
+                // Validate collision for B
+                const wB = Collider.width[eidB];
+                const hB = Collider.height[eidB];
+                const offXB = Collider.offsetX[eidB] ?? 0;
+                const offYB = Collider.offsetY[eidB] ?? 0;
+
+                // if (!rectCollidesWithLayer(layer, Position.x[eidB] - moveX + offXB, Position.y[eidB] + offYB, wB, hB)) {
+                    Position.x[eidB] -= moveX;
+                // }
+                // if (!rectCollidesWithLayer(layer, Position.x[eidB] + offXB, Position.y[eidB] - moveY + offYB, wB, hB)) {
+                    Position.y[eidB] -= moveY;
+                // }
+
             } else if (distSq === 0) {
                 // If they are at the exact same pixel, nudge them apart randomly
                 Position.x[eidA] += Math.random() - 0.5;

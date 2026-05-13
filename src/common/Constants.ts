@@ -11,3 +11,4 @@
 export const MAX_ENTITIES = 10000;
 export const PLAYER_INVULNERABILITY_DURATION = 0.5; // seconds
 export const ENEMY_SEPARATION_RADIUS = 24; // pixels
+export const DEFAULT_COLLIDER_PADDING = 8; // pixels to subtract from sprite size for default collider
