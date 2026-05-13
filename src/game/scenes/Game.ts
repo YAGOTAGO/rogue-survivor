@@ -123,9 +123,9 @@ export class Game extends Scene
         movementSystem,
         // followPlayerSystem,
         enemySeparationSystem,
-        spriteSyncSystem,
         cooldownSystem,
         damageSystem,
+        spriteSyncSystem,
         uiSystem,
     ];
 
