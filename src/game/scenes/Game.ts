@@ -70,8 +70,9 @@ export class Game extends Scene
         const map = this.add.tilemap('world-map');
         const tileset = map.addTilesetImage('tiles', 'tiles')!;
         const animatedTileset = map.addTilesetImage('animated-tiles', 'animated-tiles')!;
-        map.createLayer('Ground', [tileset, animatedTileset]);
+        const groundLayer = map.createLayer('Ground', [tileset, animatedTileset]);
         map.createLayer('Surface', [tileset, animatedTileset]);
+        groundLayer.setCollisionByProperty({ collides: true });
         
         //TODO add back inthe overlap once we do it a non physics way
         // this.physics.add.overlap(
