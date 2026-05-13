@@ -67,7 +67,12 @@ export class Game extends Scene
             },
             spriteMap: new Map<EntityId, Phaser.GameObjects.Sprite>(),
         }) as GameWorld;
-
+        const map = this.add.tilemap('world-map');
+        const tileset = map.addTilesetImage('tiles', 'tiles')!;
+        const animatedTileset = map.addTilesetImage('animated-tiles', 'animated-tiles')!;
+        map.createLayer('Ground', [tileset, animatedTileset]);
+        map.createLayer('Surface', [tileset, animatedTileset]);
+        
         //TODO add back inthe overlap once we do it a non physics way
         // this.physics.add.overlap(
         //     playerGroup, 
@@ -87,16 +92,17 @@ export class Game extends Scene
         //         });
         //     }
         // );
-
-        this.player = SpawnPlayer(this.world, { x: 100, y: 300 });
+        const centerX = map.widthInPixels / 2;
+        const centerY = map.heightInPixels / 2;
+        this.player = SpawnPlayer(this.world, { x: centerX, y: centerY });
         const playerSprite = this.world.spriteMap.get(this.player);
         if (playerSprite) {
             this.camera.startFollow(playerSprite, false, 1, 1);
         }
 
         for(let i = 0; i < 50; i++) {
-            let x = PhaserMath.Between(200, 600);
-            let y = PhaserMath.Between(100, 500);
+            let x = PhaserMath.Between(centerX, centerX + 400);
+            let y = PhaserMath.Between(centerY, centerY + 300);
             SpawnEnemy(this.world, { x: x, y: y });
         }   
 

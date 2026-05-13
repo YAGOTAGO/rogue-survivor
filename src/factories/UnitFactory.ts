@@ -41,7 +41,7 @@ const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
 export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): EntityId => {
     const data: BaseUnitData = {
         position: pos,
-        speed: 200,
+        speed: 500,
         maxHealth: 100,
         spriteKey: 'rogues',
         spriteFrame: 3,

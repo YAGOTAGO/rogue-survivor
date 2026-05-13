@@ -43,6 +43,9 @@ export class Preloader extends Scene
             frameHeight: 32
         });    
         this.load.bitmapFont('rogue', 'fonts/m5x7_font.png', 'fonts/m5x7_font.fnt');  
+        this.load.image('tiles', 'maps/tilesets/tiles.png');
+        this.load.image('animated-tiles', 'maps/tilesets/animated-tiles.png');
+        this.load.tilemapTiledJSON('world-map', 'maps/tilemaps/world-map.json');
     }
 
     create ()
