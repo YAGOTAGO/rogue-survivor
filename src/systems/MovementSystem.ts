@@ -3,23 +3,11 @@ import { MoveTo, Position, Speed, Velocity } from "../components/MovementCompone
 import { GameWorld } from "../game/scenes/Game";
 import { Enemy, Player } from "../components/TagComponents";
 
-export const physicsSyncSystem = (world: GameWorld) => {
+export const movementSystem = (world: GameWorld) => {
+    const dt = world.time.delta / 1000;
     for (const eid of query(world, [Position, Velocity])) {
-        const sprite = world.spriteMap.get(eid)
-        if (!sprite || !sprite.body) continue;
-
-        if (sprite.body.velocity.x !== Velocity.x[eid] || sprite.body.velocity.y !== Velocity.y[eid]) {
-            sprite.body.setVelocity(Velocity.x[eid], Velocity.y[eid]);
-        }
-        
-        Position.x[eid] = sprite.x;
-        Position.y[eid] = sprite.y;
-
-        if (Velocity.x[eid] < 0) {
-            sprite.flipX = false;
-        } else if (Velocity.x[eid] > 0) {
-            sprite.flipX = true;
-        }
+        Position.x[eid] += Velocity.x[eid] * dt
+        Position.y[eid] += Velocity.y[eid] * dt
     }
 }
 
@@ -64,4 +52,25 @@ export const followPlayerSystem = (world: GameWorld) => {
         MoveTo.x[eid] = playerX;
         MoveTo.y[eid] = playerY;
     }
+}
+
+export const spriteSyncSystem = (world: GameWorld) => {
+    for (const eid of query(world, [Position, Velocity])) {
+        const sprite = world.spriteMap.get(eid)
+        if (!sprite) continue
+        
+        if(Velocity.x[eid] === 0 && Velocity.y[eid] === 0){
+            sprite.x = Math.round(Position.x[eid])
+            sprite.y = Math.round(Position.y[eid])
+        }else{
+            sprite.x = Position.x[eid]
+            sprite.y = Position.y[eid]
+        }
+        
+        if (Velocity.x[eid] < 0) {
+            sprite.flipX = false;
+        } else if (Velocity.x[eid] > 0) {
+            sprite.flipX = true;
+        }
+    } 
 }

@@ -1,6 +1,6 @@
 import { createWorld, EntityId, World } from 'bitecs';
 import { Scene, Math as PhaserMath } from 'phaser';
-import { followPlayerSystem, moveToSystem, physicsSyncSystem, playerVelocitySystem } from '../../systems/MovementSystem';
+import { followPlayerSystem, movementSystem, moveToSystem, playerVelocitySystem, spriteSyncSystem } from '../../systems/MovementSystem';
 import { inputSystem } from '../../systems/InputHandler';
 import { uiSystem } from '../../systems/UISystem';
 import { SpawnEnemy, SpawnPlayer } from '../../factories/UnitFactory';
@@ -29,9 +29,7 @@ interface WorldData {
     ui: {
         healthBarUi: HealthBar;
     },
-    spriteMap: Map<EntityId, Phaser.Types.Physics.Arcade.SpriteWithDynamicBody>,
-    playerGroup: Phaser.Physics.Arcade.Group,
-    enemyGroup: Phaser.Physics.Arcade.Group,
+    spriteMap: Map<EntityId, Phaser.GameObjects.Sprite>,
 }
 export type GameWorld = World & WorldData;
 
@@ -49,9 +47,7 @@ export class Game extends Scene
 
     create ()
     {
-        this.camera = this.cameras.main;
-        const playerGroup = this.physics.add.group();
-        const enemyGroup = this.physics.add.group();        
+        this.camera = this.cameras.main;      
         this.world = createWorld({
             scene: this,
             time: { delta: 0, elapsed: 0 },
@@ -69,30 +65,28 @@ export class Game extends Scene
             ui: {
                 healthBarUi: new HealthBar(this),
             },
-            spriteMap: new Map<EntityId, Phaser.Types.Physics.Arcade.SpriteWithDynamicBody>(),
-            playerGroup: playerGroup,
-            enemyGroup: enemyGroup,
+            spriteMap: new Map<EntityId, Phaser.GameObjects.Sprite>(),
         }) as GameWorld;
 
-        this.physics.add.collider(enemyGroup, enemyGroup);
-        this.physics.add.overlap(
-            playerGroup, 
-            enemyGroup, 
-            (playerObj, enemyObj) => {
-                const p = playerObj as Phaser.GameObjects.Sprite;
-                const e = enemyObj as Phaser.GameObjects.Sprite;
+        //TODO add back inthe overlap once we do it a non physics way
+        // this.physics.add.overlap(
+        //     playerGroup, 
+        //     enemyGroup, 
+        //     (playerObj, enemyObj) => {
+        //         const p = playerObj as Phaser.GameObjects.Sprite;
+        //         const e = enemyObj as Phaser.GameObjects.Sprite;
 
-                const playerEid = p.getData('eid');
-                const enemyEid = e.getData('eid');
+        //         const playerEid = p.getData('eid');
+        //         const enemyEid = e.getData('eid');
                 
-                const damage = OnTouchDamage.value[enemyEid] || 0;
-                this.world.events.damageEvents.push({
-                    target: playerEid,
-                    source: enemyEid,
-                    amount: damage
-                });
-            }
-        );
+        //         const damage = OnTouchDamage.value[enemyEid] || 0;
+        //         this.world.events.damageEvents.push({
+        //             target: playerEid,
+        //             source: enemyEid,
+        //             amount: damage
+        //         });
+        //     }
+        // );
 
         this.player = SpawnPlayer(this.world, { x: 100, y: 300 });
         const playerSprite = this.world.spriteMap.get(this.player);
@@ -123,7 +117,8 @@ export class Game extends Scene
         // followPlayerSystem,
         cooldownSystem,
         damageSystem,
-        physicsSyncSystem,
+        spriteSyncSystem,
+        movementSystem,
         uiSystem,
     ];
 

@@ -20,15 +20,6 @@ const config: Phaser.Types.Core.GameConfig = {
     fps: {
         target: 60
     },
-    physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: { x: 0, y: 0 },
-            fps: 60,
-            fixedStep: true,
-            debug: true,
-        }
-    },
     input: {
         keyboard: true,
         mouse: true,

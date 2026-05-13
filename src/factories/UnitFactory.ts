@@ -5,17 +5,6 @@ import { Enemy, Player } from "../components/TagComponents";
 import { Health } from "../components/StatComponents";
 import { OnTouchDamage } from "../components/AbilityComponents";
 
-enum CollisionGroup{
-    Player,
-    Enemy,
-}
-
-interface ColliderConfig {
-    radiusPercent: number;
-    offsetXPercent: number; // 0.5 is center
-    offsetYPercent: number;
-}
-
 interface BaseUnitData{
     position: { x: number, y: number },
     speed: number,
@@ -23,8 +12,6 @@ interface BaseUnitData{
     spriteKey: string,
     spriteFrame?: number,
     tags: any[],
-    colllisionGroup: CollisionGroup,
-    colliderConfig?: ColliderConfig,
     onTouchDamage?: number,
 }
 
@@ -44,31 +31,8 @@ const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
         addComponents(world, eid, data.tags);
     }
 
-    const sprite = world.scene.physics.add.sprite(
-        data.position.x, 
-        data.position.y, 
-        data.spriteKey,
-        data.spriteFrame
-    ) as Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-    const { 
-        radiusPercent = 0.25, 
-        offsetXPercent = 0.5, 
-        offsetYPercent = 0.5 
-    } = data.colliderConfig || {};
-    const radius = (sprite.width / 2) * radiusPercent;
-    const ox = (sprite.width * offsetXPercent) - radius;
-    const oy = (sprite.height * offsetYPercent) - radius;
-    sprite.setCircle(radius, ox, oy);
-    sprite.setCollideWorldBounds(true);
-    sprite.body.setDrag(0, 0);
+    const sprite = world.scene.add.sprite(data.position.x, data.position.y, data.spriteKey, data.spriteFrame);
     sprite.setData('eid', eid);
-    
-    if(data.colllisionGroup === CollisionGroup.Player){
-        world.playerGroup.add(sprite);
-    }else if(data.colllisionGroup === CollisionGroup.Enemy){
-        world.enemyGroup.add(sprite);
-    }
-
     world.spriteMap.set(eid, sprite);
 
     return eid;
@@ -82,12 +46,6 @@ export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): En
         spriteKey: 'rogues',
         spriteFrame: 3,
         tags: [Player],
-        colllisionGroup: CollisionGroup.Player,
-        colliderConfig: {
-            radiusPercent: 0.35,
-            offsetXPercent: 0.55,
-            offsetYPercent: 0.55,
-        },
     }
     const eid = BaseUnit(world, data);
     return eid;
@@ -101,7 +59,6 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
         spriteKey: 'monsters',
         spriteFrame: 48,
         tags: [Enemy],
-        colllisionGroup: CollisionGroup.Enemy,
         onTouchDamage: 10,
     }
     const eid = BaseUnit(world, data);
