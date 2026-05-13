@@ -1,18 +1,20 @@
+import { MAX_ENTITIES } from "../common/Constants"
+
 export const Position = { 
-  x: [] as number[], 
-  y: [] as number[] 
+  x: new Float32Array(MAX_ENTITIES), 
+  y: new Float32Array(MAX_ENTITIES) 
 }
 
 export const Velocity = {
-  x: [] as number[],
-  y: [] as number[],
+  x: new Float32Array(MAX_ENTITIES),
+  y: new Float32Array(MAX_ENTITIES),
 }
 
 export const MoveTo = {
-  x: [] as number[],
-  y: [] as number[],
+  x: new Float32Array(MAX_ENTITIES),
+  y: new Float32Array(MAX_ENTITIES),
 }
 
 export const Speed = {
-    value: [] as number[]
+  value: new Uint16Array(MAX_ENTITIES)
 }

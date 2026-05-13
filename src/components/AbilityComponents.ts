@@ -1,4 +1,5 @@
 import { createRelation, withAutoRemoveSubject } from "bitecs"
+import { MAX_ENTITIES } from "../common/Constants";
 
 export const Targeting = createRelation();
 
@@ -7,6 +8,14 @@ export const Targeting = createRelation();
 // the Ability entity is cleaned up automatically.
 export const AbilityOf = createRelation(withAutoRemoveSubject);
 
-export const Cooldown = { current: [] as number[], max: [] as number[] }
-export const OnTouchDamage = { value: [] as number[] }
-export const InvulnerabilityTimer = { current: [] as number[], max: [] as number[] }
+export const Cooldown = {
+    current: new Float32Array(MAX_ENTITIES), 
+    max: new Float32Array(MAX_ENTITIES) 
+}
+export const OnTouchDamage = { 
+    value: new Uint16Array(MAX_ENTITIES) //0 to 32k
+}
+export const InvulnerabilityTimer = { 
+    current: new Float32Array(MAX_ENTITIES), 
+    max: new Float32Array(MAX_ENTITIES) 
+}

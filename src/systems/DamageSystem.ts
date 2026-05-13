@@ -3,6 +3,7 @@ import { InvulnerabilityTimer } from "../components/AbilityComponents";
 import { GameWorld } from "../game/scenes/Game";
 import { Health } from "../components/StatComponents";
 import { Player } from "../components/TagComponents";
+import { PLAYER_INVULNERABILITY_DURATION } from "../common/Constants";
 
 export const damageSystem = (world: GameWorld) => {
     for (const event of world.events.damageEvents) {
@@ -21,7 +22,7 @@ export const damageSystem = (world: GameWorld) => {
             if (!hasComponent(world, target, InvulnerabilityTimer)) {
                 addComponent(world, target, InvulnerabilityTimer);
             }
-            InvulnerabilityTimer.current[target] = 1; 
+            InvulnerabilityTimer.current[target] = PLAYER_INVULNERABILITY_DURATION; 
         }
     }
     world.events.damageEvents = [];

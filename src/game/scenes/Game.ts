@@ -100,7 +100,7 @@ export class Game extends Scene
             this.camera.startFollow(playerSprite, false, 1, 1);
         }
 
-        for(let i = 0; i < 5; i++) {
+        for(let i = 0; i < 50; i++) {
             let x = PhaserMath.Between(200, 600);
             let y = PhaserMath.Between(100, 500);
             SpawnEnemy(this.world, { x: x, y: y });
