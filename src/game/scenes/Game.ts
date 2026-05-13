@@ -1,6 +1,6 @@
 import { createWorld, EntityId, World } from 'bitecs';
 import { Scene, Math as PhaserMath } from 'phaser';
-import { followPlayerSystem, movementSystem, moveToSystem, playerVelocitySystem, spriteSyncSystem } from '../../systems/MovementSystem';
+import { enemySeparationSystem, followPlayerSystem, movementSystem, moveToSystem, playerVelocitySystem, spriteSyncSystem } from '../../systems/MovementSystem';
 import { inputSystem } from '../../systems/InputHandler';
 import { uiSystem } from '../../systems/UISystem';
 import { SpawnEnemy, SpawnPlayer } from '../../factories/UnitFactory';
@@ -100,7 +100,7 @@ export class Game extends Scene
             this.camera.startFollow(playerSprite, false, 1, 1);
         }
 
-        for(let i = 0; i < 50; i++) {
+        for(let i = 0; i < 10; i++) {
             let x = PhaserMath.Between(centerX, centerX + 400);
             let y = PhaserMath.Between(centerY, centerY + 300);
             SpawnEnemy(this.world, { x: x, y: y });
@@ -120,11 +120,12 @@ export class Game extends Scene
         inputSystem,
         playerVelocitySystem,
         moveToSystem,
+        movementSystem,
         // followPlayerSystem,
+        enemySeparationSystem,
+        spriteSyncSystem,
         cooldownSystem,
         damageSystem,
-        spriteSyncSystem,
-        movementSystem,
         uiSystem,
     ];
 
