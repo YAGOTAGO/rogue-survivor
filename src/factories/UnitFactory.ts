@@ -4,7 +4,8 @@ import { Collider, Position, Speed, Velocity } from "../components/MovementCompo
 import { Enemy, Player } from "../components/TagComponents";
 import { Health } from "../components/StatComponents";
 import { OnTouchDamage } from "../components/AbilityComponents";
-import { DEFAULT_COLLIDER_PADDING } from "../common/Constants";
+
+const DEFAULT_COLLIDER_PADDING = 8; // pixels to subtract from sprite size for default collider
 
 interface BaseUnitData{
     position: { x: number, y: number },
@@ -61,7 +62,7 @@ export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): En
         spriteKey: 'rogues',
         spriteFrame: 3,
         tags: [Player],
-        collider: { width: 14, height: 12, offsetX: 0, offsetY: 6 },
+        collider: { width: 14, height: 12, offsetX: 0, offsetY: 8 },
     }
     const eid = BaseUnit(world, data);
     return eid;

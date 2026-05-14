@@ -29,7 +29,6 @@ interface WorldData {
     ui: {
         healthBarUi: HealthBar;
     },
-    collisionLayer: Phaser.Tilemaps.TilemapLayer | Phaser.Tilemaps.TilemapGPULayer,
     spriteMap: Map<EntityId, Phaser.GameObjects.Sprite>,
 }
 export type GameWorld = World & WorldData;
@@ -49,13 +48,6 @@ export class Game extends Scene
     create ()
     {
         this.camera = this.cameras.main;      
-        const map = this.add.tilemap('world-map');
-        const tileset = map.addTilesetImage('tiles', 'tiles')!;
-        const animatedTileset = map.addTilesetImage('animated-tiles', 'animated-tiles')!;
-        const groundLayer = map.createLayer('Ground', [tileset, animatedTileset]);
-        map.createLayer('Surface', [tileset, animatedTileset]);
-        groundLayer.setCollisionByProperty({ collides: true });
-        
         this.world = createWorld({
             scene: this,
             time: { delta: 0, elapsed: 0 },
@@ -73,9 +65,14 @@ export class Game extends Scene
             ui: {
                 healthBarUi: new HealthBar(this),
             },
-            spriteMap: new Map<EntityId, Phaser.GameObjects.Sprite>(),
-            collisionLayer: groundLayer, 
+            spriteMap: new Map<EntityId, Phaser.GameObjects.Sprite>()
         }) as GameWorld;
+
+        const map = this.add.tilemap('world-map');
+        const tileset = map.addTilesetImage('tiles', 'tiles')!;
+        const animatedTileset = map.addTilesetImage('animated-tiles', 'animated-tiles')!;
+        map.createLayer('Ground', [tileset, animatedTileset]);
+        map.createLayer('Surface', [tileset, animatedTileset]);
 
         //TODO add back inthe overlap once we do it a non physics way
         // this.physics.add.overlap(
