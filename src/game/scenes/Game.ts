@@ -8,6 +8,7 @@ import { HealthBar } from '../../ui/HealthBarUI';
 import { OnTouchDamage } from '../../components/AbilityComponents';
 import { damageSystem } from '../../systems/DamageSystem';
 import { cooldownSystem } from '../../systems/AbilitySystem';
+import { debugSystem } from '../../systems/DebugSystem';
 
 interface WorldData {
     scene: Phaser.Scene;
@@ -29,6 +30,7 @@ interface WorldData {
     ui: {
         healthBarUi: HealthBar;
     },
+    debugGraphics: Phaser.GameObjects.Graphics,
     spriteMap: Map<EntityId, Phaser.GameObjects.Sprite>,
 }
 export type GameWorld = World & WorldData;
@@ -65,6 +67,7 @@ export class Game extends Scene
             ui: {
                 healthBarUi: new HealthBar(this),
             },
+            debugGraphics: this.add.graphics().setDepth(1000),
             spriteMap: new Map<EntityId, Phaser.GameObjects.Sprite>()
         }) as GameWorld;
 
@@ -101,7 +104,7 @@ export class Game extends Scene
             this.camera.startFollow(playerSprite, false, 1, 1);
         }
 
-        for(let i = 0; i < 200; i++) {
+        for(let i = 0; i < 20; i++) {
             let x = PhaserMath.Between(centerX, centerX + 400);
             let y = PhaserMath.Between(centerY, centerY + 300);
             SpawnEnemy(this.world, { x: x, y: y });
@@ -128,6 +131,7 @@ export class Game extends Scene
         damageSystem,
         spriteSyncSystem,
         uiSystem,
+        debugSystem,
     ];
 
     runSystems = (world: GameWorld) => {

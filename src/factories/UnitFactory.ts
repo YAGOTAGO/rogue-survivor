@@ -5,7 +5,7 @@ import { Enemy, Player } from "../components/TagComponents";
 import { Health } from "../components/StatComponents";
 import { OnTouchDamage } from "../components/AbilityComponents";
 
-const DEFAULT_COLLIDER_PADDING = 8; // pixels to subtract from sprite size for default collider
+const DEFAULT_COLLIDER = { width: 14, height: 12, offsetX: 0, offsetY: 8 };
 
 interface BaseUnitData{
     position: { x: number, y: number },
@@ -38,17 +38,16 @@ const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
     sprite.setData('eid', eid);
     world.spriteMap.set(eid, sprite);
 
-    const padding = DEFAULT_COLLIDER_PADDING;
     if (data.collider && (data.collider.width || data.collider.height || data.collider.offsetX || data.collider.offsetY)) {
         Collider.width[eid] = data.collider.width || sprite.displayWidth;
         Collider.height[eid] = data.collider.height || sprite.displayHeight;
         Collider.offsetX[eid] = data.collider.offsetX || 0;
         Collider.offsetY[eid] = data.collider.offsetY || 0;
     } else {
-        Collider.width[eid] = Math.max(1, sprite.displayWidth - padding);
-        Collider.height[eid] = Math.max(1, sprite.displayHeight - padding);
-        Collider.offsetX[eid] = 0;
-        Collider.offsetY[eid] = 0;
+        Collider.width[eid] = DEFAULT_COLLIDER.width;
+        Collider.height[eid] = DEFAULT_COLLIDER.height;
+        Collider.offsetX[eid] = DEFAULT_COLLIDER.offsetX;
+        Collider.offsetY[eid] = DEFAULT_COLLIDER.offsetY;
     }
 
     return eid;
@@ -62,7 +61,6 @@ export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): En
         spriteKey: 'rogues',
         spriteFrame: 3,
         tags: [Player],
-        collider: { width: 14, height: 12, offsetX: 0, offsetY: 8 },
     }
     const eid = BaseUnit(world, data);
     return eid;
@@ -77,7 +75,6 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
         spriteFrame: 48,
         tags: [Enemy],
         onTouchDamage: 10,
-        collider: { width: 16, height: 16, offsetX: 8, offsetY: 8 },
     }
     const eid = BaseUnit(world, data);
     return eid;
