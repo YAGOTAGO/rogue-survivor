@@ -3,7 +3,7 @@ import { GameWorld } from "../game/scenes/Game";
 import { Collider, Position, Speed, Velocity } from "../components/MovementComponents";
 import { Enemy, Player } from "../components/TagComponents";
 import { Health } from "../components/StatComponents";
-import { HurtCircle, OnTouchDamage } from "../components/AbilityComponents";
+import { HitCircle, HurtCircle, OnTouchDamage } from "../components/AbilityComponents";
 
 const DEFAULT_COLLIDER = { width: 14, height: 12, offsetX: 0, offsetY: 8 };
 
@@ -78,11 +78,15 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
         spriteKey: 'monsters',
         spriteFrame: 48,
         tags: [Enemy],
-        hurtCircle: { radius: 10, offsetX: 0, offsetY: 0 },
+        hurtCircle: { radius: 12, offsetX: 0, offsetY: 0 },
     }
     const eid = BaseUnit(world, data);
-    addComponents(world, eid, [OnTouchDamage]);
+    addComponents(world, eid, [OnTouchDamage, HitCircle]);
     OnTouchDamage.value[eid] = 10;
+    HitCircle.radius[eid] = 12;
+    HitCircle.offsetX[eid] = 0;
+    HitCircle.offsetY[eid] = 0;
+    HitCircle.damage[eid] = 10;
     return eid;
 }
 
