@@ -3,7 +3,7 @@ import { GameWorld } from "../game/scenes/Game";
 import { Collider, Position, Speed, Velocity } from "../components/MovementComponents";
 import { Enemy, Player } from "../components/TagComponents";
 import { Health } from "../components/StatComponents";
-import { OnTouchDamage } from "../components/AbilityComponents";
+import { HurtCircle, OnTouchDamage } from "../components/AbilityComponents";
 
 const DEFAULT_COLLIDER = { width: 14, height: 12, offsetX: 0, offsetY: 8 };
 
@@ -14,13 +14,13 @@ interface BaseUnitData{
     spriteKey: string,
     spriteFrame?: number,
     tags: any[],
-    onTouchDamage?: number,
-    collider?: { width?: number, height?: number, offsetX?: number, offsetY?: number }
+    collider?: { width: number, height: number, offsetX: number, offsetY: number },
+    hurtCircle: { radius: number, offsetX: number, offsetY: number },
 }
 
 const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
     const eid = addEntity(world);
-    addComponents(world, eid, [Position, Speed, Velocity, Health, OnTouchDamage, Collider]);
+    addComponents(world, eid, [Position, Speed, Velocity, Health, Collider, HurtCircle]);
     Position.x[eid] = data.position.x;
     Position.y[eid] = data.position.y;
     Velocity.x[eid] = 0;
@@ -28,7 +28,6 @@ const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
     Speed.value[eid] = data.speed;
     Health.current[eid] = data.maxHealth;
     Health.max[eid] = data.maxHealth;
-    OnTouchDamage.value[eid] = data.onTouchDamage || 0;
 
     if(data.tags){
         addComponents(world, eid, data.tags);
@@ -38,17 +37,21 @@ const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
     sprite.setData('eid', eid);
     world.spriteMap.set(eid, sprite);
 
-    if (data.collider && (data.collider.width || data.collider.height || data.collider.offsetX || data.collider.offsetY)) {
-        Collider.width[eid] = data.collider.width || sprite.displayWidth;
-        Collider.height[eid] = data.collider.height || sprite.displayHeight;
-        Collider.offsetX[eid] = data.collider.offsetX || 0;
-        Collider.offsetY[eid] = data.collider.offsetY || 0;
+    if (data.collider) {
+        Collider.width[eid] = data.collider.width;
+        Collider.height[eid] = data.collider.height;
+        Collider.offsetX[eid] = data.collider.offsetX;
+        Collider.offsetY[eid] = data.collider.offsetY;
     } else {
         Collider.width[eid] = DEFAULT_COLLIDER.width;
         Collider.height[eid] = DEFAULT_COLLIDER.height;
         Collider.offsetX[eid] = DEFAULT_COLLIDER.offsetX;
         Collider.offsetY[eid] = DEFAULT_COLLIDER.offsetY;
     }
+
+    HurtCircle.radius[eid] = data.hurtCircle.radius;
+    HurtCircle.offsetX[eid] = data.hurtCircle.offsetX;
+    HurtCircle.offsetY[eid] = data.hurtCircle.offsetY;
 
     return eid;
 }
@@ -61,6 +64,7 @@ export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): En
         spriteKey: 'rogues',
         spriteFrame: 3,
         tags: [Player],
+        hurtCircle: { radius: 6, offsetX: 0, offsetY: 1 },
     }
     const eid = BaseUnit(world, data);
     return eid;
@@ -74,9 +78,11 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
         spriteKey: 'monsters',
         spriteFrame: 48,
         tags: [Enemy],
-        onTouchDamage: 10,
+        hurtCircle: { radius: 10, offsetX: 0, offsetY: 0 },
     }
     const eid = BaseUnit(world, data);
+    addComponents(world, eid, [OnTouchDamage]);
+    OnTouchDamage.value[eid] = 10;
     return eid;
 }
 

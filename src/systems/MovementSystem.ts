@@ -2,6 +2,7 @@ import { addComponent, hasComponent, query, removeComponent } from "bitecs"
 import { Collider, MoveTo, Position, Speed, Velocity } from "../components/MovementComponents"
 import { GameWorld } from "../game/scenes/Game";
 import { Enemy, Player } from "../components/TagComponents";
+import { constrainToMap } from "../common/BoundsUtil";
 
 const ENEMY_SEPARATION_RADIUS = 24; // pixels
 
@@ -17,18 +18,6 @@ const BOUNDS = {
     right: MAP_WIDTH - PADDING_X,
     bottom: MAP_HEIGHT - PADDING_Y
 };
-
-function constrainToMap(position: number, offset: number, halfSize: number, minBound: number, maxBound: number): { pos: number, collided: boolean } {
-    const edgeMin = position + offset - halfSize;
-    const edgeMax = position + offset + halfSize;
-
-    if (edgeMin < minBound) {
-        return { pos: minBound - offset + halfSize, collided: true };
-    } else if (edgeMax > maxBound) {
-        return { pos: maxBound - offset - halfSize, collided: true };
-    }
-    return { pos: position, collided: false };
-}
 
 export const movementSystem = (world: GameWorld) => {
     const dt = world.time.delta / 1000;
