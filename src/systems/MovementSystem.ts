@@ -1,14 +1,55 @@
 import { addComponent, hasComponent, query, removeComponent } from "bitecs"
-import { MoveTo, Position, Speed, Velocity } from "../components/MovementComponents"
+import { Collider, MoveTo, Position, Speed, Velocity } from "../components/MovementComponents"
 import { GameWorld } from "../game/scenes/Game";
 import { Enemy, Player } from "../components/TagComponents";
-import { ENEMY_SEPARATION_RADIUS } from "../common/Constants";
+
+const ENEMY_SEPARATION_RADIUS = 24; // pixels
+
+// Tile Map Facts
+const TILE_SIZE = 32;
+const PADDING_X = 10 * TILE_SIZE;
+const PADDING_Y = 8 * TILE_SIZE;
+const MAP_WIDTH = 83 * TILE_SIZE;
+const MAP_HEIGHT = 73 * TILE_SIZE;
+const BOUNDS = {
+    left: PADDING_X,
+    top: PADDING_Y,
+    right: MAP_WIDTH - PADDING_X,
+    bottom: MAP_HEIGHT - PADDING_Y
+};
+
+function constrainToMap(position: number, offset: number, halfSize: number, minBound: number, maxBound: number): { pos: number, collided: boolean } {
+    const edgeMin = position + offset - halfSize;
+    const edgeMax = position + offset + halfSize;
+
+    if (edgeMin < minBound) {
+        return { pos: minBound - offset + halfSize, collided: true };
+    } else if (edgeMax > maxBound) {
+        return { pos: maxBound - offset - halfSize, collided: true };
+    }
+    return { pos: position, collided: false };
+}
 
 export const movementSystem = (world: GameWorld) => {
     const dt = world.time.delta / 1000;
-    for (const eid of query(world, [Position, Velocity])) {
-        Position.x[eid] += Velocity.x[eid] * dt
-        Position.y[eid] += Velocity.y[eid] * dt
+
+    for (const eid of query(world, [Position, Velocity, Collider])) {
+        const vx = Velocity.x[eid] * dt;
+        const vy = Velocity.y[eid] * dt;
+        if(vx === 0 && vy === 0) continue;
+
+        const halfWidth = Collider.width[eid] / 2;
+        const halfHeight = Collider.height[eid] / 2;
+        const offsetX = Collider.offsetX[eid] ?? 0;
+        const offsetY = Collider.offsetY[eid] ?? 0;
+
+        const resultX = constrainToMap(Position.x[eid] + vx, offsetX, halfWidth, BOUNDS.left, BOUNDS.right);
+        Position.x[eid] = resultX.pos;
+        if (resultX.collided) Velocity.x[eid] = 0;
+
+        const resultY = constrainToMap(Position.y[eid] + vy, offsetY, halfHeight, BOUNDS.top, BOUNDS.bottom);
+        Position.y[eid] = resultY.pos;
+        if (resultY.collided) Velocity.y[eid] = 0;
     }
 }
 
@@ -28,7 +69,6 @@ export const moveToSystem = (world: GameWorld) => {
         if (distSquared < 25) {
             Velocity.x[eid] = 0;
             Velocity.y[eid] = 0;
-            removeComponent(world, eid, MoveTo);
         } else {
             let distance = Math.sqrt(distSquared);
             Velocity.x[eid] = (dx / distance) * Speed.value[eid];
@@ -77,11 +117,15 @@ export const spriteSyncSystem = (world: GameWorld) => {
 }
 
 export const enemySeparationSystem = (world: GameWorld) => {
-    const enemies = query(world, [Enemy, Position]);
+    const enemies = query(world, [Enemy, Position, Collider]);
     const separationDistSq = ENEMY_SEPARATION_RADIUS * ENEMY_SEPARATION_RADIUS;
 
     for (let i = 0; i < enemies.length; i++) {
         const eidA = enemies[i];
+        const offsetXA = Collider.offsetX[eidA] ?? 0;
+        const offsetYA = Collider.offsetY[eidA] ?? 0;
+        const halfWidthA = Collider.width[eidA] / 2;
+        const halfHeightA = Collider.height[eidA] / 2;
 
         for (let j = i + 1; j < enemies.length; j++) {
             const eidB = enemies[j];
@@ -93,19 +137,21 @@ export const enemySeparationSystem = (world: GameWorld) => {
             if (distSq < separationDistSq && distSq > 0) {
                 const dist = Math.sqrt(distSq);
                 const overlap = ENEMY_SEPARATION_RADIUS - dist;
+                const moveX = (dx / dist) * overlap * 0.5;
+                const moveY = (dy / dist) * overlap * 0.5; // Multiply by a strength factor so they don't jitter
 
-                // 2. Normalize and calculate push
-                const nx = dx / dist;
-                const ny = dy / dist;
-                
-                // We multiply by a strength factor so they don't jitter
-                const moveX = nx * overlap * 0.5;
-                const moveY = ny * overlap * 0.5;
+                //Update entity A
+                Position.x[eidA] = constrainToMap(Position.x[eidA] + moveX, offsetXA, halfWidthA, BOUNDS.left, BOUNDS.right).pos;
+                Position.y[eidA] = constrainToMap(Position.y[eidA] + moveY, offsetYA, halfHeightA, BOUNDS.top, BOUNDS.bottom).pos;
 
-                Position.x[eidA] += moveX;
-                Position.y[eidA] += moveY;
-                Position.x[eidB] -= moveX;
-                Position.y[eidB] -= moveY;
+                //Update entity B
+                const offXB = Collider.offsetX[eidB] ?? 0;
+                const offYB = Collider.offsetY[eidB] ?? 0;
+                const halfWB = Collider.width[eidB] / 2;
+                const halfHB = Collider.height[eidB] / 2;
+                Position.x[eidB] = constrainToMap(Position.x[eidB] - moveX, offXB, halfWB, BOUNDS.left, BOUNDS.right).pos;
+                Position.y[eidB] = constrainToMap(Position.y[eidB] - moveY, offYB, halfHB, BOUNDS.top, BOUNDS.bottom).pos;
+
             } else if (distSq === 0) {
                 // If they are at the exact same pixel, nudge them apart randomly
                 Position.x[eidA] += Math.random() - 0.5;

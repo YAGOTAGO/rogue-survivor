@@ -18,3 +18,11 @@ export const MoveTo = {
 export const Speed = {
   value: new Uint16Array(MAX_ENTITIES)
 }
+
+export const Collider = {
+  // Use wider ranges for width/height and signed values for offsets
+  width: new Uint16Array(MAX_ENTITIES),
+  height: new Uint16Array(MAX_ENTITIES),
+  offsetX: new Int16Array(MAX_ENTITIES),
+  offsetY: new Int16Array(MAX_ENTITIES),
+}
