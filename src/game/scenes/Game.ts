@@ -10,6 +10,8 @@ import { damageSystem } from '../../systems/DamageSystem';
 import { cooldownSystem } from '../../systems/AbilitySystem';
 import { debugSystem } from '../../systems/DebugSystem';
 
+type DamageEvent = { target: EntityId; source: EntityId; amount: number };
+
 interface WorldData {
     scene: Phaser.Scene;
     time: {
@@ -25,7 +27,7 @@ interface WorldData {
         gamepad: Phaser.Input.Gamepad.GamepadPlugin;
     },
     events: {
-        damageEvents: Array<{ target: EntityId, source: EntityId, amount: number }>;
+        damageEvents: DamageEvent[];
     },
     ui: {
         healthBarUi: HealthBar;
@@ -62,7 +64,7 @@ export class Game extends Scene
                 gamepad: this.input.gamepad,
              },
             events: {
-                damageEvents: [],
+                damageEvents: [] as DamageEvent[],
             },
             ui: {
                 healthBarUi: new HealthBar(this),
