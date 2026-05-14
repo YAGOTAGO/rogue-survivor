@@ -3,10 +3,9 @@ import { Collider, Position } from "../components/MovementComponents";
 import { GameWorld } from "../game/scenes/Game";
 import { HitCircle, HurtCircle } from "../components/AbilityComponents";
 
-
 const DEBUG_COLLIDER = false;
 const DEBUG_HURT_CIRCLE = false;
-const DEBUG_HIT_CIRCLE = false;
+const DEBUG_HIT_CIRCLE = true;
 
 export const debugSystem = (world: GameWorld) => {
     const debugGraphics = world.debugGraphics;
