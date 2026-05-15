@@ -92,7 +92,7 @@ export class Game extends Scene
             this.camera.startFollow(playerSprite, false, 1, 1);
         }
         
-        for(let i = 0; i < 500; i++) {
+        for(let i = 0; i < 1000; i++) {
             // Spawn in a 200px radius circle around the center
             const angle = Math.random() * Math.PI * 2;
             const dist = Math.random() * 200;
@@ -116,7 +116,7 @@ export class Game extends Scene
         inputSystem,
         playerVelocitySystem,
         moveToSystem,
-        followPlayerSystem,
+        // followPlayerSystem,
         movementSystem,
         spatialHashSystem, // Must run before colliderSystem/enemySeparationSystem
         enemySeparationSystem,

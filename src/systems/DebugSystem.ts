@@ -4,8 +4,8 @@ import { GameWorld } from "../game/scenes/Game";
 import { HitCircle, HurtCircle } from "../components/AbilityComponents";
 
 const DEBUG_COLLIDER = false;
-const DEBUG_HURT_CIRCLE = true;
-const DEBUG_HIT_CIRCLE = true;
+const DEBUG_HURT_CIRCLE = false;
+const DEBUG_HIT_CIRCLE = false;
 
 export const debugSystem = (world: GameWorld) => {
     const debugGraphics = world.debugGraphics;
@@ -54,4 +54,7 @@ export const debugSystem = (world: GameWorld) => {
             debugGraphics.strokeCircle(x, y, radius);
         }
     }
+
+
+
 }
