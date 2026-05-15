@@ -45,7 +45,6 @@ export class Game extends Scene
     camera: Phaser.Cameras.Scene2D.Camera;
     world!: GameWorld;
     fpsText!: Phaser.GameObjects.Text;
-    player!: EntityId;
 
     constructor ()
     {
@@ -85,8 +84,8 @@ export class Game extends Scene
 
         const centerX = map.widthInPixels / 2;
         const centerY = map.heightInPixels / 2;
-        this.player = SpawnPlayer(this.world, { x: centerX, y: centerY });
-        const playerSprite = this.world.spriteMap.get(this.player);
+        const player = SpawnPlayer(this.world, { x: centerX, y: centerY });
+        const playerSprite = this.world.spriteMap.get(player);
         if (playerSprite) {
             this.camera.startFollow(playerSprite, false, 1, 1);
         }
