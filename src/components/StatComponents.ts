@@ -10,9 +10,27 @@ export const Regen = {
 export const XpGain = { 
     multiplier: new Float32Array(MAX_ENTITIES) 
 };
-export const Damage = { 
+export const DamageInfo = { 
     value: new Uint16Array(MAX_ENTITIES) 
 };
 export const DamagePercent = { 
     multiplier: new Float32Array(MAX_ENTITIES) 
 };
+export const Cooldown = {
+    current: new Float32Array(MAX_ENTITIES), 
+    max: new Float32Array(MAX_ENTITIES) 
+}
+export const InvulnerabilityTimer = { 
+    current: new Float32Array(MAX_ENTITIES)
+}
+export const HitCircle = {
+    radius: new Float32Array(MAX_ENTITIES),
+    offsetX: new Float32Array(MAX_ENTITIES),
+    offsetY: new Float32Array(MAX_ENTITIES),
+    damage: new Uint16Array(MAX_ENTITIES),
+}
+export const HurtCircle = {
+    radius: new Float32Array(MAX_ENTITIES),
+    offsetX: new Float32Array(MAX_ENTITIES),
+    offsetY: new Float32Array(MAX_ENTITIES),
+}

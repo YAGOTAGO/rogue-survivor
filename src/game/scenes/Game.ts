@@ -5,7 +5,6 @@ import { inputSystem } from '../../systems/InputHandler';
 import { uiSystem } from '../../systems/UISystem';
 import { SpawnEnemy, SpawnPlayer } from '../../factories/UnitFactory';
 import { HealthBar } from '../../ui/HealthBarUI';
-import { OnTouchDamage } from '../../components/AbilityComponents';
 import { cooldownSystem } from '../../systems/CooldownSystem';
 import { debugSystem } from '../../systems/DebugSystem';
 import { colliderSystem } from '../../systems/ColliderSystem';
@@ -92,7 +91,7 @@ export class Game extends Scene
             this.camera.startFollow(playerSprite, false, 1, 1);
         }
         
-        for(let i = 0; i < 1000; i++) {
+        for(let i = 0; i < 10; i++) {
             // Spawn in a 200px radius circle around the center
             const angle = Math.random() * Math.PI * 2;
             const dist = Math.random() * 200;

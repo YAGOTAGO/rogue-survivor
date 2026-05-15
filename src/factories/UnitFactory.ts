@@ -2,8 +2,7 @@ import { addComponents, addEntity, EntityId, removeEntity } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
 import { Collider, Position, Speed, Velocity } from "../components/MovementComponents";
 import { Enemy, Player, Team, TEAM_ID, TeamId } from "../components/TagComponents";
-import { Health } from "../components/StatComponents";
-import { HitCircle, HurtCircle, OnTouchDamage } from "../components/AbilityComponents";
+import { DamageInfo, Health, HitCircle, HurtCircle, InvulnerabilityTimer } from "../components/StatComponents";
 
 const DEFAULT_COLLIDER = { width: 14, height: 12, offsetX: 0, offsetY: 8 };
 
@@ -70,6 +69,8 @@ export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): En
         hurtCircle: { radius: 6, offsetX: 0, offsetY: 1 },
     }
     const eid = BaseUnit(world, data);
+    addComponents(world, eid, [InvulnerabilityTimer]);
+    InvulnerabilityTimer.current[eid] = 0;
     return eid;
 }
 
@@ -85,8 +86,8 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
         hurtCircle: { radius: 12, offsetX: 0, offsetY: 0 },
     }
     const eid = BaseUnit(world, data);
-    addComponents(world, eid, [OnTouchDamage, HitCircle]);
-    OnTouchDamage.value[eid] = 10;
+    addComponents(world, eid, [DamageInfo, HitCircle]);
+    DamageInfo.value[eid] = 10;
     HitCircle.radius[eid] = 12;
     HitCircle.offsetX[eid] = 0;
     HitCircle.offsetY[eid] = 0;

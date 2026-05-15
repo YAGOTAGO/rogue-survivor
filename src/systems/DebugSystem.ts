@@ -1,7 +1,7 @@
 import { query } from "bitecs";
 import { Collider, Position } from "../components/MovementComponents";
 import { GameWorld } from "../game/scenes/Game";
-import { HitCircle, HurtCircle } from "../components/AbilityComponents";
+import { HitCircle, HurtCircle } from "../components/StatComponents";
 
 const DEBUG_COLLIDER = false;
 const DEBUG_HURT_CIRCLE = false;

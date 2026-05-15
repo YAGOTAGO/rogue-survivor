@@ -1,7 +1,7 @@
 import { query, removeComponent } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
-import { Cooldown, InvulnerabilityTimer } from "../components/AbilityComponents";
 import { TintModes } from "phaser";
+import { Cooldown, InvulnerabilityTimer } from "../components/StatComponents";
 
 export const cooldownSystem = (world: GameWorld) => {
     const dt = world.time.delta / 1000;
@@ -28,7 +28,6 @@ export const cooldownSystem = (world: GameWorld) => {
         }else{
             const sprite = world.spriteMap.get(eid);
             if (sprite) sprite.clearTint();
-            removeComponent(world, eid, InvulnerabilityTimer);
         }
     }
 }
