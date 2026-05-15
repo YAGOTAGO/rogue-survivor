@@ -1,10 +1,11 @@
-import { addComponent, hasComponent, query } from "bitecs"
+import { addComponent, EntityId, hasComponent, query } from "bitecs"
 import { Collider, MoveTo, Position, Speed, Velocity } from "../components/MovementComponents"
 import { GameWorld } from "../game/scenes/Game";
 import { Enemy, Player } from "../components/TagComponents";
 import { constrainToMap } from "./ColliderSystem";
 
 const ENEMY_SEPARATION_RADIUS = 24; // pixels
+const queryBuffer: EntityId[] = [];
 
 // Tile Map Facts
 const TILE_SIZE = 32;
@@ -113,13 +114,21 @@ export const enemySeparationSystem = (world: GameWorld) => {
     for (let i = 0; i < enemies.length; i++) {
         if (i % 2 !== frameCount) continue; // Process half each frame to reduce jitter
         const eidA = enemies[i];
+        
+        const xA = Position.x[eidA];
+        const yA = Position.y[eidA];
+        world.spatialHash.getNearby(xA, yA, queryBuffer);
+        
         const offsetXA = Collider.offsetX[eidA] ?? 0;
         const offsetYA = Collider.offsetY[eidA] ?? 0;
         const halfWidthA = Collider.width[eidA] / 2;
         const halfHeightA = Collider.height[eidA] / 2;
 
-        for (let j = i + 1; j < enemies.length; j++) {
-            const eidB = enemies[j];
+        for (let j = 0; j < queryBuffer.length; j++) {
+            const eidB = queryBuffer[j];
+
+            if (eidA >= eidB) continue;
+            if (!hasComponent(world, eidB, Enemy)) continue;
 
             let dx = Position.x[eidA] - Position.x[eidB];
             let dy = Position.y[eidA] - Position.y[eidB];

@@ -10,6 +10,8 @@ import { cooldownSystem } from '../../systems/CooldownSystem';
 import { debugSystem } from '../../systems/DebugSystem';
 import { colliderSystem } from '../../systems/ColliderSystem';
 import { eventSystem } from '../../systems/EventsSystem';
+import { SpatialHash } from '../../common/SpatialHash';
+import { spatialHashSystem } from '../../systems/SpatialHashSystem';
 
 export type HitEvent = { source: EntityId; target: EntityId };
 
@@ -35,6 +37,7 @@ interface WorldData {
     },
     debugGraphics: Phaser.GameObjects.Graphics,
     spriteMap: Map<EntityId, Phaser.GameObjects.Sprite>,
+    spatialHash: SpatialHash;
 }
 export type GameWorld = World & WorldData;
 
@@ -71,7 +74,8 @@ export class Game extends Scene
                 healthBarUi: new HealthBar(this),
             },
             debugGraphics: this.add.graphics().setDepth(1000),
-            spriteMap: new Map<EntityId, Phaser.GameObjects.Sprite>()
+            spriteMap: new Map<EntityId, Phaser.GameObjects.Sprite>(),
+            spatialHash: new SpatialHash(),
         }) as GameWorld;
 
         const map = this.add.tilemap('world-map');
@@ -88,11 +92,14 @@ export class Game extends Scene
             this.camera.startFollow(playerSprite, false, 1, 1);
         }
         
-        for(let i = 0; i < 20; i++) {
-            let x = PhaserMath.Between(centerX, centerX + 400);
-            let y = PhaserMath.Between(centerY, centerY + 300);
-            SpawnEnemy(this.world, { x: x, y: y });
-        }   
+        for(let i = 0; i < 500; i++) {
+            // Spawn in a 200px radius circle around the center
+            const angle = Math.random() * Math.PI * 2;
+            const dist = Math.random() * 200;
+            const x = centerX + Math.cos(angle) * dist;
+            const y = centerY + Math.sin(angle) * dist;
+            SpawnEnemy(this.world, { x, y });
+        }
 
         this.fpsText = this.add.text(10, 10, '', {
             fontFamily: 'Arial, sans-serif',
@@ -109,9 +116,10 @@ export class Game extends Scene
         inputSystem,
         playerVelocitySystem,
         moveToSystem,
-        // followPlayerSystem,
-        enemySeparationSystem,
+        followPlayerSystem,
         movementSystem,
+        spatialHashSystem, // Must run before colliderSystem/enemySeparationSystem
+        enemySeparationSystem,
         colliderSystem,
         eventSystem,
         spriteSyncSystem,

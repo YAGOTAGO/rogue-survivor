@@ -1,26 +1,29 @@
-import { query } from "bitecs";
+import { EntityId, hasComponent, query } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
 import { Position } from "../components/MovementComponents";
 import { HitCircle, HurtCircle } from "../components/AbilityComponents";
 import { Team } from "../components/TagComponents";
 
+const queryBuffer: EntityId[] = [];
+
 export const colliderSystem = (world: GameWorld) => {
     const attackers = query(world, [Position, HitCircle, Team]);
-    const targets = query(world, [Position, HurtCircle, Team]);
 
     for (const attackerId of attackers) {
         const sourceX = Position.x[attackerId] + (HitCircle.offsetX[attackerId] || 0);
         const sourceY = Position.y[attackerId] + (HitCircle.offsetY[attackerId] || 0);
         const sourceRadius = HitCircle.radius[attackerId];
         
-        for (const targetId of targets) {
+        world.spatialHash.getNearby(sourceX, sourceY, queryBuffer);
+        for (const targetId of queryBuffer) {
             
             if (attackerId === targetId) continue; // Skip self
             if (Team.id[attackerId] === Team.id[targetId]) continue; // Skip same team
+            if (!hasComponent(world, targetId, HurtCircle)) continue;
 
             const targetX = Position.x[targetId] + (HurtCircle.offsetX[targetId] || 0);
             const targetY = Position.y[targetId] + (HurtCircle.offsetY[targetId] || 0);
-            const targetRadius = HurtCircle.radius[targetId];
+            const targetRadius = HurtCircle.radius[targetId] || 0;
 
             const dx = sourceX - targetX;
             const dy = sourceY - targetY;
