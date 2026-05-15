@@ -109,10 +109,8 @@ export const spriteSyncSystem = (world: GameWorld) => {
 export const enemySeparationSystem = (world: GameWorld) => {
     const enemies = query(world, [Enemy, Position, Collider]);
     const separationDistSq = ENEMY_SEPARATION_RADIUS * ENEMY_SEPARATION_RADIUS;
-    const frameCount = world.time.elapsed % 2;
-
+    
     for (let i = 0; i < enemies.length; i++) {
-        if (i % 2 !== frameCount) continue; // Process half each frame to reduce jitter
         const eidA = enemies[i];
         
         const xA = Position.x[eidA];
