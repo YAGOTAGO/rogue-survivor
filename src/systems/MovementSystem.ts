@@ -1,8 +1,8 @@
-import { addComponent, hasComponent, query, removeComponent } from "bitecs"
+import { addComponent, hasComponent, query } from "bitecs"
 import { Collider, MoveTo, Position, Speed, Velocity } from "../components/MovementComponents"
 import { GameWorld } from "../game/scenes/Game";
 import { Enemy, Player } from "../components/TagComponents";
-import { constrainToMap } from "../common/BoundsUtil";
+import { constrainToMap } from "./ColliderSystem";
 
 const ENEMY_SEPARATION_RADIUS = 24; // pixels
 

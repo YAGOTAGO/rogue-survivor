@@ -32,9 +32,3 @@ export const cooldownSystem = (world: GameWorld) => {
         }
     }
 }
-
-export const targetingSystem = (world: GameWorld) => {
-    for (const eid of query(world, [Cooldown])){
-        
-    }
-}

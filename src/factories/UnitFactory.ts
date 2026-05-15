@@ -1,7 +1,7 @@
 import { addComponents, addEntity, EntityId, removeEntity } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
 import { Collider, Position, Speed, Velocity } from "../components/MovementComponents";
-import { Enemy, Player } from "../components/TagComponents";
+import { Enemy, Player, Team, TEAM_ID, TeamId } from "../components/TagComponents";
 import { Health } from "../components/StatComponents";
 import { HitCircle, HurtCircle, OnTouchDamage } from "../components/AbilityComponents";
 
@@ -14,13 +14,14 @@ interface BaseUnitData{
     spriteKey: string,
     spriteFrame?: number,
     tags: any[],
+    teamId: TeamId,
     collider?: { width: number, height: number, offsetX: number, offsetY: number },
     hurtCircle: { radius: number, offsetX: number, offsetY: number },
 }
 
 const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
     const eid = addEntity(world);
-    addComponents(world, eid, [Position, Speed, Velocity, Health, Collider, HurtCircle]);
+    addComponents(world, eid, [Position, Speed, Velocity, Health, Collider, HurtCircle, Team]);
     Position.x[eid] = data.position.x;
     Position.y[eid] = data.position.y;
     Velocity.x[eid] = 0;
@@ -52,6 +53,7 @@ const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
     HurtCircle.radius[eid] = data.hurtCircle.radius;
     HurtCircle.offsetX[eid] = data.hurtCircle.offsetX;
     HurtCircle.offsetY[eid] = data.hurtCircle.offsetY;
+    Team.id[eid] = data.teamId;
 
     return eid;
 }
@@ -59,10 +61,11 @@ const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
 export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): EntityId => {
     const data: BaseUnitData = {
         position: pos,
-        speed: 900,
+        speed: 200,
         maxHealth: 100,
         spriteKey: 'rogues',
         spriteFrame: 3,
+        teamId: TEAM_ID.ALLY,
         tags: [Player],
         hurtCircle: { radius: 6, offsetX: 0, offsetY: 1 },
     }
@@ -77,6 +80,7 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
         maxHealth: 100,
         spriteKey: 'monsters',
         spriteFrame: 48,
+        teamId: TEAM_ID.ENEMY,
         tags: [Enemy],
         hurtCircle: { radius: 12, offsetX: 0, offsetY: 0 },
     }

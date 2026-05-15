@@ -6,11 +6,12 @@ import { uiSystem } from '../../systems/UISystem';
 import { SpawnEnemy, SpawnPlayer } from '../../factories/UnitFactory';
 import { HealthBar } from '../../ui/HealthBarUI';
 import { OnTouchDamage } from '../../components/AbilityComponents';
-import { damageSystem } from '../../systems/DamageSystem';
-import { cooldownSystem } from '../../systems/AbilitySystem';
+import { cooldownSystem } from '../../systems/CooldownSystem';
 import { debugSystem } from '../../systems/DebugSystem';
+import { colliderSystem } from '../../systems/ColliderSystem';
+import { eventSystem } from '../../systems/EventsSystem';
 
-type DamageEvent = { target: EntityId; source: EntityId; amount: number };
+export type HitEvent = { source: EntityId; target: EntityId };
 
 interface WorldData {
     scene: Phaser.Scene;
@@ -27,7 +28,7 @@ interface WorldData {
         gamepad: Phaser.Input.Gamepad.GamepadPlugin;
     },
     events: {
-        damageEvents: DamageEvent[];
+        hitEvents: HitEvent[];
     },
     ui: {
         healthBarUi: HealthBar;
@@ -64,7 +65,7 @@ export class Game extends Scene
                 gamepad: this.input.gamepad,
              },
             events: {
-                damageEvents: [] as DamageEvent[],
+                hitEvents: [] as HitEvent[],
             },
             ui: {
                 healthBarUi: new HealthBar(this),
@@ -79,25 +80,6 @@ export class Game extends Scene
         map.createLayer('Ground', [tileset, animatedTileset]);
         map.createLayer('Surface', [tileset, animatedTileset]);
 
-        //TODO add back inthe overlap once we do it a non physics way
-        // this.physics.add.overlap(
-        //     playerGroup, 
-        //     enemyGroup, 
-        //     (playerObj, enemyObj) => {
-        //         const p = playerObj as Phaser.GameObjects.Sprite;
-        //         const e = enemyObj as Phaser.GameObjects.Sprite;
-
-        //         const playerEid = p.getData('eid');
-        //         const enemyEid = e.getData('eid');
-                
-        //         const damage = OnTouchDamage.value[enemyEid] || 0;
-        //         this.world.events.damageEvents.push({
-        //             target: playerEid,
-        //             source: enemyEid,
-        //             amount: damage
-        //         });
-        //     }
-        // );
         const centerX = map.widthInPixels / 2;
         const centerY = map.heightInPixels / 2;
         this.player = SpawnPlayer(this.world, { x: centerX, y: centerY });
@@ -105,7 +87,7 @@ export class Game extends Scene
         if (playerSprite) {
             this.camera.startFollow(playerSprite, false, 1, 1);
         }
-
+        
         for(let i = 0; i < 20; i++) {
             let x = PhaserMath.Between(centerX, centerX + 400);
             let y = PhaserMath.Between(centerY, centerY + 300);
@@ -123,14 +105,15 @@ export class Game extends Scene
     }
 
     systems = [
+        cooldownSystem,
         inputSystem,
         playerVelocitySystem,
         moveToSystem,
         // followPlayerSystem,
         enemySeparationSystem,
         movementSystem,
-        cooldownSystem,
-        damageSystem,
+        colliderSystem,
+        eventSystem,
         spriteSyncSystem,
         uiSystem,
         debugSystem,
