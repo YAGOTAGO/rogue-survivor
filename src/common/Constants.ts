@@ -8,4 +8,4 @@
  * Int32Array / Uint32Array	   -2,147,483,648 to 2,147,483,647 / 0 to 4,294,967,295
 */
 
-export const MAX_ENTITIES = 10000;
+export const MAX_ENTITIES = 10000 as const;
