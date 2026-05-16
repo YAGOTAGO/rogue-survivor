@@ -42,9 +42,9 @@ export type GameWorld = World & WorldData;
 
 export class Game extends Scene
 {
-    camera: Phaser.Cameras.Scene2D.Camera;
-    world!: GameWorld;
-    fpsText!: Phaser.GameObjects.Text;
+    private camera: Phaser.Cameras.Scene2D.Camera;
+    private world!: GameWorld;
+    private fpsText!: Phaser.GameObjects.Text;
 
     constructor ()
     {
@@ -94,8 +94,8 @@ export class Game extends Scene
             // Spawn in a 200px radius circle around the center
             const angle = Math.random() * Math.PI * 2;
             const dist = Math.random() * 200;
-            const x = centerX + Math.cos(angle) * dist;
-            const y = centerY + Math.sin(angle) * dist;
+            const x = centerX + 50 + Math.cos(angle) * dist;
+            const y = centerY + 50 + Math.sin(angle) * dist;
             SpawnEnemy(this.world, { x, y });
         }
 
