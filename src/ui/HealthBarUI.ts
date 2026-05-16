@@ -5,6 +5,8 @@ export class HealthBar extends GameObjects.Container {
     private healthText: GameObjects.BitmapText;
     private barGhost: GameObjects.Rectangle;
 
+    private lastPercent: number = -1;
+
     constructor(scene: Phaser.Scene) {
         const screenWidth = scene.scale.width;
         const barWidth = screenWidth * 0.5;
@@ -43,6 +45,9 @@ export class HealthBar extends GameObjects.Container {
 
     updateHealth(current: number, max: number) {
         const percent = PhaserMath.Clamp(current / max, 0, 1);
+        if (percent === this.lastPercent) return;
+        this.lastPercent = percent;
+        
         this.healthText.setText(`${Math.floor(current)} / ${max}`);
 
         this.scene.tweens.add({

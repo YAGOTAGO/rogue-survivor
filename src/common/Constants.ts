@@ -9,3 +9,4 @@
 */
 
 export const MAX_ENTITIES = 10000 as const;
+export const LEVEL_UP_SCALING = 1.2 as const;

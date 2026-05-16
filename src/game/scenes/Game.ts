@@ -3,7 +3,7 @@ import { Scene, Math as PhaserMath } from 'phaser';
 import { enemySeparationSystem, followPlayerSystem, movementSystem, moveToSystem, playerVelocitySystem, spriteSyncSystem } from '../../systems/MovementSystem';
 import { inputSystem } from '../../systems/InputHandler';
 import { uiSystem } from '../../systems/UISystem';
-import { SpawnEnemy, SpawnPlayer } from '../../factories/UnitFactory';
+import { SpawnEnemy, SpawnExperienceOrb, SpawnPlayer } from '../../factories/UnitFactory';
 import { HealthBar } from '../../ui/HealthBarUI';
 import { cooldownSystem } from '../../systems/CooldownSystem';
 import { debugSystem } from '../../systems/DebugSystem';
@@ -12,6 +12,7 @@ import { eventSystem } from '../../systems/EventsSystem';
 import { SpatialHash } from '../../common/SpatialHash';
 import { spatialHashSystem } from '../../systems/SpatialHashSystem';
 import { ASSETS } from '../../common/Assets';
+import { ExperienceBar } from '../../ui/ExperienceBarUI';
 
 export type HitEvent = { source: EntityId; target: EntityId };
 
@@ -34,6 +35,7 @@ interface WorldData {
     },
     ui: {
         healthBarUi: HealthBar;
+        experienceBarUi: ExperienceBar;
     },
     debugGraphics: Phaser.GameObjects.Graphics,
     spriteMap: Map<EntityId, Phaser.GameObjects.Sprite>,
@@ -71,6 +73,7 @@ export class Game extends Scene
             },
             ui: {
                 healthBarUi: new HealthBar(this),
+                experienceBarUi: new ExperienceBar(this),
             },
             debugGraphics: this.add.graphics().setDepth(1000),
             spriteMap: new Map<EntityId, Phaser.GameObjects.Sprite>(),
@@ -90,6 +93,8 @@ export class Game extends Scene
         if (playerSprite) {
             this.camera.startFollow(playerSprite, false, 1, 1);
         }
+
+        SpawnExperienceOrb(this.world, { x: centerX + 50, y: centerY }, 120);
 
         for(let i = 0; i < 10; i++) {
             // Spawn in a 200px radius circle around the center

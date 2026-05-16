@@ -1,6 +1,6 @@
 import { query } from 'bitecs';
 import { Enemy, Player } from '../components/TagComponents';
-import { Health } from '../components/StatComponents';
+import { Experience, Health } from '../components/StatComponents';
 import { GameWorld } from '../game/scenes/Game';
 
 export const uiSystem = (world: GameWorld) => {
@@ -10,6 +10,14 @@ export const uiSystem = (world: GameWorld) => {
         const current = Health.current[eid];
         const max = Health.max[eid];
         world.ui.healthBarUi.updateHealth(current, max);
+        break;
+    }
+
+    //Experience Bar
+    for (const eid of query(world, [Player, Experience])) {
+        const current = Experience.current[eid];
+        const max = Experience.max[eid];
+        world.ui.experienceBarUi.updateExperience(current, max, Experience.level[eid]);
         break;
     }
 

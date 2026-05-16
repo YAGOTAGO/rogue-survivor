@@ -5,12 +5,17 @@ import { HitCircle, HurtCircle } from "../components/StatComponents";
 
 const DEBUG_COLLIDER = false;
 const DEBUG_HURT_CIRCLE = false;
-const DEBUG_HIT_CIRCLE = false;
+const DEBUG_HIT_CIRCLE = true;
+const DEBUG_TWEEN_AMOUNT = false;
 
 export const debugSystem = (world: GameWorld) => {
     const debugGraphics = world.debugGraphics;
     debugGraphics.clear();
     debugGraphics.lineStyle(1, 0x00ff00, 1);
+
+    if (DEBUG_TWEEN_AMOUNT) {
+        console.log(`Active Tweens: ${world.scene.tweens.getTweens().length}`);
+    }
 
     if (DEBUG_COLLIDER) { // Green
         for (const eid of query(world, [Position, Collider])) {
