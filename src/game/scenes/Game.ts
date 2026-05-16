@@ -11,6 +11,7 @@ import { colliderSystem } from '../../systems/ColliderSystem';
 import { eventSystem } from '../../systems/EventsSystem';
 import { SpatialHash } from '../../common/SpatialHash';
 import { spatialHashSystem } from '../../systems/SpatialHashSystem';
+import { ASSETS } from '../../common/Assets';
 
 export type HitEvent = { source: EntityId; target: EntityId };
 
@@ -76,9 +77,9 @@ export class Game extends Scene
             spatialHash: new SpatialHash(),
         }) as GameWorld;
 
-        const map = this.add.tilemap('world-map');
-        const tileset = map.addTilesetImage('tiles', 'tiles')!;
-        const animatedTileset = map.addTilesetImage('animated-tiles', 'animated-tiles')!;
+        const map = this.add.tilemap(ASSETS.TILEMAPS.MAP);
+        const tileset = map.addTilesetImage(ASSETS.IMAGES.TILES, ASSETS.IMAGES.TILES)!;
+        const animatedTileset = map.addTilesetImage(ASSETS.IMAGES.ANIMATED_TILES, ASSETS.IMAGES.ANIMATED_TILES)!;
         map.createLayer('Ground', [tileset, animatedTileset]);
         map.createLayer('Surface', [tileset, animatedTileset]);
 
@@ -89,13 +90,13 @@ export class Game extends Scene
         if (playerSprite) {
             this.camera.startFollow(playerSprite, false, 1, 1);
         }
-        
+
         for(let i = 0; i < 10; i++) {
             // Spawn in a 200px radius circle around the center
             const angle = Math.random() * Math.PI * 2;
             const dist = Math.random() * 200;
-            const x = centerX + 50 + Math.cos(angle) * dist;
-            const y = centerY + 50 + Math.sin(angle) * dist;
+            const x = centerX + Math.cos(angle) * dist;
+            const y = centerY + Math.sin(angle) * dist;
             SpawnEnemy(this.world, { x, y });
         }
 

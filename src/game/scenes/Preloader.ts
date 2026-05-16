@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import { ASSETS } from '../../common/Assets';
 
 export class Preloader extends Scene
 {
@@ -34,18 +35,19 @@ export class Preloader extends Scene
     {
         //  Load the assets for the game - Replace with your own assets
         this.load.setPath('assets');
-        this.load.spritesheet('rogues', 'sprites/rogues.png', {
+        this.load.spritesheet(ASSETS.SPRITESHEETS.PLAYERS, 'sprites/rogues.png', {
             frameWidth: 32,
             frameHeight: 32
         });
-        this.load.spritesheet('monsters', 'sprites/monsters.png', {
+        this.load.spritesheet(ASSETS.SPRITESHEETS.ENEMIES, 'sprites/monsters.png', {
             frameWidth: 32,
             frameHeight: 32
-        });    
+        });
         this.load.bitmapFont('rogue', 'fonts/m5x7_font.png', 'fonts/m5x7_font.fnt');  
-        this.load.image('tiles', 'maps/tilesets/tiles.png');
-        this.load.image('animated-tiles', 'maps/tilesets/animated-tiles.png');
-        this.load.tilemapTiledJSON('world-map', 'maps/tilemaps/world-map.json');
+        this.load.image(ASSETS.IMAGES.TILES, 'maps/tilesets/tiles.png');
+        this.load.image(ASSETS.IMAGES.ANIMATED_TILES, 'maps/tilesets/animated-tiles.png');
+        this.load.image(ASSETS.IMAGES.EXPERIENCE, 'sprites/experience.png');
+        this.load.tilemapTiledJSON(ASSETS.TILEMAPS.MAP, 'maps/tilemaps/world-map.json');
     }
 
     create ()

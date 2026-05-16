@@ -3,6 +3,7 @@ import { GameWorld } from "../game/scenes/Game";
 import { Collider, Position, Speed, Velocity } from "../components/MovementComponents";
 import { Enemy, Player, Team, TEAM_ID, TeamId } from "../components/TagComponents";
 import { DamageInfo, Health, HitCircle, HurtCircle, InvulnerabilityTimer } from "../components/StatComponents";
+import { ASSETS } from "../common/Assets";
 
 const DEFAULT_COLLIDER = { width: 14, height: 12, offsetX: 0, offsetY: 8 };
 
@@ -62,7 +63,7 @@ export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): En
         position: pos,
         speed: 200,
         maxHealth: 100,
-        spriteKey: 'rogues',
+        spriteKey: ASSETS.SPRITESHEETS.PLAYERS,
         spriteFrame: 3,
         teamId: TEAM_ID.ALLY,
         tags: [Player],
@@ -79,7 +80,7 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
         position: pos,
         speed: 200,
         maxHealth: 100,
-        spriteKey: 'monsters',
+        spriteKey: ASSETS.SPRITESHEETS.ENEMIES,
         spriteFrame: 48,
         teamId: TEAM_ID.ENEMY,
         tags: [Enemy],
