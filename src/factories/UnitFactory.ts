@@ -2,7 +2,7 @@ import { addComponents, addEntity, EntityId, removeEntity } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
 import { Collider, Position, Speed, Velocity } from "../components/MovementComponents";
 import { Enemy, Player, Team, TEAM_ID, TeamId } from "../components/TagComponents";
-import { DamageInfo, Health, HitCircle, HurtCircle, InvulnerabilityTimer } from "../components/StatComponents";
+import { DamageInfo, Experience, ExperienceValue, Health, HitCircle, HurtCircle, InvulnerabilityTimer } from "../components/StatComponents";
 import { ASSETS } from "../common/Assets";
 
 const DEFAULT_COLLIDER = { width: 14, height: 12, offsetX: 0, offsetY: 8 };
@@ -13,30 +13,46 @@ interface BaseUnitData{
     maxHealth: number,
     spriteKey: string,
     spriteFrame?: number,
-    tags: any[],
     teamId: TeamId,
     collider?: { width: number, height: number, offsetX: number, offsetY: number },
     hurtCircle: { radius: number, offsetX: number, offsetY: number },
 }
 
-const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
+interface BaseSpriteData {
+    position: { x: number, y: number },
+    speed: number,
+    spriteKey: string,
+    spriteFrame?: number,
+}
+
+const BaseSpriteEntity = (world: GameWorld, data: BaseSpriteData): EntityId => {
     const eid = addEntity(world);
-    addComponents(world, eid, [Position, Speed, Velocity, Health, Collider, HurtCircle, Team]);
+    addComponents(world, eid, [Position, Speed, Velocity]);
+
     Position.x[eid] = data.position.x;
     Position.y[eid] = data.position.y;
     Velocity.x[eid] = 0;
     Velocity.y[eid] = 0;
     Speed.value[eid] = data.speed;
-    Health.current[eid] = data.maxHealth;
-    Health.max[eid] = data.maxHealth;
-
-    if(data.tags){
-        addComponents(world, eid, data.tags);
-    }
 
     const sprite = world.scene.add.sprite(data.position.x, data.position.y, data.spriteKey, data.spriteFrame);
     sprite.setData('eid', eid);
     world.spriteMap.set(eid, sprite);
+
+    return eid;
+};
+
+const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
+    const eid = BaseSpriteEntity(world, {
+        position: data.position,
+        speed: data.speed,
+        spriteKey: data.spriteKey,
+        spriteFrame: data.spriteFrame,
+    });
+
+    addComponents(world, eid, [Health, Collider, HurtCircle, Team]);
+    Health.current[eid] = data.maxHealth;
+    Health.max[eid] = data.maxHealth;
 
     if (data.collider) {
         Collider.width[eid] = data.collider.width;
@@ -56,7 +72,7 @@ const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
     Team.id[eid] = data.teamId;
 
     return eid;
-}
+};
 
 export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): EntityId => {
     const data: BaseUnitData = {
@@ -66,12 +82,14 @@ export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): En
         spriteKey: ASSETS.SPRITESHEETS.PLAYERS,
         spriteFrame: 3,
         teamId: TEAM_ID.ALLY,
-        tags: [Player],
         hurtCircle: { radius: 6, offsetX: 0, offsetY: 1 },
     }
     const eid = BaseUnit(world, data);
-    addComponents(world, eid, [InvulnerabilityTimer]);
+    addComponents(world, eid, [InvulnerabilityTimer, Experience, Player]);
     InvulnerabilityTimer.current[eid] = 0;
+    Experience.level[eid] = 1;
+    Experience.current[eid] = 0;
+    Experience.max[eid] = 100;
     return eid;
 }
 
@@ -83,11 +101,10 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
         spriteKey: ASSETS.SPRITESHEETS.ENEMIES,
         spriteFrame: 48,
         teamId: TEAM_ID.ENEMY,
-        tags: [Enemy],
         hurtCircle: { radius: 12, offsetX: 0, offsetY: 0 },
     }
     const eid = BaseUnit(world, data);
-    addComponents(world, eid, [DamageInfo, HitCircle]);
+    addComponents(world, eid, [DamageInfo, HitCircle, Enemy]);
     DamageInfo.value[eid] = 10;
     HitCircle.radius[eid] = 12;
     HitCircle.offsetX[eid] = 0;
@@ -96,11 +113,27 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
     return eid;
 }
 
-export const DespawnUnit = (world: GameWorld, eid: EntityId) => {
+export const DespawnSpriteEntity = (world: GameWorld, eid: EntityId) => {
     const sprite = world.spriteMap.get(eid);
     if(sprite){
         sprite.destroy();
         world.spriteMap.delete(eid);
     }
     removeEntity(world, eid);
+}
+
+//TODO work in progress
+export const SpawnExperienceOrb = (world: GameWorld, pos: { x: number, y: number }, amount: number) => {
+    const eid = BaseSpriteEntity(world, {
+        position: pos,
+        speed: 0,
+        spriteKey: ASSETS.IMAGES.EXPERIENCE
+    });
+    addComponents(world, eid, [ExperienceValue, HitCircle, Team]);
+    ExperienceValue.value[eid] = amount;
+    HitCircle.radius[eid] = 16;
+    HitCircle.offsetX[eid] = 0;
+    HitCircle.offsetY[eid] = 0;
+    Team.id[eid] = TEAM_ID.ENEMY;
+    return eid;
 }
