@@ -46,8 +46,8 @@ export class Preloader extends Scene
         this.load.bitmapFont('rogue', 'fonts/m5x7_font.png', 'fonts/m5x7_font.fnt');  
         this.load.image(ASSETS.IMAGES.TILES, 'maps/tilesets/tiles.png');
         this.load.image(ASSETS.IMAGES.ANIMATED_TILES, 'maps/tilesets/animated-tiles.png');
-        this.load.image(ASSETS.IMAGES.EXPERIENCE, 'sprites/experience.png');
         this.load.tilemapTiledJSON(ASSETS.TILEMAPS.MAP, 'maps/tilemaps/world-map.json');
+        this.load.aseprite(ASSETS.IMAGES.EXPERIENCE, 'sprites/experience.png', 'animations/experience.json');
     }
 
     create ()

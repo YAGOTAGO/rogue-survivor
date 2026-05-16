@@ -3,7 +3,7 @@ import { GameWorld, HitEvent } from "../game/scenes/Game";
 import { DamageInfo, Experience, ExperienceValue, Health, InvulnerabilityTimer } from "../components/StatComponents";
 import { Player } from "../components/TagComponents";
 import { LEVEL_UP_SCALING } from "../common/Constants";
-import { DespawnSpriteEntity } from "../factories/UnitFactory";
+import { DespawnSpriteEntity } from "../factories/EntityFactory";
 
 const PLAYER_INVULNERABILITY_DURATION = 0.5; // seconds
 

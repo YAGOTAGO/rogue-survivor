@@ -3,7 +3,7 @@ import { Scene, Math as PhaserMath } from 'phaser';
 import { enemySeparationSystem, followPlayerSystem, movementSystem, moveToSystem, playerVelocitySystem, spriteSyncSystem } from '../../systems/MovementSystem';
 import { inputSystem } from '../../systems/InputHandler';
 import { uiSystem } from '../../systems/UISystem';
-import { SpawnEnemy, SpawnExperienceOrb, SpawnPlayer } from '../../factories/UnitFactory';
+import { SpawnEnemy, SpawnExperienceOrb, SpawnPlayer } from '../../factories/EntityFactory';
 import { HealthBar } from '../../ui/HealthBarUI';
 import { cooldownSystem } from '../../systems/CooldownSystem';
 import { debugSystem } from '../../systems/DebugSystem';
@@ -79,6 +79,7 @@ export class Game extends Scene
             spriteMap: new Map<EntityId, Phaser.GameObjects.Sprite>(),
             spatialHash: new SpatialHash(),
         }) as GameWorld;
+        this.anims.createFromAseprite(ASSETS.IMAGES.EXPERIENCE);
 
         const map = this.add.tilemap(ASSETS.TILEMAPS.MAP);
         const tileset = map.addTilesetImage(ASSETS.IMAGES.TILES, ASSETS.IMAGES.TILES)!;

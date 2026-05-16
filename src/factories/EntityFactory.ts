@@ -129,6 +129,7 @@ export const SpawnExperienceOrb = (world: GameWorld, pos: { x: number, y: number
         speed: 0,
         spriteKey: ASSETS.IMAGES.EXPERIENCE
     });
+    world.spriteMap.get(eid)?.play({key: 'pulse', repeat: -1});
     addComponents(world, eid, [ExperienceValue, HitCircle, Team]);
     ExperienceValue.value[eid] = amount;
     HitCircle.radius[eid] = 16;
