@@ -1,6 +1,5 @@
 import { addComponents, addEntity, EntityId } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
-import { Cooldown } from "../components/AbilityComponents";
 
 interface BaseAbilityData {
     name: string;
