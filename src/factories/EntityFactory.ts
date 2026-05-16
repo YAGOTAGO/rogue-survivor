@@ -122,14 +122,13 @@ export const DespawnSpriteEntity = (world: GameWorld, eid: EntityId) => {
     removeEntity(world, eid);
 }
 
-//TODO work in progress
 export const SpawnExperienceOrb = (world: GameWorld, pos: { x: number, y: number }, amount: number) => {
     const eid = BaseSpriteEntity(world, {
         position: pos,
         speed: 0,
         spriteKey: ASSETS.IMAGES.EXPERIENCE
     });
-    world.spriteMap.get(eid)?.play({key: 'pulse', repeat: -1});
+    world.spriteMap.get(eid)?.play({key: ASSETS.ANIMATIONS.EXPERIENCE_PULSE, repeat: -1});
     addComponents(world, eid, [ExperienceValue, HitCircle, Team]);
     ExperienceValue.value[eid] = amount;
     HitCircle.radius[eid] = 16;

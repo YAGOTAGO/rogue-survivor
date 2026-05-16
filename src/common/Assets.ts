@@ -11,6 +11,9 @@ export const ASSETS = {
     TILEMAPS: {
         MAP: 'world-map',
     },
+    ANIMATIONS: {
+        EXPERIENCE_PULSE: 'pulse',
+    },
     AUDIO: {
         
     }
