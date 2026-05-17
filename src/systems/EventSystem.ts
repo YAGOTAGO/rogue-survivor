@@ -7,11 +7,11 @@ import { DespawnSpriteEntity } from "../factories/EntityFactory";
 
 const PLAYER_INVULNERABILITY_DURATION = 0.5; // seconds
 
-export const overlapEventSystem = (world: GameWorld) => {
+export const eventSystem = (world: GameWorld) => {
     for (const { source, target } of world.events.overlapEvents) {
         
         //Experience event
-        if(hasComponent(world, target, Player) && hasComponent(world, source, ExperienceValue)){
+        if(hasComponent(world, target, ExperienceValue) && hasComponent(world, source, Player)){
             experienceSystem(world, source, target);
             continue;
         }
@@ -26,15 +26,15 @@ export const overlapEventSystem = (world: GameWorld) => {
 }
 
 const experienceSystem = (world: GameWorld, source: EntityId, target: EntityId) => {
-    const expValue = ExperienceValue.value[source];
-    let totalExp = Experience.current[target] + expValue;
-    while (totalExp >= Experience.max[target]) {
-        totalExp -= Experience.max[target];         
-        Experience.level[target] += 1;
-        Experience.max[target] = Math.floor(Experience.max[target] * LEVEL_UP_SCALING);
+    const expValue = ExperienceValue.value[target];
+    let totalExp = Experience.current[source] + expValue;
+    while (totalExp >= Experience.max[source]) {
+        totalExp -= Experience.max[source];         
+        Experience.level[source] += 1;
+        Experience.max[source] = Math.floor(Experience.max[source] * LEVEL_UP_SCALING);
     }
-    Experience.current[target] = totalExp;
-    DespawnSpriteEntity(world, source);
+    Experience.current[source] = totalExp;
+    DespawnSpriteEntity(world, target);
 }
 
 const damageSystem = (world: GameWorld, source: EntityId, target: EntityId) => {

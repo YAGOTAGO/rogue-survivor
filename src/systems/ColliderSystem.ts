@@ -1,29 +1,33 @@
 import { EntityId, hasComponent, query } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
 import { Position } from "../components/MovementComponents";
-import { Team } from "../components/TagComponents";
-import { HitCircle, DetectCircle } from "../components/StatComponents";
+import { HitCircle, HurtCircle } from "../components/StatComponents";
+import { OVERLAP_LAYERS } from "../common/Constants";
 
 const queryBuffer: EntityId[] = [];
 
 export const colliderSystem = (world: GameWorld) => {
-    const attackers = query(world, [Position, HitCircle, Team]);
+    const sources = query(world, [Position, HitCircle]);
 
-    for (const attackerId of attackers) {
-        const sourceX = Position.x[attackerId] + (HitCircle.offsetX[attackerId] || 0);
-        const sourceY = Position.y[attackerId] + (HitCircle.offsetY[attackerId] || 0);
-        const sourceRadius = HitCircle.radius[attackerId];
-        
+    for (const sourceId of sources) {
+        const sourceMask = HitCircle.mask[sourceId];
+        if (sourceMask === OVERLAP_LAYERS.NONE) continue;
+
+        const sourceX = Position.x[sourceId] + (HitCircle.offsetX[sourceId] || 0);
+        const sourceY = Position.y[sourceId] + (HitCircle.offsetY[sourceId] || 0);
+        const sourceRadius = HitCircle.radius[sourceId];
+
         world.spatialHash.getNearby(sourceX, sourceY, queryBuffer);
-        for (const targetId of queryBuffer) {
-            
-            if (attackerId === targetId) continue; // Skip self
-            if (Team.id[attackerId] === Team.id[targetId]) continue; // Skip same team
-            if (!hasComponent(world, targetId, DetectCircle)) continue;
 
-            const targetX = Position.x[targetId] + (DetectCircle.offsetX[targetId] || 0);
-            const targetY = Position.y[targetId] + (DetectCircle.offsetY[targetId] || 0);
-            const targetRadius = DetectCircle.radius[targetId] || 0;
+        for (const targetId of queryBuffer) {
+            if (sourceId === targetId) continue; // Skip self
+            if (!hasComponent(world, targetId, HurtCircle)) continue;
+            const targetMask = HurtCircle.layer[targetId];
+            if ((sourceMask & targetMask) === 0) continue; // Masking check
+
+            const targetX = Position.x[targetId] + (HurtCircle.offsetX[targetId] || 0);
+            const targetY = Position.y[targetId] + (HurtCircle.offsetY[targetId] || 0);
+            const targetRadius = HurtCircle.radius[targetId] || 0;
 
             const dx = sourceX - targetX;
             const dy = sourceY - targetY;
@@ -31,7 +35,7 @@ export const colliderSystem = (world: GameWorld) => {
             const radiiSum = sourceRadius + targetRadius;
 
             if (distSquared < (radiiSum * radiiSum)) {
-                world.events.overlapEvents.push({ source: attackerId, target: targetId });
+                world.events.overlapEvents.push({ source: sourceId, target: targetId });
             }
         }
     }

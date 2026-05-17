@@ -8,7 +8,7 @@ import { HealthBar } from '../../ui/HealthBarUI';
 import { cooldownSystem } from '../../systems/CooldownSystem';
 import { debugSystem } from '../../systems/DebugSystem';
 import { colliderSystem } from '../../systems/ColliderSystem';
-import { overlapEventSystem } from '../../systems/OverlapEventSystem';
+import { eventSystem } from '../../systems/EventSystem';
 import { SpatialHash } from '../../common/SpatialHash';
 import { spatialHashSystem } from '../../systems/SpatialHashSystem';
 import { ASSETS } from '../../common/Assets';
@@ -126,7 +126,7 @@ export class Game extends Scene
         spatialHashSystem, // Must run before colliderSystem/enemySeparationSystem
         enemySeparationSystem,
         colliderSystem,
-        overlapEventSystem,
+        eventSystem,
         spriteSyncSystem,
         uiSystem,
         debugSystem,

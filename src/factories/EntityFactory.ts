@@ -1,8 +1,8 @@
 import { addComponents, addEntity, EntityId, removeEntity } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
 import { Collider, Position, Speed, Velocity } from "../components/MovementComponents";
-import { Enemy, Player, Team, TEAM_ID, TeamId } from "../components/TagComponents";
-import { DamageInfo, DetectCircle, Experience, ExperienceValue, Health, HitCircle, InvulnerabilityTimer } from "../components/StatComponents";
+import { Enemy, Player } from "../components/TagComponents";
+import { DamageInfo, HurtCircle, Experience, ExperienceValue, Health, HitCircle, InvulnerabilityTimer } from "../components/StatComponents";
 import { ASSETS } from "../common/Assets";
 import { OVERLAP_LAYERS } from "../common/Constants";
 
@@ -14,7 +14,6 @@ interface BaseUnitData{
     maxHealth: number,
     spriteKey: string,
     spriteFrame?: number,
-    teamId: TeamId,
     collider?: { width: number, height: number, offsetX: number, offsetY: number },
 }
 
@@ -36,7 +35,6 @@ const BaseSpriteEntity = (world: GameWorld, data: BaseSpriteData): EntityId => {
     Speed.value[eid] = data.speed;
 
     const sprite = world.scene.add.sprite(data.position.x, data.position.y, data.spriteKey, data.spriteFrame);
-    sprite.setData('eid', eid);
     world.spriteMap.set(eid, sprite);
 
     return eid;
@@ -50,7 +48,7 @@ const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
         spriteFrame: data.spriteFrame,
     });
 
-    addComponents(world, eid, [Health, Collider, Team]);
+    addComponents(world, eid, [Health, Collider]);
     Health.current[eid] = data.maxHealth;
     Health.max[eid] = data.maxHealth;
 
@@ -65,8 +63,6 @@ const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
         Collider.offsetX[eid] = DEFAULT_COLLIDER.offsetX;
         Collider.offsetY[eid] = DEFAULT_COLLIDER.offsetY;
     }
-    Team.id[eid] = data.teamId;
-
     return eid;
 };
 
@@ -77,18 +73,21 @@ export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): En
         maxHealth: 100,
         spriteKey: ASSETS.SPRITESHEETS.PLAYERS,
         spriteFrame: 3,
-        teamId: TEAM_ID.ALLY,
     }
     const eid = BaseUnit(world, data);
-    addComponents(world, eid, [InvulnerabilityTimer, Experience, Player, DetectCircle]);
+    addComponents(world, eid, [InvulnerabilityTimer, Experience, Player, HurtCircle, HitCircle]);
     InvulnerabilityTimer.current[eid] = 0;
     Experience.level[eid] = 1;
     Experience.current[eid] = 0;
     Experience.max[eid] = 100;
-    DetectCircle.radius[eid] = 6;
-    DetectCircle.offsetX[eid] = 0;
-    DetectCircle.offsetY[eid] = 1;
-    DetectCircle.layer[eid] = OVERLAP_LAYERS.ENEMY | OVERLAP_LAYERS.XP_ORB;
+    HurtCircle.radius[eid] = 6;
+    HurtCircle.offsetX[eid] = 0;
+    HurtCircle.offsetY[eid] = 1;
+    HurtCircle.layer[eid] = OVERLAP_LAYERS.PLAYER;
+    HitCircle.radius[eid] = 16;
+    HitCircle.offsetX[eid] = 0;
+    HitCircle.offsetY[eid] = 1;
+    HitCircle.mask[eid] = OVERLAP_LAYERS.XP_ORB;
     return eid;
 }
 
@@ -99,18 +98,18 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
         maxHealth: 100,
         spriteKey: ASSETS.SPRITESHEETS.ENEMIES,
         spriteFrame: 48,
-        teamId: TEAM_ID.ENEMY
     }
     const eid = BaseUnit(world, data);
-    addComponents(world, eid, [DamageInfo, HitCircle, Enemy, DetectCircle, HitCircle]);
+    addComponents(world, eid, [DamageInfo, HitCircle, Enemy, HurtCircle, HitCircle]);
     DamageInfo.value[eid] = 10;
     HitCircle.radius[eid] = 12;
     HitCircle.offsetX[eid] = 0;
     HitCircle.offsetY[eid] = 0;
-    DetectCircle.radius[eid] = 12;
-    DetectCircle.offsetX[eid] = 0;
-    DetectCircle.offsetY[eid] = 0;
-    DetectCircle.layer[eid] = OVERLAP_LAYERS.PROJECTILE;
+    HitCircle.mask[eid] = OVERLAP_LAYERS.PLAYER;
+    HurtCircle.radius[eid] = 12;
+    HurtCircle.offsetX[eid] = 0;
+    HurtCircle.offsetY[eid] = 0;
+    HurtCircle.layer[eid] = OVERLAP_LAYERS.ENEMY;
     return eid;
 }
 
@@ -130,11 +129,11 @@ export const SpawnExperienceOrb = (world: GameWorld, pos: { x: number, y: number
         spriteKey: ASSETS.IMAGES.EXPERIENCE
     });
     world.spriteMap.get(eid)?.play({key: ASSETS.ANIMATIONS.EXPERIENCE_PULSE, repeat: -1});
-    addComponents(world, eid, [ExperienceValue, HitCircle, Team]);
+    addComponents(world, eid, [ExperienceValue, HurtCircle]);
     ExperienceValue.value[eid] = amount;
-    HitCircle.radius[eid] = 16;
-    HitCircle.offsetX[eid] = 0;
-    HitCircle.offsetY[eid] = 0;
-    Team.id[eid] = TEAM_ID.ENEMY;
+    HurtCircle.radius[eid] = 16;
+    HurtCircle.offsetX[eid] = 0;
+    HurtCircle.offsetY[eid] = 0;
+    HurtCircle.layer[eid] = OVERLAP_LAYERS.XP_ORB;
     return eid;
 }

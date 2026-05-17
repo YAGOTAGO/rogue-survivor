@@ -34,7 +34,7 @@ export const HitCircle = {
     offsetY: new Float32Array(MAX_ENTITIES),
     mask: new Uint8Array(MAX_ENTITIES),
 }
-export const DetectCircle = {
+export const HurtCircle = {
     radius: new Float32Array(MAX_ENTITIES),
     offsetX: new Float32Array(MAX_ENTITIES),
     offsetY: new Float32Array(MAX_ENTITIES),
