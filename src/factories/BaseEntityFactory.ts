@@ -101,6 +101,7 @@ const GetOrCreateSprite = (
     sprite.setVisible(true);
     sprite.setAlpha(1);
     sprite.setScale(1);
+    sprite.setTint(0xffffff);
     sprite.setTexture(texture, frame);
     return sprite;
 };
