@@ -2,6 +2,7 @@ import { addComponents, addEntity, EntityId, removeEntity } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
 import { Collider, Position, Speed, Velocity } from "../components/MovementComponents";
 import { Health } from "../components/StatComponents";
+import { GameObjects } from "phaser";
 
 const DEFAULT_COLLIDER = { width: 14, height: 12, offsetX: 0, offsetY: 8 };
 
@@ -12,6 +13,7 @@ export interface BaseUnitData{
     spriteKey: string,
     spriteFrame?: number,
     collider?: { width: number, height: number, offsetX: number, offsetY: number },
+    pool?: GameObjects.Group,
 }
 
 export interface BaseSpriteData {
@@ -19,6 +21,7 @@ export interface BaseSpriteData {
     speed: number,
     spriteKey: string,
     spriteFrame?: number,
+    pool?: GameObjects.Group,
 }
 
 export const BaseSpriteEntity = (world: GameWorld, data: BaseSpriteData): EntityId => {
@@ -31,7 +34,12 @@ export const BaseSpriteEntity = (world: GameWorld, data: BaseSpriteData): Entity
     Velocity.y[eid] = 0;
     Speed.value[eid] = data.speed;
 
-    const sprite = world.scene.add.sprite(data.position.x, data.position.y, data.spriteKey, data.spriteFrame);
+    let sprite: GameObjects.Sprite;
+    if (data.pool) {
+        sprite = GetOrCreateSprite(data.position.x, data.position.y, data.spriteKey, data.spriteFrame ?? 0, data.pool);
+    } else {
+        sprite = world.scene.add.sprite(data.position.x, data.position.y, data.spriteKey, data.spriteFrame);
+    }
     world.spriteMap.set(eid, sprite);
 
     return eid;
@@ -43,6 +51,7 @@ export const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
         speed: data.speed,
         spriteKey: data.spriteKey,
         spriteFrame: data.spriteFrame,
+        pool: data.pool,
     });
 
     addComponents(world, eid, [Health, Collider]);
@@ -66,8 +75,32 @@ export const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
 export const DespawnSpriteEntity = (world: GameWorld, eid: EntityId) => {
     const sprite = world.spriteMap.get(eid);
     if(sprite){
-        sprite.destroy();
+        const pool = sprite.getData('pool') as GameObjects.Group | undefined;
+        if (pool) {
+            pool.killAndHide(sprite);
+        } else {
+            sprite.destroy();
+        }
         world.spriteMap.delete(eid);
     }
     removeEntity(world, eid);
 }
+
+const GetOrCreateSprite = (
+    x: number, 
+    y: number, 
+    texture: string, 
+    frame: string | number, 
+    pool: GameObjects.Group
+): GameObjects.Sprite => {
+
+    const sprite = pool.get(x, y, texture, frame) as GameObjects.Sprite | undefined;
+    if (!sprite) throw new Error(`[BaseEntityFactory] Critical: Sprite Pool Exhausted. Max size of ${pool.maxSize} reached.`);
+    sprite.setData('pool', pool);
+    sprite.setActive(true);
+    sprite.setVisible(true);
+    sprite.setAlpha(1);
+    sprite.setScale(1);
+    sprite.setTexture(texture, frame);
+    return sprite;
+};

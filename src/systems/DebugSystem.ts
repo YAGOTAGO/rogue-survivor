@@ -7,11 +7,21 @@ const DEBUG_COLLIDER = false;
 const DEBUG_HURT_CIRCLE = false;
 const DEBUG_HIT_CIRCLE = true;
 const DEBUG_TWEEN_AMOUNT = false;
+const DEBUG_EXPERIENCE_ORBS = false;
+const DEBUG_ENEMY_POOL = false;
 
 export const debugSystem = (world: GameWorld) => {
     const debugGraphics = world.debugGraphics;
     debugGraphics.clear();
     debugGraphics.lineStyle(1, 0x00ff00, 1);
+
+    if (DEBUG_EXPERIENCE_ORBS) {
+        console.log(`Experience Orbs in Pool: ${world.pools.orbPool.countActive(false)}/${world.pools.orbPool.maxSize}`);
+    }
+    
+    if (DEBUG_ENEMY_POOL) {
+        console.log(`Enemies in Pool: ${world.pools.enemyPool.countActive(false)}/${world.pools.enemyPool.maxSize}`);
+    }
 
     if (DEBUG_TWEEN_AMOUNT) {
         console.log(`Active Tweens: ${world.scene.tweens.getTweens().length}`);

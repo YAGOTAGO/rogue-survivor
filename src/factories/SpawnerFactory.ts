@@ -38,6 +38,7 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
         maxHealth: 100,
         spriteKey: ASSETS.SPRITESHEETS.ENEMIES,
         spriteFrame: 48,
+        pool: world.pools.enemyPool,
     }
     const eid = BaseUnit(world, data);
     addComponents(world, eid, [DamageInfo, Enemy, HurtCircle, HitCircle]);
@@ -58,7 +59,8 @@ export const SpawnExperienceOrb = (world: GameWorld, pos: { x: number, y: number
     const eid = BaseSpriteEntity(world, {
         position: pos,
         speed: 0,
-        spriteKey: ASSETS.IMAGES.EXPERIENCE
+        spriteKey: ASSETS.IMAGES.EXPERIENCE,    
+        pool: world.pools.orbPool,
     });
     world.spriteMap.get(eid)?.play({key: ASSETS.ANIMATIONS.EXPERIENCE_PULSE, repeat: -1});
     addComponents(world, eid, [ExperienceValue, HurtCircle]);
