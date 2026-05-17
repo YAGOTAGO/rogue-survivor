@@ -49,6 +49,11 @@ const damageSystem = (world: GameWorld, source: EntityId, target: EntityId) => {
     Health.current[target] -= finalDamage;
     if (Health.current[target] <= 0) {
         console.log(`Entity ${target} was killed by Entity ${source}`);
+        if (hasComponent(world, target, Player)) {
+            //Trigger some event that will end game
+        }else{
+            DespawnSpriteEntity(world, target);
+        } 
     }
 
     if (hasComponent(world, target, Player)) {
