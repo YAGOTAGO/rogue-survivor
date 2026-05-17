@@ -1,4 +1,4 @@
-import { GameObjects, Math as PhaserMath } from 'phaser';
+import { GameObjects, Math as PhaserMath, Scene } from 'phaser';
 
 export class ExperienceBar extends GameObjects.Container {
     private barFill: GameObjects.Rectangle;
@@ -8,7 +8,7 @@ export class ExperienceBar extends GameObjects.Container {
 
     private originalTextY: number = -20;
 
-    constructor(scene: Phaser.Scene) {
+    constructor(scene: Scene) {
         const screenWidth = scene.scale.width;
         const barWidth = screenWidth * 0.5;
         const x = (screenWidth / 2) - (barWidth / 2);

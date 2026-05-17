@@ -1,4 +1,4 @@
-import { GameObjects, Math as PhaserMath } from 'phaser';
+import { GameObjects, Math as PhaserMath, Scene } from 'phaser';
 
 export class HealthBar extends GameObjects.Container {
     private barFill: GameObjects.Rectangle;
@@ -7,7 +7,7 @@ export class HealthBar extends GameObjects.Container {
 
     private lastPercent: number = -1;
 
-    constructor(scene: Phaser.Scene) {
+    constructor(scene: Scene) {
         const screenWidth = scene.scale.width;
         const barWidth = screenWidth * 0.5;
         const x = (screenWidth / 2) - (barWidth / 2);

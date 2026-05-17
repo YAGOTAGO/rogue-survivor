@@ -1,10 +1,10 @@
-import { Scene } from 'phaser';
+import { GameObjects, Scene, Cameras } from 'phaser';
 
 export class GameOver extends Scene
 {
-    camera: Phaser.Cameras.Scene2D.Camera;
-    background: Phaser.GameObjects.Image;
-    gameover_text : Phaser.GameObjects.Text;
+    camera: Cameras.Scene2D.Camera;
+    background: GameObjects.Image;
+    gameover_text : GameObjects.Text;
 
     constructor ()
     {

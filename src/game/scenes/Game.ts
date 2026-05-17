@@ -1,5 +1,5 @@
 import { createWorld, EntityId, World } from 'bitecs';
-import { Scene, Math as PhaserMath } from 'phaser';
+import { Scene, Math as PhaserMath, GameObjects, Types, Input, Cameras } from 'phaser';
 import { enemySeparationSystem, followPlayerSystem, movementSystem, moveToSystem, playerVelocitySystem, spriteSyncSystem } from '../../systems/MovementSystem';
 import { inputSystem } from '../../systems/InputHandler';
 import { uiSystem } from '../../systems/UISystem';
@@ -13,11 +13,12 @@ import { SpatialHash } from '../../common/SpatialHash';
 import { spatialHashSystem } from '../../systems/SpatialHashSystem';
 import { ASSETS } from '../../common/Assets';
 import { ExperienceBar } from '../../ui/ExperienceBarUI';
+import { MAX_ENEMY_POOL_SIZE, MAX_ORB_POOL_SIZE } from '../../common/Constants';
 
 export type OverlapEvent = { source: EntityId; target: EntityId };
 
 interface WorldData {
-    scene: Phaser.Scene;
+    scene: Scene;
     time: {
         delta: number;
         elapsed: number;
@@ -25,10 +26,10 @@ interface WorldData {
     input: {
         xAxis: number;
         yAxis: number;
-        cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+        cursors: Types.Input.Keyboard.CursorKeys;
         wasdKeys: any;
-        pointer: Phaser.Input.Pointer;
-        gamepad: Phaser.Input.Gamepad.GamepadPlugin;
+        pointer: Input.Pointer;
+        gamepad: Input.Gamepad.GamepadPlugin;
     },
     events: {
         overlapEvents: OverlapEvent[];
@@ -37,17 +38,21 @@ interface WorldData {
         healthBarUi: HealthBar;
         experienceBarUi: ExperienceBar;
     },
-    debugGraphics: Phaser.GameObjects.Graphics,
-    spriteMap: Map<EntityId, Phaser.GameObjects.Sprite>,
+    pools: {
+        enemyPool: GameObjects.Group;
+        orbPool: GameObjects.Group;
+    },
+    debugGraphics: GameObjects.Graphics,
+    spriteMap: Map<EntityId, GameObjects.Sprite>,
     spatialHash: SpatialHash;
 }
 export type GameWorld = World & WorldData;
 
 export class Game extends Scene
 {
-    private camera: Phaser.Cameras.Scene2D.Camera;
+    private camera: Cameras.Scene2D.Camera;
     private world!: GameWorld;
-    private fpsText!: Phaser.GameObjects.Text;
+    private fpsText!: GameObjects.Text;
 
     constructor ()
     {
@@ -75,8 +80,12 @@ export class Game extends Scene
                 healthBarUi: new HealthBar(this),
                 experienceBarUi: new ExperienceBar(this),
             },
+            pools: {
+                enemyPool: this.add.group({ classType: GameObjects.Sprite, maxSize: MAX_ENEMY_POOL_SIZE }),
+                orbPool: this.add.group({ classType: GameObjects.Sprite, maxSize: MAX_ORB_POOL_SIZE }),
+            },
             debugGraphics: this.add.graphics().setDepth(1000),
-            spriteMap: new Map<EntityId, Phaser.GameObjects.Sprite>(),
+            spriteMap: new Map<EntityId, GameObjects.Sprite>(),
             spatialHash: new SpatialHash(),
         }) as GameWorld;
         this.anims.createFromAseprite(ASSETS.IMAGES.EXPERIENCE);
