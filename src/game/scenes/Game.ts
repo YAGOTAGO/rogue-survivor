@@ -3,7 +3,7 @@ import { Scene, Math as PhaserMath, GameObjects, Types, Input, Cameras } from 'p
 import { enemySeparationSystem, followPlayerSystem, movementSystem, moveToSystem, playerVelocitySystem, spriteSyncSystem } from '../../systems/MovementSystem';
 import { inputSystem } from '../../systems/InputHandler';
 import { uiSystem } from '../../systems/UISystem';
-import { SpawnEnemy, SpawnExperienceOrb, SpawnPlayer } from '../../factories/EntityFactory';
+import { SpawnEnemy, SpawnExperienceOrb, SpawnPlayer } from '../../factories/SpawnerFactory';
 import { HealthBar } from '../../ui/HealthBarUI';
 import { cooldownSystem } from '../../systems/CooldownSystem';
 import { debugSystem } from '../../systems/DebugSystem';
