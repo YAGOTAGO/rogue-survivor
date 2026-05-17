@@ -100,7 +100,7 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
         spriteFrame: 48,
     }
     const eid = BaseUnit(world, data);
-    addComponents(world, eid, [DamageInfo, HitCircle, Enemy, HurtCircle, HitCircle]);
+    addComponents(world, eid, [DamageInfo, Enemy, HurtCircle, HitCircle]);
     DamageInfo.value[eid] = 10;
     HitCircle.radius[eid] = 12;
     HitCircle.offsetX[eid] = 0;
