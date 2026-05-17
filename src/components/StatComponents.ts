@@ -32,10 +32,11 @@ export const HitCircle = {
     radius: new Float32Array(MAX_ENTITIES),
     offsetX: new Float32Array(MAX_ENTITIES),
     offsetY: new Float32Array(MAX_ENTITIES),
-    damage: new Uint16Array(MAX_ENTITIES),
+    mask: new Uint8Array(MAX_ENTITIES),
 }
-export const HurtCircle = {
+export const DetectCircle = {
     radius: new Float32Array(MAX_ENTITIES),
     offsetX: new Float32Array(MAX_ENTITIES),
     offsetY: new Float32Array(MAX_ENTITIES),
+    layer: new Uint8Array(MAX_ENTITIES),
 }

@@ -10,3 +10,11 @@
 
 export const MAX_ENTITIES = 10000 as const;
 export const LEVEL_UP_SCALING = 1.2 as const;
+export const OVERLAP_LAYERS = {
+    NONE:       0,
+    PLAYER:     1 << 0,  // 1
+    ENEMY:      1 << 1,  // 2
+    PROJECTILE: 1 << 2,  // 4
+    XP_ORB:     1 << 3,  // 8
+    POWERUP:    1 << 4,  // 16
+} as const;

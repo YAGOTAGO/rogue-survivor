@@ -2,7 +2,7 @@ import { EntityId, hasComponent, query } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
 import { Position } from "../components/MovementComponents";
 import { Team } from "../components/TagComponents";
-import { HitCircle, HurtCircle } from "../components/StatComponents";
+import { HitCircle, DetectCircle } from "../components/StatComponents";
 
 const queryBuffer: EntityId[] = [];
 
@@ -19,11 +19,11 @@ export const colliderSystem = (world: GameWorld) => {
             
             if (attackerId === targetId) continue; // Skip self
             if (Team.id[attackerId] === Team.id[targetId]) continue; // Skip same team
-            if (!hasComponent(world, targetId, HurtCircle)) continue;
+            if (!hasComponent(world, targetId, DetectCircle)) continue;
 
-            const targetX = Position.x[targetId] + (HurtCircle.offsetX[targetId] || 0);
-            const targetY = Position.y[targetId] + (HurtCircle.offsetY[targetId] || 0);
-            const targetRadius = HurtCircle.radius[targetId] || 0;
+            const targetX = Position.x[targetId] + (DetectCircle.offsetX[targetId] || 0);
+            const targetY = Position.y[targetId] + (DetectCircle.offsetY[targetId] || 0);
+            const targetRadius = DetectCircle.radius[targetId] || 0;
 
             const dx = sourceX - targetX;
             const dy = sourceY - targetY;
@@ -31,8 +31,7 @@ export const colliderSystem = (world: GameWorld) => {
             const radiiSum = sourceRadius + targetRadius;
 
             if (distSquared < (radiiSum * radiiSum)) {
-                console.log(`Entity ${attackerId} hit Entity ${targetId}`);
-                world.events.hitEvents.push({ source: attackerId, target: targetId });
+                world.events.overlapEvents.push({ source: attackerId, target: targetId });
             }
         }
     }

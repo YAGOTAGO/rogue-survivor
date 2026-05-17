@@ -1,7 +1,7 @@
 import { query } from "bitecs";
 import { Collider, Position } from "../components/MovementComponents";
 import { GameWorld } from "../game/scenes/Game";
-import { HitCircle, HurtCircle } from "../components/StatComponents";
+import { HitCircle, DetectCircle } from "../components/StatComponents";
 
 const DEBUG_COLLIDER = false;
 const DEBUG_HURT_CIRCLE = false;
@@ -36,12 +36,12 @@ export const debugSystem = (world: GameWorld) => {
 
     if (DEBUG_HURT_CIRCLE) {
         debugGraphics.lineStyle(1, 0xff0000, 1); //Red
-        for (const eid of query(world, [Position, HurtCircle])) {
-            const radius = HurtCircle.radius[eid];
+        for (const eid of query(world, [Position, DetectCircle])) {
+            const radius = DetectCircle.radius[eid];
             if (radius <= 0) continue;
 
-            const x = Position.x[eid] + (HurtCircle.offsetX[eid] ?? 0);
-            const y = Position.y[eid] + (HurtCircle.offsetY[eid] ?? 0);
+            const x = Position.x[eid] + (DetectCircle.offsetX[eid] ?? 0);
+            const y = Position.y[eid] + (DetectCircle.offsetY[eid] ?? 0);
 
             debugGraphics.strokeCircle(x, y, radius);
         }

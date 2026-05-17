@@ -8,13 +8,13 @@ import { HealthBar } from '../../ui/HealthBarUI';
 import { cooldownSystem } from '../../systems/CooldownSystem';
 import { debugSystem } from '../../systems/DebugSystem';
 import { colliderSystem } from '../../systems/ColliderSystem';
-import { eventSystem } from '../../systems/EventsSystem';
+import { overlapEventSystem } from '../../systems/OverlapEventSystem';
 import { SpatialHash } from '../../common/SpatialHash';
 import { spatialHashSystem } from '../../systems/SpatialHashSystem';
 import { ASSETS } from '../../common/Assets';
 import { ExperienceBar } from '../../ui/ExperienceBarUI';
 
-export type HitEvent = { source: EntityId; target: EntityId };
+export type OverlapEvent = { source: EntityId; target: EntityId };
 
 interface WorldData {
     scene: Phaser.Scene;
@@ -31,7 +31,7 @@ interface WorldData {
         gamepad: Phaser.Input.Gamepad.GamepadPlugin;
     },
     events: {
-        hitEvents: HitEvent[];
+        overlapEvents: OverlapEvent[];
     },
     ui: {
         healthBarUi: HealthBar;
@@ -69,7 +69,7 @@ export class Game extends Scene
                 gamepad: this.input.gamepad,
              },
             events: {
-                hitEvents: [] as HitEvent[],
+                overlapEvents: [] as OverlapEvent[],
             },
             ui: {
                 healthBarUi: new HealthBar(this),
@@ -126,7 +126,7 @@ export class Game extends Scene
         spatialHashSystem, // Must run before colliderSystem/enemySeparationSystem
         enemySeparationSystem,
         colliderSystem,
-        eventSystem,
+        overlapEventSystem,
         spriteSyncSystem,
         uiSystem,
         debugSystem,

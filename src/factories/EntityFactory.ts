@@ -2,8 +2,9 @@ import { addComponents, addEntity, EntityId, removeEntity } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
 import { Collider, Position, Speed, Velocity } from "../components/MovementComponents";
 import { Enemy, Player, Team, TEAM_ID, TeamId } from "../components/TagComponents";
-import { DamageInfo, Experience, ExperienceValue, Health, HitCircle, HurtCircle, InvulnerabilityTimer } from "../components/StatComponents";
+import { DamageInfo, DetectCircle, Experience, ExperienceValue, Health, HitCircle, InvulnerabilityTimer } from "../components/StatComponents";
 import { ASSETS } from "../common/Assets";
+import { OVERLAP_LAYERS } from "../common/Constants";
 
 const DEFAULT_COLLIDER = { width: 14, height: 12, offsetX: 0, offsetY: 8 };
 
@@ -15,7 +16,6 @@ interface BaseUnitData{
     spriteFrame?: number,
     teamId: TeamId,
     collider?: { width: number, height: number, offsetX: number, offsetY: number },
-    hurtCircle: { radius: number, offsetX: number, offsetY: number },
 }
 
 interface BaseSpriteData {
@@ -50,7 +50,7 @@ const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
         spriteFrame: data.spriteFrame,
     });
 
-    addComponents(world, eid, [Health, Collider, HurtCircle, Team]);
+    addComponents(world, eid, [Health, Collider, Team]);
     Health.current[eid] = data.maxHealth;
     Health.max[eid] = data.maxHealth;
 
@@ -65,10 +65,6 @@ const BaseUnit = (world: GameWorld, data: BaseUnitData): EntityId => {
         Collider.offsetX[eid] = DEFAULT_COLLIDER.offsetX;
         Collider.offsetY[eid] = DEFAULT_COLLIDER.offsetY;
     }
-
-    HurtCircle.radius[eid] = data.hurtCircle.radius;
-    HurtCircle.offsetX[eid] = data.hurtCircle.offsetX;
-    HurtCircle.offsetY[eid] = data.hurtCircle.offsetY;
     Team.id[eid] = data.teamId;
 
     return eid;
@@ -82,14 +78,17 @@ export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): En
         spriteKey: ASSETS.SPRITESHEETS.PLAYERS,
         spriteFrame: 3,
         teamId: TEAM_ID.ALLY,
-        hurtCircle: { radius: 6, offsetX: 0, offsetY: 1 },
     }
     const eid = BaseUnit(world, data);
-    addComponents(world, eid, [InvulnerabilityTimer, Experience, Player]);
+    addComponents(world, eid, [InvulnerabilityTimer, Experience, Player, DetectCircle]);
     InvulnerabilityTimer.current[eid] = 0;
     Experience.level[eid] = 1;
     Experience.current[eid] = 0;
     Experience.max[eid] = 100;
+    DetectCircle.radius[eid] = 6;
+    DetectCircle.offsetX[eid] = 0;
+    DetectCircle.offsetY[eid] = 1;
+    DetectCircle.layer[eid] = OVERLAP_LAYERS.ENEMY | OVERLAP_LAYERS.XP_ORB;
     return eid;
 }
 
@@ -100,16 +99,18 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
         maxHealth: 100,
         spriteKey: ASSETS.SPRITESHEETS.ENEMIES,
         spriteFrame: 48,
-        teamId: TEAM_ID.ENEMY,
-        hurtCircle: { radius: 12, offsetX: 0, offsetY: 0 },
+        teamId: TEAM_ID.ENEMY
     }
     const eid = BaseUnit(world, data);
-    addComponents(world, eid, [DamageInfo, HitCircle, Enemy]);
+    addComponents(world, eid, [DamageInfo, HitCircle, Enemy, DetectCircle, HitCircle]);
     DamageInfo.value[eid] = 10;
     HitCircle.radius[eid] = 12;
     HitCircle.offsetX[eid] = 0;
     HitCircle.offsetY[eid] = 0;
-    HitCircle.damage[eid] = 10;
+    DetectCircle.radius[eid] = 12;
+    DetectCircle.offsetX[eid] = 0;
+    DetectCircle.offsetY[eid] = 0;
+    DetectCircle.layer[eid] = OVERLAP_LAYERS.PROJECTILE;
     return eid;
 }
 

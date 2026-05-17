@@ -1,5 +1,5 @@
-import { hasComponent } from "bitecs";
-import { GameWorld, HitEvent } from "../game/scenes/Game";
+import { EntityId, hasComponent } from "bitecs";
+import { GameWorld } from "../game/scenes/Game";
 import { DamageInfo, Experience, ExperienceValue, Health, InvulnerabilityTimer } from "../components/StatComponents";
 import { Player } from "../components/TagComponents";
 import { LEVEL_UP_SCALING } from "../common/Constants";
@@ -7,18 +7,25 @@ import { DespawnSpriteEntity } from "../factories/EntityFactory";
 
 const PLAYER_INVULNERABILITY_DURATION = 0.5; // seconds
 
-export const eventSystem = (world: GameWorld) => {
-    for (const event of world.events.hitEvents) {
-        damageSystem(world, event);
-        experienceSystem(world, event);
+export const overlapEventSystem = (world: GameWorld) => {
+    for (const { source, target } of world.events.overlapEvents) {
+        
+        //Experience event
+        if(hasComponent(world, target, Player) && hasComponent(world, source, ExperienceValue)){
+            experienceSystem(world, source, target);
+            continue;
+        }
+
+        //Damage event
+        if(hasComponent(world, source, DamageInfo) && hasComponent(world, target, Health)){
+            damageSystem(world, source, target);
+            continue;
+        } 
     }
-    world.events.hitEvents = [];
+    world.events.overlapEvents = [];
 }
 
-const experienceSystem = (world: GameWorld, hitEvent: HitEvent) => {
-    const { target, source } = hitEvent;
-    if (!hasComponent(world, target, Player)) return;
-    if (!hasComponent(world, source, ExperienceValue)) return;
+const experienceSystem = (world: GameWorld, source: EntityId, target: EntityId) => {
     const expValue = ExperienceValue.value[source];
     let totalExp = Experience.current[target] + expValue;
     while (totalExp >= Experience.max[target]) {
@@ -30,9 +37,7 @@ const experienceSystem = (world: GameWorld, hitEvent: HitEvent) => {
     DespawnSpriteEntity(world, source);
 }
 
-const damageSystem = (world: GameWorld, hitEvent: HitEvent) => {
-    const { target, source } = hitEvent;
-
+const damageSystem = (world: GameWorld, source: EntityId, target: EntityId) => {
     if (hasComponent(world, target, InvulnerabilityTimer) && InvulnerabilityTimer.current[target] > 0) {
         return;
     }
