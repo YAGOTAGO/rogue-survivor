@@ -8,8 +8,15 @@ export const Regen = {
     value: new Float32Array(MAX_ENTITIES) // HP per second
 }
 export const DamageInfo = { 
-    value: new Uint16Array(MAX_ENTITIES) 
+    damage: new Uint16Array(MAX_ENTITIES),
 }
+export const KnockbackInfo = {
+    knockbakForce: new Float32Array(MAX_ENTITIES),
+    knockbackTime: new Float32Array(MAX_ENTITIES),
+}
+export const ActiveKnockback = {
+    timer: new Float32Array(MAX_ENTITIES)
+};
 export const Experience = {
     level: new Uint16Array(MAX_ENTITIES),
     current: new Uint16Array(MAX_ENTITIES),

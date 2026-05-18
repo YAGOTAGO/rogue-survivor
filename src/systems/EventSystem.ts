@@ -43,7 +43,7 @@ const damageSystem = (world: GameWorld, source: EntityId, target: EntityId) => {
         return;
     }
 
-    let finalDamage = hasComponent(world, source, DamageInfo) ? DamageInfo.value[source] : 0;
+    let finalDamage = hasComponent(world, source, DamageInfo) ? DamageInfo.damage[source] : 0;
 
     //TODO some armor reduction thing here
 
