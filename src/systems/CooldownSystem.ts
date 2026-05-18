@@ -1,4 +1,4 @@
-import { query, removeComponent } from "bitecs";
+import { query } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
 import { TintModes } from "phaser";
 import { Cooldown, InvulnerabilityTimer } from "../components/StatComponents";

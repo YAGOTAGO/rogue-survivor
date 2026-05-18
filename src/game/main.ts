@@ -2,12 +2,10 @@ import { Boot } from './scenes/Boot';
 import { GameOver } from './scenes/GameOver';
 import { Game as MainGame } from './scenes/Game';
 import { MainMenu } from './scenes/MainMenu';
-import { AUTO, Game ,Scale } from 'phaser';
+import { AUTO, Game ,Scale, Types } from 'phaser';
 import { Preloader } from './scenes/Preloader';
 
-//  Find out more information about the Game Config at:
-//  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
-const config: Phaser.Types.Core.GameConfig = {
+const config: Types.Core.GameConfig = {
     type: AUTO,
     width: 640,
     height: 360,
