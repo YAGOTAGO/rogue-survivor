@@ -1,8 +1,9 @@
-import { addComponent, EntityId, hasComponent, query } from "bitecs"
+import { addComponent, EntityId, hasComponent, query, removeComponent } from "bitecs"
 import { Collider, MoveTo, Position, Speed, Velocity } from "../components/MovementComponents"
 import { GameWorld } from "../game/scenes/Game";
 import { Enemy, Player } from "../components/TagComponents";
 import { constrainToMap } from "./ColliderSystem";
+import { ActiveKnockback } from "../components/StatComponents";
 
 const ENEMY_SEPARATION_RADIUS = 24; // pixels
 const queryBuffer: EntityId[] = [];
@@ -45,6 +46,8 @@ export const movementSystem = (world: GameWorld) => {
 
 export const playerVelocitySystem = (world: GameWorld) => {
     for (const eid of query(world, [Player, Speed, Velocity])){
+        if (hasComponent(world, eid, ActiveKnockback)) continue;
+
         Velocity.x[eid] = world.input.xAxis * Speed.value[eid];
         Velocity.y[eid] = world.input.yAxis * Speed.value[eid];
     }
@@ -52,6 +55,8 @@ export const playerVelocitySystem = (world: GameWorld) => {
 
 export const moveToSystem = (world: GameWorld) => {
     for (const eid of query(world, [Position, MoveTo, Speed, Velocity])){
+        if (hasComponent(world, eid, ActiveKnockback)) continue;
+
         const dx = MoveTo.x[eid] - Position.x[eid];
         const dy = MoveTo.y[eid] - Position.y[eid];
         const distSquared = dx * dx + dy * dy;
@@ -105,6 +110,21 @@ export const spriteSyncSystem = (world: GameWorld) => {
         }
     } 
 }
+
+export const knockbackUpdateSystem = (world: GameWorld) => {
+    const dt = world.time.delta / 1000;
+    const knockedEntities = query(world, [ActiveKnockback, Velocity]);
+
+    for (const eid of knockedEntities) {
+        ActiveKnockback.timer[eid] -= dt;
+
+        if (ActiveKnockback.timer[eid] <= 0) {
+            removeComponent(world, eid, ActiveKnockback);
+            Velocity.x[eid] = 0;
+            Velocity.y[eid] = 0;
+        }
+    }
+};
 
 export const enemySeparationSystem = (world: GameWorld) => {
     const enemies = query(world, [Enemy, Position, Collider]);

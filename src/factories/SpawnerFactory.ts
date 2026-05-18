@@ -2,7 +2,7 @@ import { addComponents, EntityId } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
 import { BaseSpriteEntity, BaseUnit, BaseUnitData } from "./BaseEntityFactory";
 import { ASSETS } from "../common/Assets";
-import { DamageInfo, Experience, ExperienceValue, HitCircle, HurtCircle, InvulnerabilityTimer } from "../components/StatComponents";
+import { DamageInfo, Experience, ExperienceValue, HitCircle, HurtCircle, InvulnerabilityTimer, KnockbackInfo } from "../components/StatComponents";
 import { Enemy, Player } from "../components/TagComponents";
 import { OVERLAP_LAYERS } from "../common/Constants";
 
@@ -41,7 +41,7 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
         pool: world.pools.enemyPool,
     }
     const eid = BaseUnit(world, data);
-    addComponents(world, eid, [DamageInfo, Enemy, HurtCircle, HitCircle, ExperienceValue]);
+    addComponents(world, eid, [DamageInfo, Enemy, HurtCircle, HitCircle, ExperienceValue, KnockbackInfo]);
     DamageInfo.damage[eid] = 10;
     HitCircle.radius[eid] = 12;
     HitCircle.offsetX[eid] = 0;

@@ -1,10 +1,11 @@
-import { EntityId, hasComponent } from "bitecs";
+import { addComponent, EntityId, hasComponent } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
-import { DamageInfo, Experience, ExperienceValue, Health, InvulnerabilityTimer } from "../components/StatComponents";
+import { ActiveKnockback, DamageInfo, Experience, ExperienceValue, Health, InvulnerabilityTimer, KnockbackInfo } from "../components/StatComponents";
 import { Player } from "../components/TagComponents";
 import { LEVEL_UP_SCALING } from "../common/Constants";
 import { DespawnSpriteEntity } from "../factories/BaseEntityFactory";
 import { SpawnExperienceOrb } from "../factories/SpawnerFactory";
+import { Position, Velocity } from "../components/MovementComponents";
 
 const PLAYER_INVULNERABILITY_DURATION = 0.5; // seconds
 
@@ -17,6 +18,11 @@ export const eventSystem = (world: GameWorld) => {
             continue;
         }
 
+        //Knockback
+        if(hasComponent(world, source, KnockbackInfo) && hasComponent(world, target, Position)){
+            applyKnockback(world, source, target);
+        }
+
         //Damage event
         if(hasComponent(world, source, DamageInfo) && hasComponent(world, target, Health)){
             damageSystem(world, source, target);
@@ -26,7 +32,21 @@ export const eventSystem = (world: GameWorld) => {
     world.events.overlapEvents = [];
 }
 
-const experienceSystem = (world: GameWorld, source: EntityId, target: EntityId) => {
+const applyKnockback = (world: GameWorld, source: EntityId, target: EntityId) => {
+    const dx = Position.x[target] - Position.x[source];
+    const dy = Position.y[target] - Position.y[source];
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+
+    addComponent(world, target, ActiveKnockback);
+    ActiveKnockback.timer[target] = KnockbackInfo.time[source];
+
+    if (hasComponent(world, target, Velocity)) {
+        Velocity.x[target] = (dx / dist) * KnockbackInfo.force[source];
+        Velocity.y[target] = (dy / dist) * KnockbackInfo.force[source];
+    }
+}
+
+const experienceSystem = (world: GameWorld, source: EntityId, target: EntityId) => {    
     const expValue = ExperienceValue.value[target];
     let totalExp = Experience.current[source] + expValue;
     while (totalExp >= Experience.max[source]) {

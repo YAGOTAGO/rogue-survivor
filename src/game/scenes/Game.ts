@@ -1,6 +1,6 @@
 import { createWorld, EntityId, World } from 'bitecs';
 import { Scene, Math as PhaserMath, GameObjects, Types, Input, Cameras } from 'phaser';
-import { enemySeparationSystem, followPlayerSystem, movementSystem, moveToSystem, playerVelocitySystem, spriteSyncSystem } from '../../systems/MovementSystem';
+import { enemySeparationSystem, followPlayerSystem, knockbackUpdateSystem, movementSystem, moveToSystem, playerVelocitySystem, spriteSyncSystem } from '../../systems/MovementSystem';
 import { inputSystem } from '../../systems/InputHandler';
 import { uiSystem } from '../../systems/UISystem';
 import { SpawnEnemy, SpawnExperienceOrb, SpawnPlayer } from '../../factories/SpawnerFactory';
@@ -126,6 +126,7 @@ export class Game extends Scene
     systems = [
         cooldownSystem,
         inputSystem,
+        knockbackUpdateSystem,
         playerVelocitySystem,
         moveToSystem,
         // followPlayerSystem,
