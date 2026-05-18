@@ -41,7 +41,7 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
         pool: world.pools.enemyPool,
     }
     const eid = BaseUnit(world, data);
-    addComponents(world, eid, [DamageInfo, Enemy, HurtCircle, HitCircle]);
+    addComponents(world, eid, [DamageInfo, Enemy, HurtCircle, HitCircle, ExperienceValue]);
     DamageInfo.value[eid] = 10;
     HitCircle.radius[eid] = 12;
     HitCircle.offsetX[eid] = 0;
@@ -51,6 +51,7 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
     HurtCircle.offsetX[eid] = 0;
     HurtCircle.offsetY[eid] = 0;
     HurtCircle.layer[eid] = OVERLAP_LAYERS.ENEMY;
+    ExperienceValue.value[eid] = 20;
     return eid;
 }
 

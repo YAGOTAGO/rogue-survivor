@@ -4,6 +4,7 @@ import { DamageInfo, Experience, ExperienceValue, Health, InvulnerabilityTimer }
 import { Player } from "../components/TagComponents";
 import { LEVEL_UP_SCALING } from "../common/Constants";
 import { DespawnSpriteEntity } from "../factories/BaseEntityFactory";
+import { SpawnExperienceOrb } from "../factories/SpawnerFactory";
 
 const PLAYER_INVULNERABILITY_DURATION = 0.5; // seconds
 
@@ -48,12 +49,16 @@ const damageSystem = (world: GameWorld, source: EntityId, target: EntityId) => {
 
     Health.current[target] -= finalDamage;
     if (Health.current[target] <= 0) {
-        console.log(`Entity ${target} was killed by Entity ${source}`);
+
         if (hasComponent(world, target, Player)) {
             //Trigger some event that will end game
-        }else{
+        }else {
+            const targetSprite = world.spriteMap.get(target);
+            if (hasComponent(world, target, ExperienceValue) && targetSprite) {
+                SpawnExperienceOrb(world, { x: targetSprite.x, y: targetSprite.y }, ExperienceValue.value[target]);
+            }    
             DespawnSpriteEntity(world, target);
-        } 
+        }
     }
 
     if (hasComponent(world, target, Player)) {
