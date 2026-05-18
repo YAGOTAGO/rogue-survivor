@@ -88,7 +88,6 @@ export class Game extends Scene
             spriteMap: new Map<EntityId, GameObjects.Sprite>(),
             spatialHash: new SpatialHash(),
         }) as GameWorld;
-        this.anims.createFromAseprite(ASSETS.IMAGES.EXPERIENCE);
 
         const map = this.add.tilemap(ASSETS.TILEMAPS.MAP);
         const tileset = map.addTilesetImage(ASSETS.IMAGES.TILES, ASSETS.IMAGES.TILES)!;
@@ -107,7 +106,6 @@ export class Game extends Scene
         SpawnExperienceOrb(this.world, { x: centerX + 50, y: centerY }, 120);
 
         for(let i = 0; i < 10; i++) {
-            // Spawn in a 200px radius circle around the center
             const angle = Math.random() * Math.PI * 2;
             const dist = Math.random() * 200;
             const x = centerX + Math.cos(angle) * dist;
