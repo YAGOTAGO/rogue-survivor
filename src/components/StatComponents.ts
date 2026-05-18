@@ -11,8 +11,8 @@ export const DamageInfo = {
     damage: new Uint16Array(MAX_ENTITIES),
 }
 export const KnockbackInfo = {
-    knockbakForce: new Float32Array(MAX_ENTITIES),
-    knockbackTime: new Float32Array(MAX_ENTITIES),
+    force: new Float32Array(MAX_ENTITIES),
+    time: new Float32Array(MAX_ENTITIES),
 }
 export const ActiveKnockback = {
     timer: new Float32Array(MAX_ENTITIES)
