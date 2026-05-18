@@ -32,7 +32,7 @@ export class HealthBar extends GameObjects.Container {
             barWidth / 2, 
             -2, 
             'rogue', 
-            'text', 
+            '100/100', 
             16
         )
         .setOrigin(0.5);

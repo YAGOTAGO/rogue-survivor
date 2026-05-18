@@ -1,4 +1,5 @@
 import { Scene, GameObjects } from 'phaser';
+import { ASSETS } from '../../common/Assets';
 
 export class MainMenu extends Scene
 {
@@ -13,19 +14,34 @@ export class MainMenu extends Scene
 
     create ()
     {
-        //TODO Make a main menu scene
-        this.background = this.add.image(512, 384, 'background');
-        
-        this.logo = this.add.image(512, 300, 'logo');
+        const width = this.scale.width;
+        const height = this.scale.height;
+        const textOffsetY = 70;
+        const playBtnOffsetY = 40;
 
-        this.title = this.add.text(512, 460, 'Main Menu', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        }).setOrigin(0.5);
+        this.scene.launch('Game');
+        this.scene.bringToTop();
+        this.scene.pause('Game');
 
-        this.input.once('pointerdown', () => {
-            this.scene.start('Game');
+        this.add.rectangle(0, 0, width, height, 0x000000, 0.6).setOrigin(0, 0); //Gray overlay
+        this.add.rectangle(width / 2, (height / 2) - textOffsetY, 400, 70, 0x111f12) //Text background
+            .setStrokeStyle(4, 0xffffff);
+        this.add.bitmapText(
+            width / 2, 
+            (height / 2) - textOffsetY, 
+            'rogue', 
+            'Rogue Survivor', 
+            48
+        ).setOrigin(0.5);
+
+        // Play button
+        const btnY = height / 2 + playBtnOffsetY;
+        const playerBtn = this.add.sprite(width / 2, btnY, ASSETS.IMAGES.PLAY_BUTTON)
+            .setOrigin(0.5);
+        playerBtn.setInteractive({ useHandCursor: true });
+        playerBtn.on('pointerdown', () => {
+            this.scene.stop();
+            this.scene.resume('Game');
         });
     }
 }

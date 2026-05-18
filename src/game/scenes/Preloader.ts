@@ -48,6 +48,7 @@ export class Preloader extends Scene
         this.load.image(ASSETS.IMAGES.ANIMATED_TILES, 'maps/tilesets/animated-tiles.png');
         this.load.tilemapTiledJSON(ASSETS.TILEMAPS.MAP, 'maps/tilemaps/world-map.json');
         this.load.aseprite(ASSETS.IMAGES.EXPERIENCE, 'sprites/experience.png', 'animations/experience.json');
+        this.load.image(ASSETS.IMAGES.PLAY_BUTTON, 'sprites/play-btn.png');
     }
 
     create ()
@@ -55,7 +56,7 @@ export class Preloader extends Scene
         //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
         //  For example, you can define global animations here, so we can use them in other scenes.
 
-        // this.scene.start('MainMenu');
-        this.scene.start('Game');
+        this.scene.start('MainMenu');
+        // this.scene.start('Game');
     }
 }

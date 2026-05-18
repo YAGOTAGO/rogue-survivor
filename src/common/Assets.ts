@@ -3,6 +3,7 @@ export const ASSETS = {
         TILES: 'tiles',
         ANIMATED_TILES: 'animated-tiles',
         EXPERIENCE: 'experience',
+        PLAY_BUTTON: 'play-button',
     },
     SPRITESHEETS: {
         PLAYERS: 'rogues',
