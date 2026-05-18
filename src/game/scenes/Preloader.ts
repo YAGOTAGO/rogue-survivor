@@ -43,6 +43,10 @@ export class Preloader extends Scene
             frameWidth: 32,
             frameHeight: 32
         });
+        this.load.spritesheet(ASSETS.SPRITESHEETS.ITEMS, 'sprites/items.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
         this.load.bitmapFont('rogue', 'fonts/m5x7_font.png', 'fonts/m5x7_font.fnt');  
         this.load.image(ASSETS.IMAGES.TILES, 'maps/tilesets/tiles.png');
         this.load.image(ASSETS.IMAGES.ANIMATED_TILES, 'maps/tilesets/animated-tiles.png');
@@ -54,7 +58,7 @@ export class Preloader extends Scene
     create ()
     {
         this.anims.createFromAseprite(ASSETS.IMAGES.EXPERIENCE);
-        // this.scene.start('MainMenu');
-        this.scene.start('Game');
+        this.scene.start('MainMenu');
+        // this.scene.start('Game');
     }
 }

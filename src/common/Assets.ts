@@ -8,6 +8,7 @@ export const ASSETS = {
     SPRITESHEETS: {
         PLAYERS: 'rogues',
         ENEMIES: 'monsters',
+        ITEMS: 'items'
     },
     TILEMAPS: {
         MAP: 'world-map',
