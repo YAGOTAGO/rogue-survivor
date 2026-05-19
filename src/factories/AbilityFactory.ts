@@ -1,9 +1,9 @@
 import { addComponents, EntityId } from "bitecs";
-import { GameWorld } from "../game/scenes/Game";
 import { Cooldown, HitCircle, KnockbackInfo } from "../components/StatComponents";
 import { BaseSpriteData, BaseSpriteEntity } from "./BaseEntityFactory";
 import { ASSETS } from "../common/Assets";
 import { OVERLAP_LAYERS } from "../common/Constants";
+import { GameWorld } from "../common/ECS";
 
 
 export const SpawnShield = (world: GameWorld, pos: { x: number, y: number }): EntityId => {

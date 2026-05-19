@@ -1,55 +1,13 @@
 import { createWorld, EntityId, World } from 'bitecs';
 import { Scene, Math as PhaserMath, GameObjects, Types, Input, Cameras } from 'phaser';
-import { enemySeparationSystem, followPlayerSystem, knockbackUpdateSystem, movementSystem, moveToSystem, spriteSyncSystem } from '../../systems/MovementSystem';
-import { inputSystem, playerVelocitySystem } from '../../systems/InputSystem';
-import { uiSystem } from '../../systems/UISystem';
 import { SpawnEnemy, SpawnExperienceOrb, SpawnPlayer } from '../../factories/SpawnerFactory';
 import { HealthBar } from '../../ui/HealthBarUI';
-import { cooldownSystem } from '../../systems/CooldownSystem';
-import { debugSystem } from '../../systems/DebugSystem';
-import { colliderSystem } from '../../systems/ColliderSystem';
-import { eventSystem } from '../../systems/EventSystem';
 import { SpatialHash } from '../../common/SpatialHash';
-import { spatialHashSystem } from '../../systems/SpatialHashSystem';
 import { ASSETS } from '../../common/Assets';
 import { ExperienceBar } from '../../ui/ExperienceBarUI';
 import { MAX_ENEMY_POOL_SIZE, MAX_ORB_POOL_SIZE, MAX_PROJECTILE_POOL_SIZE } from '../../common/Pooling';
 import { SpawnShield } from '../../factories/AbilityFactory';
-
-
-export type OverlapEvent = { source: EntityId; target: EntityId };
-
-interface WorldData {
-    scene: Scene;
-    time: {
-        delta: number;
-        elapsed: number;
-    },
-    input: {
-        xAxis: number;
-        yAxis: number;
-        cursors: Types.Input.Keyboard.CursorKeys;
-        wasdKeys: any;
-        pointer: Input.Pointer;
-        gamepad: Input.Gamepad.GamepadPlugin;
-    },
-    events: {
-        overlapEvents: OverlapEvent[];
-    },
-    ui: {
-        healthBarUi: HealthBar;
-        experienceBarUi: ExperienceBar;
-    },
-    pools: {
-        enemyPool: GameObjects.Group;
-        orbPool: GameObjects.Group;
-        projectilePool: GameObjects.Group;
-    },
-    debugGraphics: GameObjects.Graphics,
-    spriteMap: Map<EntityId, GameObjects.Sprite>,
-    spatialHash: SpatialHash;
-}
-export type GameWorld = World & WorldData;
+import { GameWorld, OverlapEvent, systems } from '../../common/ECS';
 
 export class Game extends Scene
 {
@@ -127,26 +85,10 @@ export class Game extends Scene
             resolution: 1
         }).setScrollFactor(0);
     }
-
-    systems = [
-        cooldownSystem,
-        inputSystem,
-        knockbackUpdateSystem,
-        playerVelocitySystem,
-        moveToSystem,
-        // followPlayerSystem,
-        movementSystem,
-        spatialHashSystem, // Must run before colliderSystem/enemySeparationSystem
-        enemySeparationSystem,
-        colliderSystem,
-        eventSystem,
-        spriteSyncSystem,
-        uiSystem,
-        debugSystem,
-    ];
+    
 
     runSystems = (world: GameWorld) => {
-        for (const system of this.systems) {
+        for (const system of systems) {
             system(world)
         }
     }

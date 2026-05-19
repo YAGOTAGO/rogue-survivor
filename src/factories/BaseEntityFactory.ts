@@ -1,9 +1,9 @@
 import { addComponents, addEntity, EntityId } from "bitecs";
-import { GameWorld } from "../game/scenes/Game";
 import { Collider, Position, Speed, Velocity } from "../components/MovementComponents";
 import { Health } from "../components/StatComponents";
 import { GameObjects } from "phaser";
 import { GetOrCreateSprite } from "../common/Pooling";
+import { GameWorld } from "../common/ECS";
 
 const DEFAULT_COLLIDER = { width: 14, height: 12, offsetX: 0, offsetY: 8 };
 

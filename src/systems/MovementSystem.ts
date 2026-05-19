@@ -1,9 +1,9 @@
 import { addComponent, EntityId, hasComponent, query, removeComponent } from "bitecs"
 import { Collider, MoveTo, Position, Speed, Velocity } from "../components/MovementComponents"
-import { GameWorld } from "../game/scenes/Game";
 import { Enemy, Player } from "../components/TagComponents";
 import { constrainToMap } from "./ColliderSystem";
 import { ActiveKnockback } from "../components/StatComponents";
+import { GameWorld } from "../common/ECS";
 
 const ENEMY_SEPARATION_RADIUS = 24; // pixels
 const QUERY_BUFFER: EntityId[] = [];

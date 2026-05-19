@@ -1,8 +1,8 @@
 import { addComponent, hasComponent, query, removeComponent } from "bitecs";
-import { GameWorld } from "../game/scenes/Game";
 import { MoveTo, Speed, Velocity } from "../components/MovementComponents";
 import { Player } from "../components/TagComponents";
 import { ActiveKnockback } from "../components/StatComponents";
+import { GameWorld } from "../common/ECS";
 
 const DEADZONE = 0.1;
 

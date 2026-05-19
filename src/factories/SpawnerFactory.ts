@@ -1,10 +1,10 @@
 import { addComponents, EntityId } from "bitecs";
-import { GameWorld } from "../game/scenes/Game";
 import { BaseSpriteEntity, BaseUnit, BaseUnitData } from "./BaseEntityFactory";
 import { ASSETS } from "../common/Assets";
 import { DamageInfo, Experience, ExperienceValue, HitCircle, HurtCircle, InvulnerabilityTimer, KnockbackInfo } from "../components/StatComponents";
 import { Enemy, Player } from "../components/TagComponents";
 import { OVERLAP_LAYERS } from "../common/Constants";
+import { GameWorld } from "../common/ECS";
 
 export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): EntityId => {
     const data: BaseUnitData = {
