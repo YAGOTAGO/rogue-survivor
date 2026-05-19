@@ -1,7 +1,7 @@
 import { addComponent, EntityId, hasComponent, query, removeComponent } from "bitecs"
 import { Collider, MoveTo, Position, Speed, Velocity } from "../components/MovementComponents"
 import { constrainToMap } from "./ColliderSystem";
-import { ActiveKnockback, Enemy, Player } from "../components/StatComponents";
+import { ActiveKnockback, Enemy, OrbitPlayer, Player } from "../components/StatComponents";
 import { GameWorld } from "../common/ECS";
 
 const ENEMY_SEPARATION_RADIUS = 24; // pixels
@@ -62,6 +62,27 @@ export const moveToSystem = (world: GameWorld) => {
     }
 }
 
+export const orbitPlayerSystem = (world: GameWorld) => {
+    const dt = world.time.delta / 1000;
+    const player = query(world, [Player]);
+    if (player.length === 0) return;
+    const playerId = player[0];
+    const playerX = Position.x[playerId];
+    const playerY = Position.y[playerId];
+
+    for (const eid of query(world, [OrbitPlayer])){
+        OrbitPlayer.baseAngle[eid] += OrbitPlayer.speed[eid] * dt;
+        OrbitPlayer.baseAngle[eid] %= (Math.PI * 2);
+
+        const radius = OrbitPlayer.radius[eid];
+        const currentAngle = OrbitPlayer.baseAngle[eid];
+
+        Position.x[eid] = playerX + Math.cos(currentAngle) * radius;
+        Position.y[eid] = playerY + Math.sin(currentAngle) * radius;
+    }
+
+}
+
 export const followPlayerSystem = (world: GameWorld) => {
     const players = query(world, [Player]);
     if (players.length === 0) return;
@@ -70,8 +91,7 @@ export const followPlayerSystem = (world: GameWorld) => {
     const playerX = Position.x[playerId];
     const playerY = Position.y[playerId];
     
-    const enemies = query(world, [Enemy]);
-    for (const eid of enemies) {
+    for (const eid of query(world, [Enemy])) {
         if (!hasComponent(world, eid, MoveTo)) {
             addComponent(world, eid, MoveTo);
         }
@@ -84,14 +104,9 @@ export const spriteSyncSystem = (world: GameWorld) => {
     for (const eid of query(world, [Position, Velocity])) {
         const sprite = world.spriteMap.get(eid)
         if (!sprite) continue
-        
-        if(Velocity.x[eid] === 0 && Velocity.y[eid] === 0){
-            sprite.x = Math.round(Position.x[eid])
-            sprite.y = Math.round(Position.y[eid])
-        }else{
-            sprite.x = Position.x[eid]
-            sprite.y = Position.y[eid]
-        }
+
+        sprite.x = Position.x[eid]
+        sprite.y = Position.y[eid]
         
         if (Velocity.x[eid] < 0) {
             sprite.flipX = false;

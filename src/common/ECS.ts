@@ -5,7 +5,7 @@ import { SpatialHash } from "./SpatialHash";
 import { HealthBar } from "../ui/HealthBarUI";
 import { inputSystem, playerVelocitySystem } from "../systems/InputSystem";
 import { cooldownSystem } from "../systems/CooldownSystem";
-import { enemySeparationSystem, followPlayerSystem, knockbackUpdateSystem, movementSystem, moveToSystem, spriteSyncSystem } from "../systems/MovementSystem";
+import { enemySeparationSystem, followPlayerSystem, knockbackUpdateSystem, movementSystem, moveToSystem, orbitPlayerSystem, spriteSyncSystem } from "../systems/MovementSystem";
 import { spatialHashSystem } from "../systems/SpatialHashSystem";
 import { colliderSystem } from "../systems/ColliderSystem";
 import { eventSystem } from "../systems/EventSystem";
@@ -55,6 +55,7 @@ const movementPhases = [
     knockbackUpdateSystem,
     playerVelocitySystem,
     moveToSystem,
+    orbitPlayerSystem,
     // followPlayerSystem,
     movementSystem
 ];

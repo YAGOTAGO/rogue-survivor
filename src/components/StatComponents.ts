@@ -24,6 +24,11 @@ export const Experience = {
 export const ExperienceValue = {
     value: new Uint16Array(MAX_ENTITIES)
 }
+export const OrbitPlayer = {
+    radius: new Float32Array(MAX_ENTITIES),
+    speed: new Float32Array(MAX_ENTITIES),
+    baseAngle: new Float32Array(MAX_ENTITIES)
+}
 export const Cooldown = {
     current: new Float32Array(MAX_ENTITIES), 
     max: new Float32Array(MAX_ENTITIES),
