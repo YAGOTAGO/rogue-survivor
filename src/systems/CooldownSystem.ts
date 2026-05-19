@@ -18,7 +18,7 @@ export const cooldownSystem = (world: GameWorld) => {
             InvulnerabilityTimer.current[eid] -= dt;
             const sprite = world.spriteMap.get(eid);
             if (sprite) {
-
+                // Invulnerable animation
                 if (Math.floor(world.time.elapsed / 100) % 2 === 0) {
                     sprite.setTint(0xffffff).setTintMode(TintModes.FILL);
                 } else {
