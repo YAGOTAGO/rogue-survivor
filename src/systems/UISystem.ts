@@ -1,7 +1,6 @@
 import { query } from 'bitecs';
-import { Enemy, Player } from '../components/TagComponents';
-import { Experience, Health } from '../components/StatComponents';
-import { GameWorld } from '../game/scenes/Game';
+import { Enemy, Experience, Health, Player } from '../components/StatComponents';
+import { GameWorld } from '../common/ECS';
 
 export const uiSystem = (world: GameWorld) => {
     

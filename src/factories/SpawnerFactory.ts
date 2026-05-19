@@ -1,8 +1,7 @@
 import { addComponents, EntityId } from "bitecs";
 import { BaseSpriteEntity, BaseUnit, BaseUnitData } from "./BaseEntityFactory";
 import { ASSETS } from "../common/Assets";
-import { DamageInfo, Experience, ExperienceValue, HitCircle, HurtCircle, InvulnerabilityTimer, KnockbackInfo } from "../components/StatComponents";
-import { Enemy, Player } from "../components/TagComponents";
+import { DamageInfo, Enemy, Experience, ExperienceValue, HitCircle, HurtCircle, InvulnerabilityTimer, KnockbackInfo, Player } from "../components/StatComponents";
 import { OVERLAP_LAYERS } from "../common/Constants";
 import { GameWorld } from "../common/ECS";
 

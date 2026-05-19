@@ -1,6 +1,5 @@
 import { addComponent, EntityId, hasComponent } from "bitecs";
-import { ActiveKnockback, DamageInfo, Experience, ExperienceValue, Health, InvulnerabilityTimer, KnockbackInfo } from "../components/StatComponents";
-import { Player } from "../components/TagComponents";
+import { ActiveKnockback, DamageInfo, Experience, ExperienceValue, Health, InvulnerabilityTimer, KnockbackInfo, Player } from "../components/StatComponents";
 import { LEVEL_UP_SCALING } from "../common/Constants";
 import { SpawnExperienceOrb } from "../factories/SpawnerFactory";
 import { Position, Velocity } from "../components/MovementComponents";
