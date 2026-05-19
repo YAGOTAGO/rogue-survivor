@@ -1,7 +1,7 @@
 import { query } from "bitecs";
-import { GameWorld } from "../game/scenes/Game";
 import { TintModes } from "phaser";
 import { Cooldown, InvulnerabilityTimer } from "../components/StatComponents";
+import { GameWorld } from "../common/ECS";
 
 export const cooldownSystem = (world: GameWorld) => {
     const dt = world.time.delta / 1000;

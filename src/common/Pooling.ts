@@ -1,6 +1,6 @@
 import { EntityId, removeEntity } from "bitecs";
-import { GameWorld } from "../game/scenes/Game";
 import { GameObjects } from "phaser";
+import { GameWorld } from "./ECS";
 
 export const MAX_ENEMY_POOL_SIZE = 2000 as const;
 export const MAX_ORB_POOL_SIZE = 2000 as const;

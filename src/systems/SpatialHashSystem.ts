@@ -1,6 +1,6 @@
 import { query } from "bitecs";
-import { GameWorld } from "../game/scenes/Game";
 import { Position } from "../components/MovementComponents";
+import { GameWorld } from "../common/ECS";
 
 export const spatialHashSystem = (world: GameWorld) => {
     world.spatialHash.clear();
