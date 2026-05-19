@@ -1,7 +1,7 @@
 import { createWorld, EntityId, World } from 'bitecs';
 import { Scene, Math as PhaserMath, GameObjects, Types, Input, Cameras } from 'phaser';
-import { enemySeparationSystem, followPlayerSystem, knockbackUpdateSystem, movementSystem, moveToSystem, playerVelocitySystem, spriteSyncSystem } from '../../systems/MovementSystem';
-import { inputSystem } from '../../systems/InputHandler';
+import { enemySeparationSystem, followPlayerSystem, knockbackUpdateSystem, movementSystem, moveToSystem, spriteSyncSystem } from '../../systems/MovementSystem';
+import { inputSystem, playerVelocitySystem } from '../../systems/InputSystem';
 import { uiSystem } from '../../systems/UISystem';
 import { SpawnEnemy, SpawnExperienceOrb, SpawnPlayer } from '../../factories/SpawnerFactory';
 import { HealthBar } from '../../ui/HealthBarUI';
@@ -13,7 +13,9 @@ import { SpatialHash } from '../../common/SpatialHash';
 import { spatialHashSystem } from '../../systems/SpatialHashSystem';
 import { ASSETS } from '../../common/Assets';
 import { ExperienceBar } from '../../ui/ExperienceBarUI';
-import { MAX_ENEMY_POOL_SIZE, MAX_ORB_POOL_SIZE } from '../../common/Constants';
+import { MAX_ENEMY_POOL_SIZE, MAX_ORB_POOL_SIZE, MAX_PROJECTILE_POOL_SIZE } from '../../common/Pooling';
+import { SpawnShield } from '../../factories/AbilityFactory';
+
 
 export type OverlapEvent = { source: EntityId; target: EntityId };
 
@@ -41,6 +43,7 @@ interface WorldData {
     pools: {
         enemyPool: GameObjects.Group;
         orbPool: GameObjects.Group;
+        projectilePool: GameObjects.Group;
     },
     debugGraphics: GameObjects.Graphics,
     spriteMap: Map<EntityId, GameObjects.Sprite>,
@@ -83,6 +86,7 @@ export class Game extends Scene
             pools: {
                 enemyPool: this.add.group({ classType: GameObjects.Sprite, maxSize: MAX_ENEMY_POOL_SIZE }),
                 orbPool: this.add.group({ classType: GameObjects.Sprite, maxSize: MAX_ORB_POOL_SIZE }),
+                projectilePool: this.add.group({ classType: GameObjects.Sprite, maxSize: MAX_PROJECTILE_POOL_SIZE }),
             },
             debugGraphics: this.add.graphics().setDepth(1000),
             spriteMap: new Map<EntityId, GameObjects.Sprite>(),
@@ -104,8 +108,9 @@ export class Game extends Scene
         }
 
         SpawnExperienceOrb(this.world, { x: centerX + 50, y: centerY }, 120);
+        SpawnShield(this.world, { x: centerX + 100, y: centerY });
 
-        for(let i = 0; i < 10; i++) {
+        for(let i = 0; i < 0; i++) {
             const angle = Math.random() * Math.PI * 2;
             const dist = Math.random() * 200;
             const x = centerX + Math.cos(angle) * dist;

@@ -6,7 +6,7 @@ import { constrainToMap } from "./ColliderSystem";
 import { ActiveKnockback } from "../components/StatComponents";
 
 const ENEMY_SEPARATION_RADIUS = 24; // pixels
-const queryBuffer: EntityId[] = [];
+const QUERY_BUFFER: EntityId[] = [];
 
 // Tile Map Facts
 const TILE_SIZE = 32;
@@ -41,15 +41,6 @@ export const movementSystem = (world: GameWorld) => {
         const resultY = constrainToMap(Position.y[eid] + vy, offsetY, halfHeight, BOUNDS.top, BOUNDS.bottom);
         Position.y[eid] = resultY.pos;
         if (resultY.collided) Velocity.y[eid] = 0;
-    }
-}
-
-export const playerVelocitySystem = (world: GameWorld) => {
-    for (const eid of query(world, [Player, Speed, Velocity])){
-        if (hasComponent(world, eid, ActiveKnockback)) continue;
-
-        Velocity.x[eid] = world.input.xAxis * Speed.value[eid];
-        Velocity.y[eid] = world.input.yAxis * Speed.value[eid];
     }
 }
 
@@ -135,15 +126,15 @@ export const enemySeparationSystem = (world: GameWorld) => {
         
         const xA = Position.x[eidA];
         const yA = Position.y[eidA];
-        world.spatialHash.getNearby(xA, yA, queryBuffer);
+        world.spatialHash.getNearby(xA, yA, QUERY_BUFFER);
         
         const offsetXA = Collider.offsetX[eidA] ?? 0;
         const offsetYA = Collider.offsetY[eidA] ?? 0;
         const halfWidthA = Collider.width[eidA] / 2;
         const halfHeightA = Collider.height[eidA] / 2;
 
-        for (let j = 0; j < queryBuffer.length; j++) {
-            const eidB = queryBuffer[j];
+        for (let j = 0; j < QUERY_BUFFER.length; j++) {
+            const eidB = QUERY_BUFFER[j];
 
             if (eidA >= eidB) continue;
             if (!hasComponent(world, eidB, Enemy)) continue;

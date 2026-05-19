@@ -1,17 +1,26 @@
-import { addComponents, addEntity, EntityId } from "bitecs";
+import { addComponents, EntityId } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
+import { Cooldown, HitCircle, KnockbackInfo } from "../components/StatComponents";
+import { BaseSpriteData, BaseSpriteEntity } from "./BaseEntityFactory";
+import { ASSETS } from "../common/Assets";
+import { OVERLAP_LAYERS } from "../common/Constants";
 
-interface BaseAbilityData {
-    name: string;
-    cooldown: number;
-    spriteKey: string;
-    range: number;
+
+export const SpawnShield = (world: GameWorld, pos: { x: number, y: number }): EntityId => {
+    const data: BaseSpriteData = {
+        position: pos,
+        speed: 200,
+        spriteKey: ASSETS.SPRITESHEETS.ITEMS,
+        spriteFrame: 121,
+        pool: world.pools.projectilePool,
+    }
+    const eid = BaseSpriteEntity(world, data);
+    addComponents(world, eid, [HitCircle, KnockbackInfo]);
+    HitCircle.radius[eid] = 12;
+    HitCircle.offsetX[eid] = 0;
+    HitCircle.offsetY[eid] = 1;
+    HitCircle.mask[eid] = OVERLAP_LAYERS.ENEMY;
+    KnockbackInfo.force[eid] = 200;
+    KnockbackInfo.time[eid] = .2;
+    return eid;
 }
-
-// const BaseAbility = (world: GameWorld, data: BaseAbilityData): EntityId => {
-//     const eid = addEntity(world);
-//     addComponents(world, eid, [Cooldown]);
-//     Cooldown.current[eid] = data.cooldown;
-    
-//     return eid;
-// }

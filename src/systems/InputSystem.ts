@@ -1,9 +1,10 @@
 import { addComponent, hasComponent, query, removeComponent } from "bitecs";
 import { GameWorld } from "../game/scenes/Game";
-import { MoveTo } from "../components/MovementComponents";
+import { MoveTo, Speed, Velocity } from "../components/MovementComponents";
 import { Player } from "../components/TagComponents";
+import { ActiveKnockback } from "../components/StatComponents";
 
-const deadzone = 0.1;
+const DEADZONE = 0.1;
 
 export const inputSystem = (world: GameWorld) => {
 
@@ -31,7 +32,7 @@ export const inputSystem = (world: GameWorld) => {
         const stickX = pad.axes[0].getValue();
         const stickY = pad.axes[1].getValue();
 
-        if (Math.abs(stickX) > deadzone || Math.abs(stickY) > deadzone) {
+        if (Math.abs(stickX) > DEADZONE || Math.abs(stickY) > DEADZONE) {
             rawX = stickX;
             rawY = stickY;
         }
@@ -69,4 +70,13 @@ export const inputSystem = (world: GameWorld) => {
 
     world.input.xAxis = rawX;
     world.input.yAxis = rawY;
+}
+
+export const playerVelocitySystem = (world: GameWorld) => {
+    for (const eid of query(world, [Player, Speed, Velocity])){
+        if (hasComponent(world, eid, ActiveKnockback)) continue;
+
+        Velocity.x[eid] = world.input.xAxis * Speed.value[eid];
+        Velocity.y[eid] = world.input.yAxis * Speed.value[eid];
+    }
 }

@@ -9,8 +9,6 @@
 */
 
 export const MAX_ENTITIES = 10000 as const;
-export const MAX_ENEMY_POOL_SIZE = 2000 as const;
-export const MAX_ORB_POOL_SIZE = 2000 as const;
 export const LEVEL_UP_SCALING = 1.2 as const;
 export const OVERLAP_LAYERS = {
     NONE:       0,
