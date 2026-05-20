@@ -1,5 +1,5 @@
-import { createWorld, EntityId, World } from 'bitecs';
-import { Scene, Math as PhaserMath, GameObjects, Types, Input, Cameras } from 'phaser';
+import { createWorld, EntityId } from 'bitecs';
+import { Scene, Math as PhaserMath, GameObjects, Cameras } from 'phaser';
 import { SpawnEnemy, SpawnExperienceOrb, SpawnPlayer } from '../../factories/SpawnerFactory';
 import { HealthBar } from '../../ui/HealthBarUI';
 import { SpatialHash } from '../../common/SpatialHash';
