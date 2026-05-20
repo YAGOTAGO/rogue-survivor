@@ -14,7 +14,7 @@ export const SpawnShieldAbility = (world: GameWorld) => {
     }
     const eid = addEntity(world);
     addComponent(world, eid, AbilityOf(playerEid));
-
+    
 }
 
 export const SpawnShield = (world: GameWorld, pos: { x: number, y: number }): EntityId => {

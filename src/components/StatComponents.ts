@@ -2,6 +2,7 @@ import { createRelation, withAutoRemoveSubject } from "bitecs";
 import { MAX_ENTITIES } from "../common/Constants";
 
 export const AbilityOf = createRelation(withAutoRemoveSubject);
+export const ProjectileOf = createRelation(withAutoRemoveSubject);
 
 export const Player = { }
 export const Enemy = { }
