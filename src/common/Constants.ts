@@ -18,3 +18,4 @@ export const OVERLAP_LAYERS = {
     XP_ORB:     1 << 3,  // 8
     POWERUP:    1 << 4,  // 16
 } as const;
+export type PositionType = { x: number; y: number }

@@ -2,10 +2,10 @@ import { addComponents, EntityId } from "bitecs";
 import { BaseSpriteEntity, BaseUnit, BaseUnitData } from "./BaseEntityFactory";
 import { ASSETS } from "../common/Assets";
 import { DamageInfo, Enemy, Experience, ExperienceValue, HitCircle, HurtCircle, InvulnerabilityTimer, KnockbackInfo, Player } from "../components/StatComponents";
-import { OVERLAP_LAYERS } from "../common/Constants";
+import { OVERLAP_LAYERS, PositionType } from "../common/Constants";
 import { GameWorld } from "../common/ECS";
 
-export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): EntityId => {
+export const SpawnPlayer = (world: GameWorld, pos: PositionType): EntityId => {
     const data: BaseUnitData = {
         position: pos,
         speed: 200,
@@ -30,7 +30,7 @@ export const SpawnPlayer = (world: GameWorld, pos: { x: number, y: number }): En
     return eid;
 }
 
-export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): EntityId => {
+export const SpawnEnemy = (world: GameWorld, pos: PositionType): EntityId => {
     const data: BaseUnitData = {
         position: pos,
         speed: 200,
@@ -55,7 +55,7 @@ export const SpawnEnemy = (world: GameWorld, pos: { x: number, y: number }): Ent
 }
 
 
-export const SpawnExperienceOrb = (world: GameWorld, pos: { x: number, y: number }, amount: number) => {
+export const SpawnExperienceOrb = (world: GameWorld, pos: PositionType, amount: number) => {
     const eid = BaseSpriteEntity(world, {
         position: pos,
         speed: 0,

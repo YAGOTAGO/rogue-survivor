@@ -4,11 +4,12 @@ import { Health } from "../components/StatComponents";
 import { GameObjects } from "phaser";
 import { GetOrCreateSprite } from "../common/Pooling";
 import { GameWorld } from "../common/ECS";
+import { PositionType } from "../common/Constants";
 
 const DEFAULT_COLLIDER = { width: 14, height: 12, offsetX: 0, offsetY: 8 };
 
 export interface BaseUnitData{
-    position: { x: number, y: number },
+    position: PositionType,
     speed: number,
     maxHealth: number,
     spriteKey: string,
@@ -18,7 +19,7 @@ export interface BaseUnitData{
 }
 
 export interface BaseSpriteData {
-    position: { x: number, y: number },
+    position: PositionType,
     speed: number,
     spriteKey: string,
     spriteFrame?: number,

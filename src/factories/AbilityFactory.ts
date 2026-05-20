@@ -2,7 +2,7 @@ import { addComponent, addComponents, addEntity, EntityId } from "bitecs";
 import { AbilityOf, HitCircle, KnockbackInfo, OrbitPlayer } from "../components/StatComponents";
 import { BaseSpriteData, BaseSpriteEntity } from "./BaseEntityFactory";
 import { ASSETS } from "../common/Assets";
-import { OVERLAP_LAYERS } from "../common/Constants";
+import { OVERLAP_LAYERS, PositionType } from "../common/Constants";
 import { GameWorld } from "../common/ECS";
 
 
@@ -17,7 +17,7 @@ export const SpawnShieldAbility = (world: GameWorld) => {
     
 }
 
-export const SpawnShield = (world: GameWorld, pos: { x: number, y: number }): EntityId => {
+export const SpawnShield = (world: GameWorld, pos: PositionType): EntityId => {
     const data: BaseSpriteData = {
         position: pos,
         speed: 200,
