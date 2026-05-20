@@ -1,5 +1,5 @@
 import { addComponent, addComponents, addEntity, EntityId } from "bitecs";
-import { AbilityOf, HitCircle, KnockbackInfo, OrbitPlayer } from "../components/StatComponents";
+import { Ability, AbilityOf, HitCircle, KnockbackInfo, OrbitPlayer } from "../components/StatComponents";
 import { BaseSpriteData, BaseSpriteEntity } from "./BaseEntityFactory";
 import { ASSETS } from "../common/Assets";
 import { OVERLAP_LAYERS, PositionType } from "../common/Constants";
@@ -13,7 +13,7 @@ export const SpawnShieldAbility = (world: GameWorld) => {
         return;
     }
     const eid = addEntity(world);
-    addComponent(world, eid, AbilityOf(playerEid));
+    addComponents(world, eid, [AbilityOf(playerEid), Ability]);
     
 }
 
