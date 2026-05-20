@@ -15,7 +15,8 @@ import { debugSystem } from "../systems/DebugSystem";
 export type OverlapEvent = { source: EntityId; target: EntityId };
 
 interface WorldData {
-    scene: Scene;
+    scene: Scene,
+    playerEid: EntityId,
     time: {
         delta: number;
         elapsed: number;

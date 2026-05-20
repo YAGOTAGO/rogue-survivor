@@ -64,11 +64,13 @@ export const moveToSystem = (world: GameWorld) => {
 
 export const orbitPlayerSystem = (world: GameWorld) => {
     const dt = world.time.delta / 1000;
-    const player = query(world, [Player]);
-    if (player.length === 0) return;
-    const playerId = player[0];
-    const playerX = Position.x[playerId];
-    const playerY = Position.y[playerId];
+    const playerEid = world.playerEid;
+    if (playerEid <= 0){
+        console.error("No player EID set on world.")
+        return;
+    }
+    const playerX = Position.x[playerEid];
+    const playerY = Position.y[playerEid];
 
     for (const eid of query(world, [OrbitPlayer])){
         OrbitPlayer.baseAngle[eid] += OrbitPlayer.speed[eid] * dt;
@@ -84,12 +86,13 @@ export const orbitPlayerSystem = (world: GameWorld) => {
 }
 
 export const followPlayerSystem = (world: GameWorld) => {
-    const players = query(world, [Player]);
-    if (players.length === 0) return;
-    
-    const playerId = players[0];
-    const playerX = Position.x[playerId];
-    const playerY = Position.y[playerId];
+    const playerEid = world.playerEid;
+    if (playerEid <= 0){
+        console.error("No player EID set on world.")
+        return;
+    }
+    const playerX = Position.x[playerEid];
+    const playerY = Position.y[playerEid];
     
     for (const eid of query(world, [Enemy])) {
         if (!hasComponent(world, eid, MoveTo)) {

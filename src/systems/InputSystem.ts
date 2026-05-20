@@ -7,10 +7,8 @@ const DEADZONE = 0.1;
 
 export const inputSystem = (world: GameWorld) => {
 
-    const players = query(world, [Player]);
-    const playerId = players.length > 0 ? players[0] : -1;
-    
-    if (playerId < 0) {
+    const playerId = world.playerEid;
+    if (playerId <= 0) {
         console.error("No player entity found for input system");
         return;
     }

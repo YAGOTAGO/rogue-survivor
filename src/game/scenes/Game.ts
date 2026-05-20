@@ -25,6 +25,7 @@ export class Game extends Scene
         this.camera = this.cameras.main;      
         this.world = createWorld({
             scene: this,
+            playerEid: 0,
             time: { delta: 0, elapsed: 0 },
             input: { 
                 xAxis: 0, 
@@ -60,6 +61,7 @@ export class Game extends Scene
         const centerX = map.widthInPixels / 2;
         const centerY = map.heightInPixels / 2;
         const player = SpawnPlayer(this.world, { x: centerX, y: centerY });
+        this.world.playerEid = player;
         const playerSprite = this.world.spriteMap.get(player);
         if (playerSprite) {
             this.camera.startFollow(playerSprite, false, 1, 1);

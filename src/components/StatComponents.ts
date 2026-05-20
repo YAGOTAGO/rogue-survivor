@@ -1,7 +1,11 @@
+import { createRelation } from "bitecs";
 import { MAX_ENTITIES } from "../common/Constants";
+
+export const AbilityOf = createRelation();
 
 export const Player = { }
 export const Enemy = { }
+export const Ability = {}
 export const Health = { 
     current: new Int16Array(MAX_ENTITIES), 
     max: new Int16Array(MAX_ENTITIES) 
