@@ -1,5 +1,5 @@
 import { addComponent, addComponents, addEntity, EntityId } from "bitecs";
-import { AbilityOf, Cooldown, HitCircle, KnockbackInfo, OrbitPlayer } from "../components/StatComponents";
+import { AbilityOf, HitCircle, KnockbackInfo, OrbitPlayer } from "../components/StatComponents";
 import { BaseSpriteData, BaseSpriteEntity } from "./BaseEntityFactory";
 import { ASSETS } from "../common/Assets";
 import { OVERLAP_LAYERS } from "../common/Constants";
@@ -7,9 +7,15 @@ import { GameWorld } from "../common/ECS";
 
 
 export const SpawnShieldAbility = (world: GameWorld) => {
+    const playerEid = world.playerEid;
+    if(playerEid <= 0){
+        console.error("Player EID not set on world");
+        return;
+    }
     const eid = addEntity(world);
-    addComponent(world, eid, AbilityOf(1));
-} 
+    addComponent(world, eid, AbilityOf(playerEid));
+
+}
 
 export const SpawnShield = (world: GameWorld, pos: { x: number, y: number }): EntityId => {
     const data: BaseSpriteData = {

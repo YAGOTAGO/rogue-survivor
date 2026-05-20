@@ -1,7 +1,7 @@
-import { createRelation } from "bitecs";
+import { createRelation, withAutoRemoveSubject } from "bitecs";
 import { MAX_ENTITIES } from "../common/Constants";
 
-export const AbilityOf = createRelation();
+export const AbilityOf = createRelation(withAutoRemoveSubject);
 
 export const Player = { }
 export const Enemy = { }
@@ -32,10 +32,6 @@ export const OrbitPlayer = {
     radius: new Float32Array(MAX_ENTITIES),
     speed: new Float32Array(MAX_ENTITIES),
     baseAngle: new Float32Array(MAX_ENTITIES)
-}
-export const Cooldown = {
-    current: new Float32Array(MAX_ENTITIES), 
-    max: new Float32Array(MAX_ENTITIES),
 }
 export const InvulnerabilityTimer = { 
     current: new Float32Array(MAX_ENTITIES)

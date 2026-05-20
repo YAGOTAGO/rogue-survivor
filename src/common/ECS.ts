@@ -4,7 +4,7 @@ import { ExperienceBar } from "../ui/ExperienceBarUI";
 import { SpatialHash } from "./SpatialHash";
 import { HealthBar } from "../ui/HealthBarUI";
 import { inputSystem, playerVelocitySystem } from "../systems/InputSystem";
-import { cooldownSystem } from "../systems/CooldownSystem";
+import { timerSystem } from "../systems/TimerSystem";
 import { enemySeparationSystem, followPlayerSystem, knockbackUpdateSystem, movementSystem, moveToSystem, orbitPlayerSystem, spriteSyncSystem } from "../systems/MovementSystem";
 import { spatialHashSystem } from "../systems/SpatialHashSystem";
 import { colliderSystem } from "../systems/ColliderSystem";
@@ -50,7 +50,7 @@ export type GameWorld = World & WorldData;
 
 const inputPhases = [
     inputSystem,
-    cooldownSystem,
+    timerSystem,
 ];
 const movementPhases = [
     knockbackUpdateSystem,
