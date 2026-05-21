@@ -5,7 +5,6 @@ import { ASSETS } from "../common/Assets";
 import { OVERLAP_LAYERS, PositionType } from "../common/Constants";
 import { GameWorld } from "../common/ECS";
 
-
 export const SpawnShieldAbility = (world: GameWorld) => {
     const playerEid = world.playerEid;
     if(playerEid <= 0){
