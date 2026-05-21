@@ -21,10 +21,10 @@ export const KnockbackInfo = {
 export const ActiveKnockback = {
     timer: new Float32Array(MAX_ENTITIES)
 }
-export const Experience = {
+export const Level = {
     level: new Uint16Array(MAX_ENTITIES),
-    current: new Uint16Array(MAX_ENTITIES),
-    max: new Uint16Array(MAX_ENTITIES)
+    currentExperience: new Uint16Array(MAX_ENTITIES),
+    maxExperience: new Uint16Array(MAX_ENTITIES)
 }
 export const ExperienceValue = {
     value: new Uint16Array(MAX_ENTITIES)

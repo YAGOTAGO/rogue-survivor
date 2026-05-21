@@ -1,5 +1,5 @@
 import { addComponent, EntityId, hasComponent } from "bitecs";
-import { ActiveKnockback, DamageInfo, Experience, ExperienceValue, Health, InvulnerabilityTimer, KnockbackInfo, Player } from "../components/StatComponents";
+import { ActiveKnockback, DamageInfo, Level, ExperienceValue, Health, InvulnerabilityTimer, KnockbackInfo, Player } from "../components/StatComponents";
 import { LEVEL_UP_SCALING } from "../common/Constants";
 import { SpawnExperienceOrb } from "../factories/SpawnerFactory";
 import { Position, Velocity } from "../components/MovementComponents";
@@ -47,13 +47,13 @@ const applyKnockback = (world: GameWorld, source: EntityId, target: EntityId) =>
 
 const experienceSystem = (world: GameWorld, source: EntityId, target: EntityId) => {    
     const expValue = ExperienceValue.value[target];
-    let totalExp = Experience.current[source] + expValue;
-    while (totalExp >= Experience.max[source]) {
-        totalExp -= Experience.max[source];         
-        Experience.level[source] += 1;
-        Experience.max[source] = Math.floor(Experience.max[source] * LEVEL_UP_SCALING);
+    let totalExp = Level.currentExperience[source] + expValue;
+    while (totalExp >= Level.maxExperience[source]) {
+        totalExp -= Level.maxExperience[source];         
+        Level.level[source] += 1;
+        Level.maxExperience[source] = Math.floor(Level.maxExperience[source] * LEVEL_UP_SCALING);
     }
-    Experience.current[source] = totalExp;
+    Level.currentExperience[source] = totalExp;
     DespawnSpriteEntity(world, target);
 }
 
