@@ -6,8 +6,9 @@ import { SpatialHash } from '../../common/SpatialHash';
 import { ASSETS } from '../../common/Assets';
 import { ExperienceBar } from '../../ui/ExperienceBarUI';
 import { MAX_ENEMY_POOL_SIZE, MAX_ORB_POOL_SIZE, MAX_PROJECTILE_POOL_SIZE } from '../../common/Pooling';
-import { SpawnShield } from '../../factories/AbilityFactory';
+import { SpawnShield, SpawnShieldAbility } from '../../factories/AbilityFactory';
 import { GameWorld, OverlapEvent, systems } from '../../common/ECS';
+import { PositionType } from '../../common/Constants';
 
 export class Game extends Scene
 {
@@ -47,6 +48,7 @@ export class Game extends Scene
                 orbPool: this.add.group({ classType: GameObjects.Sprite, maxSize: MAX_ORB_POOL_SIZE }),
                 projectilePool: this.add.group({ classType: GameObjects.Sprite, maxSize: MAX_PROJECTILE_POOL_SIZE }),
             },
+            abilityPrefabs: new Map<EntityId , (world: GameWorld, pos: PositionType)=>EntityId>(),
             debugGraphics: this.add.graphics().setDepth(1000),
             spriteMap: new Map<EntityId, GameObjects.Sprite>(),
             spatialHash: new SpatialHash(),
@@ -68,8 +70,7 @@ export class Game extends Scene
         }
 
         SpawnExperienceOrb(this.world, { x: centerX + 50, y: centerY }, 120);
-        SpawnShield(this.world, { x: centerX + 100, y: centerY });
-
+        SpawnShieldAbility(this.world);
         for(let i = 0; i < 0; i++) {
             const angle = Math.random() * Math.PI * 2;
             const dist = Math.random() * 200;

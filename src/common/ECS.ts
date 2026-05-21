@@ -11,6 +11,8 @@ import { colliderSystem } from "../systems/ColliderSystem";
 import { eventSystem } from "../systems/EventSystem";
 import { uiSystem } from "../systems/UISystem";
 import { debugSystem } from "../systems/DebugSystem";
+import { PositionType } from "./Constants";
+import { abilitySpawnerSystem } from "../systems/AbilitySystem";
 
 export type OverlapEvent = { source: EntityId; target: EntityId };
 
@@ -41,6 +43,7 @@ interface WorldData {
         orbPool: GameObjects.Group;
         projectilePool: GameObjects.Group;
     },
+    abilityPrefabs: Map<EntityId, (world: GameWorld, pos: PositionType)=> EntityId>,
     debugGraphics: GameObjects.Graphics,
     spriteMap: Map<EntityId, GameObjects.Sprite>,
     spatialHash: SpatialHash;
@@ -60,6 +63,9 @@ const movementPhases = [
     // followPlayerSystem,
     movementSystem
 ];
+const abiltyPhases = [
+    abilitySpawnerSystem,
+];
 const collisionPhases = [
     spatialHashSystem,
     enemySeparationSystem,
@@ -75,6 +81,7 @@ const presentationSystems = [
 export const systems = [
     ...inputPhases,
     ...movementPhases,
+    ...abiltyPhases,
     ...collisionPhases,
     ...presentationSystems
 ] as const;
