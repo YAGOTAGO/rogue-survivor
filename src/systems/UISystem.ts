@@ -27,4 +27,6 @@ export const uiSystem = (world: GameWorld) => {
         const tint = (255 << 16) | (gb << 8) | gb;
         world.spriteMap.get(eid)?.setTint(tint);
     }
+
+    //TODO Add the ability UI here
 };

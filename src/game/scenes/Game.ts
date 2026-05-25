@@ -9,6 +9,7 @@ import { MAX_ENEMY_POOL_SIZE, MAX_ORB_POOL_SIZE, MAX_PROJECTILE_POOL_SIZE } from
 import { SpawnShield, SpawnShieldAbility } from '../../factories/AbilityFactory';
 import { GameWorld, OverlapEvent, systems } from '../../common/ECS';
 import { PositionType } from '../../common/Constants';
+import { AbilityBar } from '../../ui/AbilityBarUI';
 
 export class Game extends Scene
 {
@@ -42,6 +43,7 @@ export class Game extends Scene
             ui: {
                 healthBarUi: new HealthBar(this),
                 experienceBarUi: new ExperienceBar(this),
+                abilityBarUi: new AbilityBar(this)
             },
             pools: {
                 enemyPool: this.add.group({ classType: GameObjects.Sprite, maxSize: MAX_ENEMY_POOL_SIZE }),

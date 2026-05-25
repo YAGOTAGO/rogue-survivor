@@ -13,6 +13,7 @@ import { uiSystem } from "../systems/UISystem";
 import { debugSystem } from "../systems/DebugSystem";
 import { PositionType } from "./Constants";
 import { abilitySpawnerSystem } from "../systems/AbilitySystem";
+import { AbilityBar } from "../ui/AbilityBarUI";
 
 export type OverlapEvent = { source: EntityId; target: EntityId };
 
@@ -37,6 +38,7 @@ interface WorldData {
     ui: {
         healthBarUi: HealthBar;
         experienceBarUi: ExperienceBar;
+        abilityBarUi: AbilityBar;
     },
     pools: {
         enemyPool: GameObjects.Group;

@@ -4,6 +4,7 @@ import { Game as MainGame } from './scenes/Game';
 import { MainMenu } from './scenes/MainMenu';
 import { AUTO, Game ,Scale, Types } from 'phaser';
 import { Preloader } from './scenes/Preloader';
+import RexUIPlugin from 'phaser4-rex-plugins/templates/ui/ui-plugin.js';
 
 const config: Types.Core.GameConfig = {
     type: AUTO,
@@ -26,6 +27,13 @@ const config: Types.Core.GameConfig = {
     },
     parent: 'game-container',
     backgroundColor: '#0e161d',
+    plugins: {
+        scene: [{
+            key: 'rexUI',
+            plugin: RexUIPlugin,
+            mapping: 'rexUI'
+        }]
+    },
     scene: [
         Boot,
         Preloader,
