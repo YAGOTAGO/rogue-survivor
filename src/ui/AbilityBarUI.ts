@@ -61,7 +61,6 @@ export class AbilityBar extends GameObjects.Container {
             currentHeight
         );
         elements.line.y = topY;
-        
     }
 
 }

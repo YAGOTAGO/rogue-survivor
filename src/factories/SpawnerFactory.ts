@@ -23,7 +23,7 @@ export const SpawnPlayer = (world: GameWorld, pos: PositionType): EntityId => {
     HurtCircle.offsetX[eid] = 0;
     HurtCircle.offsetY[eid] = 1;
     HurtCircle.layer[eid] = OVERLAP_LAYERS.PLAYER;
-    HitCircle.radius[eid] = 16;
+    HitCircle.radius[eid] = 32;
     HitCircle.offsetX[eid] = 0;
     HitCircle.offsetY[eid] = 1;
     HitCircle.mask[eid] = OVERLAP_LAYERS.XP_ORB;

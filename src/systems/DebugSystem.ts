@@ -5,7 +5,7 @@ import { GameWorld } from "../common/ECS";
 
 const DEBUG_COLLIDER = false;
 const DEBUG_HURT_CIRCLE = false;
-const DEBUG_HIT_CIRCLE = true;
+const DEBUG_HIT_CIRCLE = false;
 const DEBUG_TWEEN_AMOUNT = false;
 const DEBUG_EXPERIENCE_ORBS = false;
 const DEBUG_ENEMY_POOL = false;
