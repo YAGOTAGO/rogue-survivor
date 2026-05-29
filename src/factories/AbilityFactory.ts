@@ -1,4 +1,4 @@
-import { addComponent, addComponents, addEntity, EntityId } from "bitecs";
+import { addComponents, addEntity, EntityId } from "bitecs";
 import { Ability, AbilityOf, Cooldown, HitCircle, KnockbackInfo, MaxActiveCount, OrbitPlayer } from "../components/StatComponents";
 import { BaseSpriteData, BaseSpriteEntity } from "./BaseEntityFactory";
 import { ASSETS } from "../common/Assets";
