@@ -24,14 +24,16 @@ export const abilitySpawnerSystem = (world: GameWorld) => {
                         const projectileEid = spawnFn(world, ownerPos);
                         addComponent(world, projectileEid, ProjectileOf(abilityEid));
                     }
+                    Cooldown.current[abilityEid] = Cooldown.maxTimer[abilityEid];
+                }else{
+                    Cooldown.current[abilityEid] = 0;
                 }
             } else {
                 if (spawnFn) {
                     spawnFn(world, ownerPos);
                 }
-                
+                Cooldown.current[abilityEid] = Cooldown.maxTimer[abilityEid];
             }
-            Cooldown.current[abilityEid] = Cooldown.maxTimer[abilityEid];
         }
     }
 }
