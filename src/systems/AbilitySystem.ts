@@ -15,7 +15,7 @@ export const abilitySpawnerSystem = (world: GameWorld) => {
             const [owner] = getRelationTargets(world, abilityEid, AbilityOf);
             if (owner === undefined) continue;
             const ownerPos = { x: Position.x[owner], y: Position.y[owner] };
-
+                
             if (hasComponent(world, abilityEid, MaxActiveCount)){
                 const activeCount = query(world, [ProjectileOf(abilityEid)]).length;
                 

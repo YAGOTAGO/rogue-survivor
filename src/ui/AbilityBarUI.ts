@@ -2,13 +2,13 @@ import { EntityId } from "bitecs";
 import { GameObjects, Scene } from "phaser";
 import Sizer from "phaser4-rex-plugins/templates/ui/sizer/Sizer";
     
-const COLOR_MAIN = 0x4e342e;
-const COLOR_LIGHT = 0x7b5e57;
-const COLOR_DARK = 0x260e04;
+const BAR_BACKGROUND = 0x260e04;
+const ICON_SIZE = 48;
 
 export class AbilityBar extends GameObjects.Container {
     private sizer: Sizer;
-
+    private abilityElements: Map<EntityId, { overlay: GameObjects.Graphics, line: GameObjects.Rectangle }> = new Map();
+    
     constructor(scene: Scene) {
         const screenWidth = scene.scale.width;
         const screenHeight = scene.scale.height;
@@ -16,22 +16,13 @@ export class AbilityBar extends GameObjects.Container {
         const y = screenHeight - 40;
         super(scene, x, y);
 
-        var background = scene.add.rectangle(0, 0, 0, 0, COLOR_DARK);
-
-        var gameObjects = [];
-        for (var i = 0; i < 5; i++) {
-            gameObjects.push(scene.add.rectangle(0, 0, 30, 30, COLOR_LIGHT));
-        }
+        var background = scene.add.rectangle(0, 0, 0, 0, BAR_BACKGROUND);
         this.sizer = scene.rexUI.add.sizer({
             x: 0, 
             y: 0,
             space: { left: 5, right: 5, top: 5, bottom: 5 }
         })
         .addBackground(background)
-        // .addMultiple(
-        //     gameObjects,
-        //     { padding: { left: 5, right: 5, top: 5, bottom: 5}}
-        // )
         .layout();
 
         this.add(this.sizer);
@@ -41,14 +32,36 @@ export class AbilityBar extends GameObjects.Container {
         scene.add.existing(this);
     }
 
-    AddAbility(spriteKey: string, abilityEid: EntityId, spriteFrame?: number){
-        //TODO use the sprite key to add to the ability bar
-        const sprite = this.scene.add.sprite(0, 0, spriteKey, spriteFrame);
-        this.sizer.add(sprite);
+    addAbility(spriteKey: string, abilityEid: EntityId, spriteFrame?: number){
+        const container = this.scene.add.container(0, 0);
+        container.setSize(ICON_SIZE, ICON_SIZE);
+        const icon = this.scene.add.image(0, 0, spriteKey, spriteFrame)
+            .setDisplaySize(ICON_SIZE, ICON_SIZE);
+        const overlay = this.scene.add.graphics();
+        const line = this.scene.add.rectangle(0, 0, ICON_SIZE, 2, 0xffffff, 1);
+        container.add([icon, overlay, line]);
+        this.sizer.add(container);
         this.sizer.layout();
-        
-        // Might need to know the eid, so can get the ability cooldown
+        this.abilityElements.set(abilityEid, { overlay, line});
+    }
 
+    updateCooldown(eid: EntityId, percent: number){
+        const elements = this.abilityElements.get(eid);
+        if(!elements) return;
+        elements.overlay.clear();
+        
+        const currentHeight = ICON_SIZE * percent;
+        const topY = (ICON_SIZE / 2) - currentHeight;
+        
+        elements.overlay.fillStyle(0x000000, 0.6);
+        elements.overlay.fillRect(
+            -ICON_SIZE / 2, 
+            topY, 
+            ICON_SIZE, 
+            currentHeight
+        );
+        elements.line.y = topY;
+        
     }
 
 }

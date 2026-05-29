@@ -13,7 +13,7 @@ export const SpawnShieldAbility = (world: GameWorld) => {
     }
     const eid = addEntity(world);
     world.abilityPrefabs.set(eid, SpawnShield);
-    world.ui.abilityBarUi.AddAbility(ASSETS.SPRITESHEETS.ITEMS, eid, 121);
+    world.ui.abilityBarUi.addAbility(ASSETS.SPRITESHEETS.ITEMS, eid, 121);
     addComponents(world, eid, [AbilityOf(playerEid), Ability, Cooldown, MaxActiveCount]);
     Cooldown.current[eid] = 0;
     Cooldown.maxTimer[eid] = 5;

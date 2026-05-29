@@ -1,5 +1,5 @@
 import { query } from 'bitecs';
-import { Enemy, Level, Health, Player } from '../components/StatComponents';
+import { Enemy, Level, Health, Player, Cooldown, Ability } from '../components/StatComponents';
 import { GameWorld } from '../common/ECS';
 
 export const uiSystem = (world: GameWorld) => {
@@ -28,5 +28,10 @@ export const uiSystem = (world: GameWorld) => {
         world.spriteMap.get(eid)?.setTint(tint);
     }
 
-    //TODO Add the ability UI here
+    //Ability Cooldown UI
+    for (const eid of query(world, [Ability, Cooldown])){
+        const percent = Cooldown.current[eid] / Cooldown.maxTimer[eid];
+        world.ui.abilityBarUi.updateCooldown(eid, percent);
+    }
+
 };
