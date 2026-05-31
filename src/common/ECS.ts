@@ -4,8 +4,8 @@ import { ExperienceBar } from "../ui/ExperienceBarUI";
 import { SpatialHash } from "./SpatialHash";
 import { HealthBar } from "../ui/HealthBarUI";
 import { inputSystem, playerVelocitySystem } from "../systems/InputSystem";
-import { timerSystem } from "../systems/TimerSystem";
-import { enemySeparationSystem, followPlayerSystem, knockbackUpdateSystem, movementSystem, moveToSystem, orbitPlayerSystem, spriteSyncSystem } from "../systems/MovementSystem";
+import { lifespanSystem, timerSystem } from "../systems/TimerSystem";
+import { enemySeparationSystem, followPlayerSystem, knockbackUpdateSystem, constrainedMovementSystem, moveToSystem, orbitPlayerSystem, spriteSyncSystem, unconstrainedMovementSystem } from "../systems/MovementSystem";
 import { spatialHashSystem } from "../systems/SpatialHashSystem";
 import { colliderSystem } from "../systems/ColliderSystem";
 import { eventSystem } from "../systems/EventSystem";
@@ -63,10 +63,12 @@ const movementPhases = [
     moveToSystem,
     orbitPlayerSystem,
     // followPlayerSystem,
-    movementSystem
+    constrainedMovementSystem,
+    unconstrainedMovementSystem
 ];
 const abiltyPhases = [
     abilitySpawnerSystem,
+    lifespanSystem
 ];
 const collisionPhases = [
     spatialHashSystem,

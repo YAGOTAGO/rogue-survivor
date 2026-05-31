@@ -1,4 +1,4 @@
-import { addComponent, EntityId, hasComponent, query, removeComponent } from "bitecs"
+import { addComponent, EntityId, hasComponent, Not, query, removeComponent } from "bitecs"
 import { Collider, MoveTo, Position, Speed, Velocity } from "../components/MovementComponents"
 import { constrainToMap } from "./ColliderSystem";
 import { ActiveKnockback, Enemy, OrbitPlayer, Player } from "../components/StatComponents";
@@ -20,7 +20,7 @@ const BOUNDS = {
     bottom: MAP_HEIGHT - PADDING_Y
 };
 
-export const movementSystem = (world: GameWorld) => {
+export const constrainedMovementSystem = (world: GameWorld) => {
     const dt = world.time.delta / 1000;
 
     for (const eid of query(world, [Position, Velocity, Collider])) {
@@ -40,6 +40,15 @@ export const movementSystem = (world: GameWorld) => {
         const resultY = constrainToMap(Position.y[eid] + vy, offsetY, halfHeight, BOUNDS.top, BOUNDS.bottom);
         Position.y[eid] = resultY.pos;
         if (resultY.collided) Velocity.y[eid] = 0;
+    }
+}
+
+export const unconstrainedMovementSystem = (world: GameWorld) => {
+    const dt = world.time.delta / 1000;
+    
+    for (const eid of query(world, [Position, Velocity, Not(Collider)])) {
+        Position.x[eid] += Velocity.x[eid] * dt;
+        Position.y[eid] += Velocity.y[eid] * dt;
     }
 }
 

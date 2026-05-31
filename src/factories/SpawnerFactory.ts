@@ -34,7 +34,7 @@ export const SpawnEnemy = (world: GameWorld, pos: PositionType): EntityId => {
     const data: BaseUnitData = {
         position: pos,
         speed: 200,
-        maxHealth: 100,
+        maxHealth: 10,
         spriteKey: ASSETS.SPRITESHEETS.ENEMIES,
         spriteFrame: 48,
         pool: world.pools.enemyPool,
@@ -53,7 +53,6 @@ export const SpawnEnemy = (world: GameWorld, pos: PositionType): EntityId => {
     ExperienceValue.value[eid] = 20;
     return eid;
 }
-
 
 export const SpawnExperienceOrb = (world: GameWorld, pos: PositionType, amount: number) => {
     const eid = BaseSpriteEntity(world, {

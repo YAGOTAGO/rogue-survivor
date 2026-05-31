@@ -1,9 +1,46 @@
 import { addComponents, addEntity, EntityId } from "bitecs";
-import { Ability, AbilityOf, Cooldown, HitCircle, KnockbackInfo, MaxActiveCount, OrbitPlayer } from "../components/StatComponents";
+import { Ability, AbilityOf, Cooldown, DamageInfo, HitCircle, KnockbackInfo, Lifespan, MaxActiveCount, OrbitPlayer } from "../components/StatComponents";
 import { BaseSpriteData, BaseSpriteEntity } from "./BaseEntityFactory";
 import { ASSETS } from "../common/Assets";
 import { OVERLAP_LAYERS, PositionType } from "../common/Constants";
 import { GameWorld } from "../common/ECS";
+import { Speed, Velocity } from "../components/MovementComponents";
+
+export const SpawnDaggerAbility = (world: GameWorld) => {
+    const playerEid = world.playerEid;
+    if(playerEid <= 0){
+        console.error("Player EID not set on world");
+        return;
+    }
+    const eid = addEntity(world);
+    world.abilityPrefabs.set(eid, SpawnDagger);
+    world.ui.abilityBarUi.addAbility(ASSETS.SPRITESHEETS.ITEMS, eid, 1);
+    addComponents(world, eid, [AbilityOf(playerEid), Ability, Cooldown]);
+    Cooldown.current[eid] = 0;
+    Cooldown.maxTimer[eid] = 2;
+}
+
+export const SpawnDagger = (world: GameWorld, pos: PositionType): EntityId => {
+    const data: BaseSpriteData = {
+        position: pos,
+        speed: 250,
+        spriteKey: ASSETS.SPRITESHEETS.ITEMS,
+        spriteFrame: 1,
+        pool: world.pools.projectilePool,
+    }
+    const eid = BaseSpriteEntity(world, data);
+    addComponents(world, eid, [HitCircle, Lifespan, DamageInfo]);
+    HitCircle.radius[eid] = 12;
+    HitCircle.offsetX[eid] = 0;
+    HitCircle.offsetY[eid] = 1;
+    HitCircle.mask[eid] = OVERLAP_LAYERS.ENEMY;
+    Lifespan.current[eid] = 4;
+    DamageInfo.damage[eid] = 5;
+    const playerSprite = world.spriteMap.get(world.playerEid);
+    const dirX = playerSprite?.flipX ? 1 : -1;
+    Velocity.x[eid] = dirX * Speed.value[eid];
+    return eid;
+}
 
 export const SpawnShieldAbility = (world: GameWorld) => {
     const playerEid = world.playerEid;

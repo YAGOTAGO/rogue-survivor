@@ -44,6 +44,9 @@ export const OrbitPlayer = {
 export const InvulnerabilityTimer = { 
     current: new Float32Array(MAX_ENTITIES)
 }
+export const Lifespan = {
+    current: new Float32Array(MAX_ENTITIES)
+}
 export const HitCircle = {
     radius: new Float32Array(MAX_ENTITIES),
     offsetX: new Float32Array(MAX_ENTITIES),

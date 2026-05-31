@@ -6,7 +6,7 @@ import { SpatialHash } from '../../common/SpatialHash';
 import { ASSETS } from '../../common/Assets';
 import { ExperienceBar } from '../../ui/ExperienceBarUI';
 import { MAX_ENEMY_POOL_SIZE, MAX_ORB_POOL_SIZE, MAX_PROJECTILE_POOL_SIZE } from '../../common/Pooling';
-import { SpawnShield, SpawnShieldAbility } from '../../factories/AbilityFactory';
+import { SpawnDaggerAbility, SpawnShieldAbility } from '../../factories/AbilityFactory';
 import { GameWorld, OverlapEvent, systems } from '../../common/ECS';
 import { PositionType } from '../../common/Constants';
 import { AbilityBar } from '../../ui/AbilityBarUI';
@@ -73,7 +73,8 @@ export class Game extends Scene
 
         SpawnExperienceOrb(this.world, { x: centerX + 50, y: centerY }, 120);
         SpawnShieldAbility(this.world);
-        for(let i = 0; i < 0; i++) {
+        SpawnDaggerAbility(this.world);
+        for(let i = 0; i < 10; i++) {
             const angle = Math.random() * Math.PI * 2;
             const dist = Math.random() * 200;
             const x = centerX + Math.cos(angle) * dist;
