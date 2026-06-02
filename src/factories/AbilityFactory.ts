@@ -14,7 +14,7 @@ export const SpawnDaggerAbility = (world: GameWorld) => {
     }
     const eid = addEntity(world);
     world.abilityPrefabs.set(eid, SpawnDagger);
-    world.ui.abilityBarUi.addAbility(ASSETS.SPRITESHEETS.ITEMS, eid, 1);
+    world.ui.abilityBarUi.addAbility(ASSETS.SPRITESHEETS.ITEMS, eid, 0);
     addComponents(world, eid, [AbilityOf(playerEid), Ability, Cooldown]);
     Cooldown.current[eid] = 0;
     Cooldown.maxTimer[eid] = 2;
@@ -25,12 +25,12 @@ export const SpawnDagger = (world: GameWorld, pos: PositionType): EntityId => {
         position: pos,
         speed: 250,
         spriteKey: ASSETS.SPRITESHEETS.ITEMS,
-        spriteFrame: 1,
+        spriteFrame: 0,
         pool: world.pools.projectilePool,
     }
     const eid = BaseSpriteEntity(world, data);
     addComponents(world, eid, [HitCircle, Lifespan, DamageInfo]);
-    HitCircle.radius[eid] = 12;
+    HitCircle.radius[eid] = 11;
     HitCircle.offsetX[eid] = 0;
     HitCircle.offsetY[eid] = 1;
     HitCircle.mask[eid] = OVERLAP_LAYERS.ENEMY;
@@ -39,6 +39,10 @@ export const SpawnDagger = (world: GameWorld, pos: PositionType): EntityId => {
     const playerSprite = world.spriteMap.get(world.playerEid);
     const dirX = playerSprite?.flipX ? 1 : -1;
     Velocity.x[eid] = dirX * Speed.value[eid];
+    const daggerSprite = world.spriteMap.get(eid);
+    if (daggerSprite) {
+        daggerSprite.angle = dirX * 42; 
+    }
     return eid;
 }
 
