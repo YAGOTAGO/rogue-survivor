@@ -32,6 +32,7 @@ export const lifespanSystem = (world: GameWorld) => {
     for (const eid of query(world, [Lifespan])){
         Lifespan.current[eid] -= dt;
         if (Lifespan.current[eid] <= 0) {
+            world.projectileHitTrackers.delete(eid);
             DespawnSpriteEntity(world, eid);
         }
     }

@@ -1,5 +1,5 @@
 import { addComponent, EntityId, hasComponent } from "bitecs";
-import { ActiveKnockback, DamageInfo, Level, ExperienceValue, Health, InvulnerabilityTimer, KnockbackInfo, Player } from "../components/StatComponents";
+import { ActiveKnockback, DamageInfo, Level, ExperienceValue, Health, InvulnerabilityTimer, KnockbackInfo, Player, Pierce } from "../components/StatComponents";
 import { LEVEL_UP_SCALING } from "../common/Constants";
 import { SpawnExperienceOrb } from "../factories/SpawnerFactory";
 import { Position, Velocity } from "../components/MovementComponents";
@@ -11,10 +11,25 @@ const PLAYER_INVULNERABILITY_DURATION = 0.5; // seconds
 export const eventSystem = (world: GameWorld) => {
     for (const { source, target } of world.events.overlapEvents) {
         
+        if(hasComponent(world, source, Pierce)){
+            
+            if(Pierce.current[source] >= Pierce.max[source]){
+                continue;
+            }
+            if(!world.projectileHitTrackers.has(source)){
+                world.projectileHitTrackers.set(source, new Set<EntityId>());
+            }
+            const hitTargets = world.projectileHitTrackers.get(source)!;
+            if(hitTargets.has(target)){
+                continue;
+            }
+            hitTargets.add(target);
+            Pierce.current[source] += 1;
+        }
+
         //Experience event
         if(hasComponent(world, target, ExperienceValue) && hasComponent(world, source, Player)){
             experienceSystem(world, source, target);
-            continue;
         }
 
         //Knockback
@@ -25,8 +40,12 @@ export const eventSystem = (world: GameWorld) => {
         //Damage event
         if(hasComponent(world, source, DamageInfo) && hasComponent(world, target, Health)){
             damageSystem(world, source, target);
-            continue;
         } 
+    
+        if(hasComponent(world, source, Pierce) && Pierce.current[source] >= Pierce.max[source]){
+            DespawnSpriteEntity(world, source);
+            world.projectileHitTrackers.delete(source);
+        }
     }
     world.events.overlapEvents = [];
 }

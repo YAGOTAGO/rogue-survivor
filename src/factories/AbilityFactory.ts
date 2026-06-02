@@ -1,5 +1,5 @@
 import { addComponents, addEntity, EntityId } from "bitecs";
-import { Ability, AbilityOf, Cooldown, DamageInfo, HitCircle, KnockbackInfo, Lifespan, MaxActiveCount, OrbitPlayer } from "../components/StatComponents";
+import { Ability, AbilityOf, Cooldown, DamageInfo, HitCircle, KnockbackInfo, Lifespan, MaxActiveCount, OrbitPlayer, Pierce } from "../components/StatComponents";
 import { BaseSpriteData, BaseSpriteEntity } from "./BaseEntityFactory";
 import { ASSETS } from "../common/Assets";
 import { OVERLAP_LAYERS, PositionType } from "../common/Constants";
@@ -29,13 +29,15 @@ export const SpawnDagger = (world: GameWorld, pos: PositionType): EntityId => {
         pool: world.pools.projectilePool,
     }
     const eid = BaseSpriteEntity(world, data);
-    addComponents(world, eid, [HitCircle, Lifespan, DamageInfo]);
+    addComponents(world, eid, [HitCircle, Lifespan, DamageInfo, Pierce]);
     HitCircle.radius[eid] = 11;
     HitCircle.offsetX[eid] = 0;
     HitCircle.offsetY[eid] = 1;
     HitCircle.mask[eid] = OVERLAP_LAYERS.ENEMY;
     Lifespan.current[eid] = 4;
     DamageInfo.damage[eid] = 5;
+    Pierce.current[eid] = 0;
+    Pierce.max[eid] = 2;
     const playerSprite = world.spriteMap.get(world.playerEid);
     const dirX = playerSprite?.flipX ? 1 : -1;
     Velocity.x[eid] = dirX * Speed.value[eid];

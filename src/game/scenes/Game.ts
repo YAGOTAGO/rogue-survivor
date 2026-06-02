@@ -51,6 +51,7 @@ export class Game extends Scene
                 projectilePool: this.add.group({ classType: GameObjects.Sprite, maxSize: MAX_PROJECTILE_POOL_SIZE }),
             },
             abilityPrefabs: new Map<EntityId , (world: GameWorld, pos: PositionType)=>EntityId>(),
+            projectileHitTrackers: new Map<EntityId, Set<EntityId>>(),
             debugGraphics: this.add.graphics().setDepth(1000),
             spriteMap: new Map<EntityId, GameObjects.Sprite>(),
             spatialHash: new SpatialHash(),
@@ -71,7 +72,6 @@ export class Game extends Scene
             this.camera.startFollow(playerSprite, false, 1, 1);
         }
 
-        SpawnExperienceOrb(this.world, { x: centerX + 50, y: centerY }, 120);
         SpawnShieldAbility(this.world);
         SpawnDaggerAbility(this.world);
         for(let i = 0; i < 10; i++) {

@@ -47,6 +47,10 @@ export const InvulnerabilityTimer = {
 export const Lifespan = {
     current: new Float32Array(MAX_ENTITIES)
 }
+export const Pierce = {
+    current: new Uint16Array(MAX_ENTITIES),
+    max: new Uint16Array(MAX_ENTITIES)
+}
 export const HitCircle = {
     radius: new Float32Array(MAX_ENTITIES),
     offsetX: new Float32Array(MAX_ENTITIES),

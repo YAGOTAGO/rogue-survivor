@@ -46,6 +46,7 @@ interface WorldData {
         projectilePool: GameObjects.Group;
     },
     abilityPrefabs: Map<EntityId, (world: GameWorld, pos: PositionType)=> EntityId>,
+    projectileHitTrackers: Map<EntityId, Set<EntityId>>,
     debugGraphics: GameObjects.Graphics,
     spriteMap: Map<EntityId, GameObjects.Sprite>,
     spatialHash: SpatialHash;
