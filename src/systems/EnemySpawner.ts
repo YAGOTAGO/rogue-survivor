@@ -5,9 +5,9 @@ import { SpawnEnemy } from "../factories/SpawnerFactory";
 import { Position } from "../components/MovementComponents";
 
 const MAX_ENEMIES = 50;
-const SPAWN_RATE = 0.5; // How often to spawn an enemy (in seconds)
+const SPAWN_RATE = 0.2; // How often to spawn an enemy (in seconds)
 const SPAWN_RADIUS_MIN = 400;
-const SPAWN_RADIUS_MAX = 600;
+const SPAWN_RADIUS_MAX = 500;
 
 let spawnTimer = 0;
 export const enemySpawnerSystem = (world: GameWorld) => {

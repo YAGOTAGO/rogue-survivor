@@ -90,6 +90,8 @@ const damageSystem = (world: GameWorld, source: EntityId, target: EntityId) => {
 
         if (hasComponent(world, target, Player)) {
             //Trigger some event that will end game
+            world.scene.scene.pause();
+            world.scene.scene.launch('GameOver');
         }else {
             const targetSprite = world.spriteMap.get(target);
             if (hasComponent(world, target, ExperienceValue) && targetSprite) {

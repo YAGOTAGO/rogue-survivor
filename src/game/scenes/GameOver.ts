@@ -14,17 +14,40 @@ export class GameOver extends Scene
     create ()
     {
         this.camera = this.cameras.main
-        this.camera.setBackgroundColor(0xff0000);
+        const width = this.scale.width;
+        const height = this.scale.height;
+        const halfWidth = width / 2;
+        const halfHeight = height / 2;
+        const textOffsetY = 70;
+        const buttonOffsetY = -50;
 
-        this.gameover_text = this.add.text(512, 384, 'Game Over', {
-            fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        });
-        this.gameover_text.setOrigin(0.5);
+        this.add.rectangle(0, 0, width, height, 0x000000, 0.6).setOrigin(0, 0); //Gray overlay
 
-        this.input.once('pointerdown', () => {
-            this.scene.start('MainMenu');
+        //Game Over Text
+        this.add.bitmapText(
+            halfWidth, 
+            halfHeight - textOffsetY, 
+            'rogue', 
+            'Game Over', 
+            48
+        ).setOrigin(0.5);
+
+        // Restart Button
+        const replayBtn = this.add.rectangle(halfWidth, halfHeight - buttonOffsetY, 150, 70, 0x5e0600)
+            .setStrokeStyle(4, 0xffffff)
+            .setRounded();
+        this.add.bitmapText(
+            halfWidth, 
+            halfHeight - buttonOffsetY, 
+            'rogue', 
+            'Retry', 
+            48
+        ).setOrigin(0.5);
+
+        replayBtn.setInteractive({ useHandCursor: true });
+        replayBtn.on('pointerdown', () => {
+            this.scene.stop();
+            this.scene.get('Game').scene.restart();
         });
     }
 }
