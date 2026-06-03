@@ -90,6 +90,16 @@ export class Game extends Scene
             padding: { x: 6, y: 4 },
             resolution: 1
         }).setScrollFactor(0);
+
+        //TODO remove the WIP text when done
+        this.add.text(500, 10, 'WORK IN PROGRESS', {
+            fontFamily: 'Arial, sans-serif',
+            fontSize: '12px',
+            color: '#ffffff',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            padding: { x: 6, y: 4 },
+            resolution: 1
+        }).setScrollFactor(0);
     }
     
 
