@@ -20,7 +20,8 @@ export class AbilityBar extends GameObjects.Container {
         this.sizer = scene.rexUI.add.sizer({
             x: 0, 
             y: 0,
-            space: { left: 5, right: 5, top: 5, bottom: 5 }
+            space: { left: 5, right: 5, top: 5, bottom: 5, item: 10 }
+
         })
         .addBackground(background)
         .layout();
