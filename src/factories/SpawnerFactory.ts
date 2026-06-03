@@ -33,7 +33,7 @@ export const SpawnPlayer = (world: GameWorld, pos: PositionType): EntityId => {
 export const SpawnEnemy = (world: GameWorld, pos: PositionType): EntityId => {
     const data: BaseUnitData = {
         position: pos,
-        speed: 200,
+        speed: 50,
         maxHealth: 10,
         spriteKey: ASSETS.SPRITESHEETS.ENEMIES,
         spriteFrame: 48,

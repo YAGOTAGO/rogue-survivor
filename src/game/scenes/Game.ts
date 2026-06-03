@@ -74,13 +74,6 @@ export class Game extends Scene
 
         SpawnShieldAbility(this.world);
         SpawnDaggerAbility(this.world);
-        for(let i = 0; i < 10; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const dist = Math.random() * 200;
-            const x = centerX + Math.cos(angle) * dist;
-            const y = centerY + Math.sin(angle) * dist;
-            SpawnEnemy(this.world, { x, y });
-        }
 
         this.fpsText = this.add.text(10, 10, '', {
             fontFamily: 'Arial, sans-serif',

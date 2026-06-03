@@ -14,6 +14,7 @@ import { debugSystem } from "../systems/DebugSystem";
 import { PositionType } from "./Constants";
 import { abilitySpawnerSystem } from "../systems/AbilitySystem";
 import { AbilityBar } from "../ui/AbilityBarUI";
+import { enemySpawnerSystem } from "../systems/EnemySpawner";
 
 export type OverlapEvent = { source: EntityId; target: EntityId };
 
@@ -58,12 +59,15 @@ const inputPhases = [
     inputSystem,
     timerSystem,
 ];
+const spawningPhases = [
+    enemySpawnerSystem,
+];
 const movementPhases = [
     knockbackUpdateSystem,
     playerVelocitySystem,
     moveToSystem,
     orbitPlayerSystem,
-    // followPlayerSystem,
+    followPlayerSystem,
     constrainedMovementSystem,
     unconstrainedMovementSystem
 ];
@@ -85,6 +89,7 @@ const presentationSystems = [
 
 export const systems = [
     ...inputPhases,
+    ...spawningPhases,
     ...movementPhases,
     ...abiltyPhases,
     ...collisionPhases,
