@@ -7,6 +7,8 @@
 * **Tools:** Vite, npm, Tiled, [RexUI](https://www.npmjs.com/package/phaser3-rex-plugins)
 * **Art:** [32rogues](https://sethbb.itch.io/32rogues)
 
+With github actions to build and deploy the game!
+
 ## Architecture Highlights
 * **Thousands of entities:** Testing showed stable framerate at over 2k entities
 * **Cache Locality:** The ECS architecture stores all state in flat TypesArrays
