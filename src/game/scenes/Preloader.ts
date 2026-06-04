@@ -58,8 +58,6 @@ export class Preloader extends Scene
     create ()
     {
         this.anims.createFromAseprite(ASSETS.IMAGES.EXPERIENCE);
-        // this.scene.start('MainMenu');
-        // this.scene.start('Game');
-        this.scene.start('GameOver');
+        this.scene.start('MainMenu');
     }
 }
