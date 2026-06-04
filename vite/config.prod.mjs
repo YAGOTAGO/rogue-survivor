@@ -17,7 +17,7 @@ const phasermsg = () => {
 }   
 
 export default defineConfig({
-    base: './',
+    base: './rogue-survivor/',
     logLevel: 'warning',
     build: {
         rollupOptions: {
